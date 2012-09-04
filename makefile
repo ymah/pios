@@ -7,7 +7,11 @@
 
 # The toolchain to use. arm-none-eabi works, but there does exist 
 # arm-bcm2708-linux-gnueabi.
-ARMGNU ?= arm-none-eabi
+#ARMGNU ?= arm-none-eabi
+# Mac Ports has arm-elf
+
+ARMGNU ?= arm-elf
+
 
 # The intermediate directory for compiled object files.
 BUILD = build/
