@@ -7,10 +7,10 @@
 
 # The toolchain to use. arm-none-eabi works, but there does exist 
 # arm-bcm2708-linux-gnueabi.
-#ARMGNU ?= arm-none-eabi
+ARMGNU ?= /opt/local/bin/arm-none-eabi
 # Mac Ports has arm-elf
 
-ARMGNU ?= arm-elf
+#ARMGNU ?= /opt/local/bin/arm-elf
 
 
 # The intermediate directory for compiled object files.
@@ -33,7 +33,9 @@ LINKER = kernel.ld
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
-OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s))
+ASM_OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s))
+C_OBJECTS   := $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
+OBJECTS     := $(ASM_OBJECTS) $(C_OBJECTS)
 
 # Rule to make everything.
 all: $(TARGET) $(LIST)
@@ -56,6 +58,11 @@ $(BUILD)output.elf : $(OBJECTS) $(LINKER)
 # Rule to make the object files.
 $(BUILD)%.o: $(SOURCE)%.s
 	$(ARMGNU)-as -I $(SOURCE) $< -o $@
+	
+$(BUILD)%.o : $(SOURCE)%.c
+	mkdir -p $(BUILD)
+	$(ARMGNU)-gcc -std=c99 -c -o $@ $?
+
 
 # Rule to clean files.
 clean : 

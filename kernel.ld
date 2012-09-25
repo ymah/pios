@@ -21,6 +21,7 @@ SECTIONS {
 		*(.text)
 	}
 	
+	.rodata : { *(.rodata) }
 	/* 
 	* Next we put the data.
 	*/
