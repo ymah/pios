@@ -10,12 +10,18 @@
 #define BakingPi_bptypes_h
 
 /*!
- *  Boolean type as per C99
+ *  @brief Boolean type as per C99
  */
 typedef _Bool bool;
+#define	false	0
+#define	true	1
 
 /*!
- *  uint32_t as per C99
+ *  @brief unsigned 8 bit type as per C99
+ */
+typedef unsigned char uint8_t;
+/*!
+ *  @brief uint32_t as per C99
  */
 typedef unsigned int uint32_t;
 
