@@ -21,7 +21,7 @@ enum
  *  All the GPIO registers are 32 bit, so we shouldn't have any trouble with 
  *  packing and alignment.  The size of this structure should be 41 * 4 bytes.
  */
-struct GPIORegisters
+struct GPIO
 {
     uint32_t functionSelect[FUNCTION_SELECT_REGISTERS];
     uint32_t reserved1;
@@ -50,21 +50,18 @@ struct GPIORegisters
     uint32_t reserved12;
 };
 
-typedef struct GPIORegisters GPIORegisters;
 
-
-void* getGPIOAddress(void)
+GPIO* getGPIOAddress(void)
 {
-    return (void*) 0x20200000;
+    return (GPIO*) 0x20200000;
 }
 
-bool setGPIOFunction(uint32_t pinNumber, GPIOFunction function)
+bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction function)
 {
     bool ret = false;
     
     if (pinNumber < GPIO_NUM_PINS && function <= GPIO_FN_ALT_5)
     {
-        GPIORegisters* gpioAddress = getGPIOAddress();
         /*
          *  First find the index of the 32 bit word containing the pin
          *  function bits.  This is done by repeated subtraction because 
@@ -94,13 +91,12 @@ bool setGPIOFunction(uint32_t pinNumber, GPIOFunction function)
     return ret;
 }
 
-bool setGPIOPin(uint32_t pinNumber, bool pinOn)
+bool setGPIOPin(GPIO* gpioAddress, uint32_t pinNumber, bool pinOn)
 {
     bool ret =false;
     
     if (pinNumber < GPIO_NUM_PINS)
     {
-        GPIORegisters* gpioAddress = getGPIOAddress();
         /*
          *  The GPIO controller has two 32 bit "banks" for controlling pin 
          *  output.  Find the address of the bank we want

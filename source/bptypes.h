@@ -25,6 +25,11 @@ typedef unsigned char uint8_t;
  */
 typedef unsigned int uint32_t;
 
+/*!
+ *  @brief uint64_t as per C99
+ */
+typedef unsigned long long uint64_t;
+
 #define NULL	((void*) 0)
 
 #endif

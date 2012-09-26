@@ -48,30 +48,35 @@ enum GPIOFunction
 
 typedef enum GPIOFunction GPIOFunction;
 
+struct GPIO;
+typedef struct GPIO GPIO;
+
 /*!
  *  @brief get the address of the GPIO controller
  *  @return the address of the GPIO controller.
  */
-void* getGPIOAddress(void);
+GPIO* getGPIOAddress(void);
 
 /*!
  *  @brief set the GPIO pin function
+ *  @param GPIO address of the GPIO registers
  *  @param pinNumber number of the pin to set the function for (0 - 53)
  *  @param function function to set.
  *	@return true if the function and pin number are valid and the function was
  *          set.
  */
-bool setGPIOFunction(uint32_t pinNumber, GPIOFunction function);
+bool setGPIOFunction(GPIO* gpio, uint32_t pinNumber, GPIOFunction function);
 
 /*!
  *  @brief Set the pin either on or off.
  *
  *  The pin should be set to output before calling this function or it will
  *  hopefully have no effect (as opposed to blowing up the IO controller).
+ *  @param GPIO address of the GPIO registers
  *  @param pinNumber number of the pin to set (0 - 53)
  *  @param pinOn true if the pin should be set on, false to set it off
  *  @return true if the pin number is valid. 
  */
-bool setGPIOPin(uint32_t pinNumber, bool pinOn);
+bool setGPIOPin(GPIO* gpio, uint32_t pinNumber, bool pinOn);
 
 #endif
