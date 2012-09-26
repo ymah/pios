@@ -15,5 +15,13 @@ const char* kernelArgs[] = { "BakeOS", NULL };
 int main(int argc, char** argv)
 {
     setGPIOFunction(16, GPIO_FN_OUTPUT);
+    while (true)
+    {
+        volatile unsigned int countDown;
+        setGPIOPin(16, true);
+        for (countDown = 0 ; countDown < 0x3F0000 ; countDown++);
+        setGPIOPin(16, false);
+        for (countDown = 0 ; countDown < 0x3F0000 ; countDown++);
+    }
     return 0;
 }
