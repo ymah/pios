@@ -91,6 +91,7 @@ bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction functio
     return ret;
 }
 
+
 bool setGPIOPin(GPIO* gpioAddress, uint32_t pinNumber, bool pinOn)
 {
     bool ret =false;

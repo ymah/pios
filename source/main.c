@@ -18,13 +18,13 @@ int main(int argc, char** argv)
     GPIO* gpio = getGPIOAddress();
     SystemTimer* timer = getSystemTimerAddress();
     setGPIOFunction(gpio, 16, GPIO_FN_OUTPUT);
+    setGPIOPin(gpio, 16, false);
     while (true)
     {
-        volatile unsigned int countDown;
+        st_microsecondSpin(timer, 500000);
         setGPIOPin(gpio, 16, true);
         st_microsecondSpin(timer, 500000);
         setGPIOPin(gpio, 16, false);
-        st_microsecondSpin(timer, 500000);
     }
     return 0;
 }

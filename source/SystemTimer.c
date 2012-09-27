@@ -17,7 +17,7 @@ enum
 struct SystemTimer
 {
     uint32_t controlStatus;
-    uint64_t counter;
+    uint32_t counter[2];
     uint32_t compare[NUM_COMPARES];
 };
 
@@ -28,9 +28,9 @@ SystemTimer* getSystemTimerAddress(void)
 
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 {
-    uint64_t startTime = timer->counter;
+    uint32_t startTime = timer->counter[0];
     volatile int foo = 0;
-    while (timer->counter - startTime < microseconds)
+    while (timer->counter[0] - startTime < microseconds)
     {
         foo++;	// Need to make sure the compiler does not optimise out the loop
     }
