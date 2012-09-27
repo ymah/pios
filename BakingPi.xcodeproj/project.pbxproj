@@ -14,6 +14,8 @@
 		FC3419591612DDDE00207E3C /* SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SystemTimer.c; sourceTree = "<group>"; };
 		FC34195B1612DDFE00207E3C /* SystemTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTimer.h; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
+		FCC39E951614CBD1001D2576 /* FrameBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameBuffer.h; sourceTree = "<group>"; };
+		FCC39E961614CBF2001D2576 /* FrameBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FrameBuffer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -39,12 +41,23 @@
 		FCB0F968160061BE00745F21 = {
 			isa = PBXGroup;
 			children = (
+				FCC39E931614CB95001D2576 /* graphics */,
 				FC3419571612DDAC00207E3C /* SystemTimer */,
 				FC2C81731610CDFA003B6ECB /* main.c */,
 				FC2C81721610CB4C003B6ECB /* bptypes.h */,
 				FC2C81711610CB1E003B6ECB /* gpio */,
 				FCB0F975160063D700745F21 /* start.s */,
 			);
+			sourceTree = "<group>";
+		};
+		FCC39E931614CB95001D2576 /* graphics */ = {
+			isa = PBXGroup;
+			children = (
+				FCC39E951614CBD1001D2576 /* FrameBuffer.h */,
+				FCC39E961614CBF2001D2576 /* FrameBuffer.c */,
+			);
+			name = graphics;
+			path = source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
