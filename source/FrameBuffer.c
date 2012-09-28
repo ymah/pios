@@ -10,12 +10,12 @@
 
 struct FBPostBox
 {
-	unsigned uint32_t read;
-    unsigned uint32_t poll;
-    unsigned uint32_t sender;
-    unsigned uint32_t status;
-    unsigned uint32_t configuration;
-    unsigned uint32_t write;
+	volatile uint32_t read;
+    volatile uint32_t poll;
+    volatile uint32_t sender;
+    volatile uint32_t status;
+    volatile uint32_t configuration;
+    volatile uint32_t write;
 };
 
 FBPostBox* fb_getFPBostBox()

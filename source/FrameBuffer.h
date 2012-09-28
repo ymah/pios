@@ -9,6 +9,7 @@
 #ifndef BakingPi_FrameBuffer_h
 #define BakingPi_FrameBuffer_h
 
+#include "bptypes.h"
 /*!
  *  @brief an opaque type that rerpesents the frame buffer postbox
  */
