@@ -1,0 +1,6 @@
+.DS_Store
+docs
+build
+kernel\..*
+BakingPi.xcodeproj/xcuserdata/
+BakingPi.xcodeproj/project.xcworkspace/xcuserdata
