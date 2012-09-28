@@ -57,6 +57,7 @@ $(BUILD)output.elf : $(OBJECTS) $(LINKER)
 
 # Rule to make the object files.
 $(BUILD)%.o: $(SOURCE)%.s
+	mkdir -p $(BUILD)
 	$(ARMGNU)-as -I $(SOURCE) $< -o $@
 	
 $(BUILD)%.o : $(SOURCE)%.c
