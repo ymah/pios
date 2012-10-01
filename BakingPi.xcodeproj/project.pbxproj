@@ -6,9 +6,51 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FC18EECB1619693B00679AAA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC18EECA1619693B00679AAA /* Cocoa.framework */; };
+		FC18EED51619693B00679AAA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC18EED31619693B00679AAA /* InfoPlist.strings */; };
+		FC18EED71619693B00679AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EED61619693B00679AAA /* main.m */; };
+		FC18EEDB1619693B00679AAA /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FC18EED91619693B00679AAA /* Credits.rtf */; };
+		FC18EEDE1619693B00679AAA /* JPPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEDD1619693B00679AAA /* JPPAppDelegate.m */; };
+		FC18EEE11619693B00679AAA /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FC18EEDF1619693B00679AAA /* MainMenu.xib */; };
+		FC18EEE91619693B00679AAA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC18EEE81619693B00679AAA /* SenTestingKit.framework */; };
+		FC18EEEA1619693B00679AAA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC18EECA1619693B00679AAA /* Cocoa.framework */; };
+		FC18EEF21619693B00679AAA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC18EEF01619693B00679AAA /* InfoPlist.strings */; };
+		FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FC18EEEB1619693B00679AAA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FCB0F96A160061BE00745F21 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FC18EEC51619693B00679AAA;
+			remoteInfo = PiosSimulator;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		FC17CA1B1607050F0092C197 /* gpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gpio.c; path = source/gpio.c; sourceTree = "<group>"; };
 		FC17CA1C1607055F0092C197 /* gpio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gpio.h; path = source/gpio.h; sourceTree = "<group>"; };
+		FC18EEC61619693B00679AAA /* PiosSimulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PiosSimulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC18EECA1619693B00679AAA /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		FC18EECD1619693B00679AAA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		FC18EECE1619693B00679AAA /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FC18EECF1619693B00679AAA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FC18EED21619693B00679AAA /* PiosSimulator-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiosSimulator-Info.plist"; sourceTree = "<group>"; };
+		FC18EED41619693B00679AAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FC18EED61619693B00679AAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FC18EED81619693B00679AAA /* PiosSimulator-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PiosSimulator-Prefix.pch"; sourceTree = "<group>"; };
+		FC18EEDA1619693B00679AAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		FC18EEDC1619693B00679AAA /* JPPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JPPAppDelegate.h; sourceTree = "<group>"; };
+		FC18EEDD1619693B00679AAA /* JPPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPPAppDelegate.m; sourceTree = "<group>"; };
+		FC18EEE01619693B00679AAA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		FC18EEE71619693B00679AAA /* PiosSimulatorTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PiosSimulatorTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC18EEE81619693B00679AAA /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		FC18EEEF1619693B00679AAA /* PiosSimulatorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PiosSimulatorTests-Info.plist"; sourceTree = "<group>"; };
+		FC18EEF11619693B00679AAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FC18EEF31619693B00679AAA /* PiosSimulatorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiosSimulatorTests.h; sourceTree = "<group>"; };
+		FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiosSimulatorTests.m; sourceTree = "<group>"; };
 		FC2C81721610CB4C003B6ECB /* bptypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bptypes.h; path = source/bptypes.h; sourceTree = "<group>"; };
 		FC2C81731610CDFA003B6ECB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = "<group>"; };
 		FC3419591612DDDE00207E3C /* SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SystemTimer.c; sourceTree = "<group>"; };
@@ -18,7 +60,98 @@
 		FCC39E961614CBF2001D2576 /* FrameBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FrameBuffer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFrameworksBuildPhase section */
+		FC18EEC31619693B00679AAA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EECB1619693B00679AAA /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC18EEE31619693B00679AAA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EEE91619693B00679AAA /* SenTestingKit.framework in Frameworks */,
+				FC18EEEA1619693B00679AAA /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
 /* Begin PBXGroup section */
+		FC18EEC71619693B00679AAA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EEC61619693B00679AAA /* PiosSimulator.app */,
+				FC18EEE71619693B00679AAA /* PiosSimulatorTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FC18EEC91619693B00679AAA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EECA1619693B00679AAA /* Cocoa.framework */,
+				FC18EEE81619693B00679AAA /* SenTestingKit.framework */,
+				FC18EECC1619693B00679AAA /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FC18EECC1619693B00679AAA /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EECD1619693B00679AAA /* AppKit.framework */,
+				FC18EECE1619693B00679AAA /* CoreData.framework */,
+				FC18EECF1619693B00679AAA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		FC18EED01619693B00679AAA /* PiosSimulator */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EEDC1619693B00679AAA /* JPPAppDelegate.h */,
+				FC18EEDD1619693B00679AAA /* JPPAppDelegate.m */,
+				FC18EEDF1619693B00679AAA /* MainMenu.xib */,
+				FC18EED11619693B00679AAA /* Supporting Files */,
+			);
+			path = PiosSimulator;
+			sourceTree = "<group>";
+		};
+		FC18EED11619693B00679AAA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EED21619693B00679AAA /* PiosSimulator-Info.plist */,
+				FC18EED31619693B00679AAA /* InfoPlist.strings */,
+				FC18EED61619693B00679AAA /* main.m */,
+				FC18EED81619693B00679AAA /* PiosSimulator-Prefix.pch */,
+				FC18EED91619693B00679AAA /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FC18EEED1619693B00679AAA /* PiosSimulatorTests */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EEF31619693B00679AAA /* PiosSimulatorTests.h */,
+				FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */,
+				FC18EEEE1619693B00679AAA /* Supporting Files */,
+			);
+			path = PiosSimulatorTests;
+			sourceTree = "<group>";
+		};
+		FC18EEEE1619693B00679AAA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FC18EEEF1619693B00679AAA /* PiosSimulatorTests-Info.plist */,
+				FC18EEF01619693B00679AAA /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		FC2C81711610CB1E003B6ECB /* gpio */ = {
 			isa = PBXGroup;
 			children = (
@@ -47,6 +180,10 @@
 				FC2C81721610CB4C003B6ECB /* bptypes.h */,
 				FC2C81711610CB1E003B6ECB /* gpio */,
 				FCB0F975160063D700745F21 /* start.s */,
+				FC18EED01619693B00679AAA /* PiosSimulator */,
+				FC18EEED1619693B00679AAA /* PiosSimulatorTests */,
+				FC18EEC91619693B00679AAA /* Frameworks */,
+				FC18EEC71619693B00679AAA /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +216,45 @@
 		};
 /* End PBXLegacyTarget section */
 
+/* Begin PBXNativeTarget section */
+		FC18EEC51619693B00679AAA /* PiosSimulator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FC18EEFA1619693B00679AAA /* Build configuration list for PBXNativeTarget "PiosSimulator" */;
+			buildPhases = (
+				FC18EEC21619693B00679AAA /* Sources */,
+				FC18EEC31619693B00679AAA /* Frameworks */,
+				FC18EEC41619693B00679AAA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PiosSimulator;
+			productName = PiosSimulator;
+			productReference = FC18EEC61619693B00679AAA /* PiosSimulator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FC18EEE61619693B00679AAA /* PiosSimulatorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FC18EEFB1619693B00679AAA /* Build configuration list for PBXNativeTarget "PiosSimulatorTests" */;
+			buildPhases = (
+				FC18EEE21619693B00679AAA /* Sources */,
+				FC18EEE31619693B00679AAA /* Frameworks */,
+				FC18EEE41619693B00679AAA /* Resources */,
+				FC18EEE51619693B00679AAA /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FC18EEEC1619693B00679AAA /* PBXTargetDependency */,
+			);
+			name = PiosSimulatorTests;
+			productName = PiosSimulatorTests;
+			productReference = FC18EEE71619693B00679AAA /* PiosSimulatorTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
 /* Begin PBXProject section */
 		FCB0F96A160061BE00745F21 /* Project object */ = {
 			isa = PBXProject;
@@ -94,15 +270,184 @@
 				en,
 			);
 			mainGroup = FCB0F968160061BE00745F21;
+			productRefGroup = FC18EEC71619693B00679AAA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				FCB0F96F160061BE00745F21 /* BakingPi */,
+				FC18EEC51619693B00679AAA /* PiosSimulator */,
+				FC18EEE61619693B00679AAA /* PiosSimulatorTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		FC18EEC41619693B00679AAA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EED51619693B00679AAA /* InfoPlist.strings in Resources */,
+				FC18EEDB1619693B00679AAA /* Credits.rtf in Resources */,
+				FC18EEE11619693B00679AAA /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC18EEE41619693B00679AAA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EEF21619693B00679AAA /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FC18EEE51619693B00679AAA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FC18EEC21619693B00679AAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EED71619693B00679AAA /* main.m in Sources */,
+				FC18EEDE1619693B00679AAA /* JPPAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC18EEE21619693B00679AAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FC18EEEC1619693B00679AAA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FC18EEC51619693B00679AAA /* PiosSimulator */;
+			targetProxy = FC18EEEB1619693B00679AAA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FC18EED31619693B00679AAA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FC18EED41619693B00679AAA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FC18EED91619693B00679AAA /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FC18EEDA1619693B00679AAA /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		FC18EEDF1619693B00679AAA /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FC18EEE01619693B00679AAA /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		FC18EEF01619693B00679AAA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FC18EEF11619693B00679AAA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		FC18EEF61619693B00679AAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				INFOPLIST_FILE = "PiosSimulator/PiosSimulator-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FC18EEF71619693B00679AAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				INFOPLIST_FILE = "PiosSimulator/PiosSimulator-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FC18EEF81619693B00679AAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PiosSimulator.app/Contents/MacOS/PiosSimulator";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				INFOPLIST_FILE = "PiosSimulatorTests/PiosSimulatorTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		FC18EEF91619693B00679AAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PiosSimulator.app/Contents/MacOS/PiosSimulator";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				INFOPLIST_FILE = "PiosSimulatorTests/PiosSimulatorTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		FCB0F970160061BE00745F21 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -176,6 +521,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		FC18EEFA1619693B00679AAA /* Build configuration list for PBXNativeTarget "PiosSimulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FC18EEF61619693B00679AAA /* Debug */,
+				FC18EEF71619693B00679AAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		FC18EEFB1619693B00679AAA /* Build configuration list for PBXNativeTarget "PiosSimulatorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FC18EEF81619693B00679AAA /* Debug */,
+				FC18EEF91619693B00679AAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		FCB0F96D160061BE00745F21 /* Build configuration list for PBXProject "BakingPi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
