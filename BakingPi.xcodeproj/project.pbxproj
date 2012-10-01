@@ -17,6 +17,8 @@
 		FC18EEEA1619693B00679AAA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC18EECA1619693B00679AAA /* Cocoa.framework */; };
 		FC18EEF21619693B00679AAA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC18EEF01619693B00679AAA /* InfoPlist.strings */; };
 		FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */; };
+		FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEFE16196D8100679AAA /* JPPPiController.m */; };
+		FC18EF02161972BB00679AAA /* JPPHardwareThread.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EF01161972BB00679AAA /* JPPHardwareThread.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,10 @@
 		FC18EEF11619693B00679AAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FC18EEF31619693B00679AAA /* PiosSimulatorTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiosSimulatorTests.h; sourceTree = "<group>"; };
 		FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PiosSimulatorTests.m; sourceTree = "<group>"; };
+		FC18EEFD16196D8100679AAA /* JPPPiController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPPiController.h; sourceTree = "<group>"; };
+		FC18EEFE16196D8100679AAA /* JPPPiController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPPiController.m; sourceTree = "<group>"; };
+		FC18EF00161972BB00679AAA /* JPPHardwareThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPHardwareThread.h; sourceTree = "<group>"; };
+		FC18EF01161972BB00679AAA /* JPPHardwareThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPHardwareThread.m; sourceTree = "<group>"; };
 		FC2C81721610CB4C003B6ECB /* bptypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bptypes.h; path = source/bptypes.h; sourceTree = "<group>"; };
 		FC2C81731610CDFA003B6ECB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = "<group>"; };
 		FC3419591612DDDE00207E3C /* SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SystemTimer.c; sourceTree = "<group>"; };
@@ -117,6 +123,10 @@
 				FC18EEDD1619693B00679AAA /* JPPAppDelegate.m */,
 				FC18EEDF1619693B00679AAA /* MainMenu.xib */,
 				FC18EED11619693B00679AAA /* Supporting Files */,
+				FC18EEFD16196D8100679AAA /* JPPPiController.h */,
+				FC18EEFE16196D8100679AAA /* JPPPiController.m */,
+				FC18EF00161972BB00679AAA /* JPPHardwareThread.h */,
+				FC18EF01161972BB00679AAA /* JPPHardwareThread.m */,
 			);
 			path = PiosSimulator;
 			sourceTree = "<group>";
@@ -325,6 +335,8 @@
 			files = (
 				FC18EED71619693B00679AAA /* main.m in Sources */,
 				FC18EEDE1619693B00679AAA /* JPPAppDelegate.m in Sources */,
+				FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */,
+				FC18EF02161972BB00679AAA /* JPPHardwareThread.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,7 +468,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -471,7 +483,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
 		};
@@ -484,14 +498,16 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Release;
 		};

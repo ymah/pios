@@ -10,8 +10,14 @@
 #include "gpio.h"
 #include "SystemTimer.h"
 
+#if defined PIOS_SIMULATOR
+#define MAIN piosMain
+#else
+#define MAIN main
+#endif
+
 extern const char* kernelArgs[];
-const char* kernelArgs[] = { "BakeOS", NULL };
+const char* kernelArgs[] = { "Pios", NULL };
 
 static bool SOSSequence[] =
 {
@@ -33,7 +39,7 @@ static void runLEDSequence(int iterations,
                            bool* sequence,
                            size_t sequenceLength);
 
-int main(int argc, char** argv)
+int MAIN(int argc, char** argv)
 {
     GPIO* gpio = getGPIOAddress();
     SystemTimer* timer = getSystemTimerAddress();
