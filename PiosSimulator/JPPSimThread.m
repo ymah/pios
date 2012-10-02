@@ -6,22 +6,25 @@
 //  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
 //
 
-#import "JPPHardwareThread.h"
+#import "JPPSimThread.h"
 
 #import "PhysicalMemoryMap.h"
 
-@interface JPPHardwareThread ()
+
+@interface JPPSimThread ()
 
 -(void) notifyFinished;
 -(void) notifyStarted;
 
 @end
 
-@implementation JPPHardwareThread
+
+@implementation JPPSimThread
 {
 @private
     NSThread* parentThread;
 }
+
 
 -(id) init
 {
@@ -32,6 +35,7 @@
     }
     return self;
 }
+
 
 -(void) main
 {
@@ -44,12 +48,8 @@
                          onThread: parentThread
                        withObject: nil
                     waitUntilDone: NO];
-
-            while (![self isCancelled])
-            {
-                [NSThread sleepForTimeInterval: 1.0];
-                NSLog(@"Thread %@ still running", self);
-            }
+            
+            [self simThreadMain];
         }
         @catch (NSException* exception)
         {
@@ -73,6 +73,38 @@
 -(void) notifyFinished
 {
     [[self delegate] hasFinished: self];
+}
+
+-(void) simThreadMain
+{
+    // Do nothing
+}
+
+
+@end
+
+@implementation JPPHardwareThread
+
+-(void) simThreadMain
+{
+    while (![self isCancelled])
+    {
+        [NSThread sleepForTimeInterval: 1.0];
+        NSLog(@"Thread %@ still running", self);
+    }
+}
+
+@end
+
+int piosMain(int argc, char** argv);
+
+static char* simulatorArgs[] = { "simulator", NULL };
+
+@implementation JPPSoftwareThread
+
+-(void) simThreadMain
+{
+    piosMain(1, simulatorArgs);
 }
 
 @end

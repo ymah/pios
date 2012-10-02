@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JPPHardwareThread.h"
+#import "JPPSimThread.h"
 
 @class JPPPiSimulator;
 
@@ -29,7 +29,7 @@
 /*!
  *  @brief A Raspberry Pi hardware simulator.
  */
-@interface JPPPiSimulator : NSObject <JPPHWThreadDelegate>
+@interface JPPPiSimulator : NSObject <JPPThreadDelegate>
 
 @property (nonatomic, weak) id<JPPPiSimulatorDelegate> delegate;
 

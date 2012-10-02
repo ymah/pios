@@ -12,6 +12,9 @@
 
 @property (nonatomic, assign) bool powerLED;
 @property (nonatomic, strong) JPPHardwareThread* hardwareThread;
+@property (nonatomic, strong) JPPSoftwareThread* softwareThread;
+
+-(void) notifyUIUpdate;
 
 @end
 
@@ -26,15 +29,22 @@
 -(void) setPowerLED: (bool) powerLED
 {
     powerLED_ = powerLED;
-    dispatch_async(dispatch_get_main_queue(),
-    ^{
-        [[self delegate] updateUIWithSimulator: self];
-    });
+    [self notifyUIUpdate];
 }
+
+-(void) notifyUIUpdate
+{
+    dispatch_async(dispatch_get_main_queue(),
+       ^{
+           [[self delegate] updateUIWithSimulator: self];
+       });
+}
+
 
 -(void) powerOff
 {
     [[self hardwareThread] cancel];
+    [[self softwareThread] cancel];
 }
 
 -(void) powerOn
@@ -42,18 +52,27 @@
     [self setHardwareThread: [[JPPHardwareThread alloc] init]];
     [[self hardwareThread] setDelegate: self];
     [[self hardwareThread] start];
+    [self setSoftwareThread: [[JPPSoftwareThread alloc] init]];
+    [[self softwareThread] setDelegate: self];
+    [[self softwareThread] start];
 }
 
 #pragma mark JPPHardwareThreadDelegate
 
 -(void) hasStarted: (JPPHardwareThread*) startedThread
 {
-    [self setPowerLED: true];
+    if (startedThread == [self hardwareThread])
+    {
+        [self setPowerLED: true];
+    }
 }
 
 -(void) hasFinished: (JPPHardwareThread*) finishedThread
 {
-    [self setPowerLED: false];
+    if (finishedThread == [self hardwareThread])
+    {
+        [self setPowerLED: false];
+    }
 }
 
 @end
