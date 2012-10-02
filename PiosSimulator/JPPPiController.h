@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JPPHardwareThread.h"
+#import "JPPPiSimulator.h"
 
-@interface JPPPiController : NSObject <JPPHWThreadDelegate>
+@interface JPPPiController : NSObject <JPPPiSimulatorDelegate>
 
 @property (nonatomic, weak) IBOutlet NSLevelIndicator* okLight;
 @property (nonatomic, weak) IBOutlet NSLevelIndicator* powerLight;

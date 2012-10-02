@@ -9,12 +9,15 @@
 #ifndef BakingPi_bptypes_h
 #define BakingPi_bptypes_h
 
+#if !defined __bool_true_false_are_defined
 /*!
  *  @brief Boolean type as per C99
  */
 typedef _Bool bool;
 #define	false	0
 #define	true	1
+
+#endif
 
 /*!
  *  @brief unsigned 8 bit type as per C99
@@ -32,6 +35,10 @@ typedef unsigned long long uint64_t;
 
 typedef unsigned long size_t;
 
+#if !defined NULL
+
 #define NULL	((void*) 0)
+
+#endif
 
 #endif

@@ -9,6 +9,7 @@
 #include "bptypes.h"
 #include "gpio.h"
 #include "SystemTimer.h"
+#include "PhysicalMemoryMap.h"
 
 #if defined PIOS_SIMULATOR
 #define MAIN piosMain
@@ -41,8 +42,9 @@ static void runLEDSequence(int iterations,
 
 int MAIN(int argc, char** argv)
 {
-    GPIO* gpio = getGPIOAddress();
-    SystemTimer* timer = getSystemTimerAddress();
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    GPIO* gpio = pmm_getGPIOAddress(memoryMap);
+    SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
     setGPIOFunction(gpio, 16, GPIO_FN_OUTPUT);
     setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
     st_microsecondSpin(timer, 1000000); // and wait 1 second
@@ -59,8 +61,8 @@ void runLEDSequence(int iterations,
                     bool* sequence,
                     size_t sequenceLength)
 {
-    GPIO* gpio = getGPIOAddress();
-    SystemTimer* timer = getSystemTimerAddress();
+    GPIO* gpio = pmm_getGPIOAddress(pmm_getPhysicalMemoryMap());
+    SystemTimer* timer = pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap());
     setGPIOFunction(gpio, 16, GPIO_FN_OUTPUT);
 
     int iterationsToGo = iterations > 0 ? iterations : 1;

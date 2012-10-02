@@ -6,6 +6,12 @@
 //  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
 //
 
+#if defined PIOS_SIMULATOR
+
+#include <stdlib.h>
+
+#endif
+
 #include "gpio.h"
 
 enum
@@ -50,11 +56,15 @@ struct GPIO
     uint32_t reserved12;
 };
 
+#if defined PIOS_SIMULATOR
 
-GPIO* getGPIOAddress(void)
+GPIO* gpio_alloc()
 {
-    return (GPIO*) 0x20200000;
+    return calloc(1, sizeof(GPIO));
 }
+
+#endif
+
 
 bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction function)
 {

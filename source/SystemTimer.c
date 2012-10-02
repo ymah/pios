@@ -6,6 +6,12 @@
 //  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
 //
 
+#if defined PIOS_SIMULATOR
+
+#include <stdlib.h>
+
+#endif
+
 #include "SystemTimer.h"
 
 enum
@@ -21,10 +27,15 @@ struct SystemTimer
     uint32_t compare[NUM_COMPARES];
 };
 
-SystemTimer* getSystemTimerAddress(void)
+#if defined PIOS_SIMULATOR
+
+SystemTimer* st_alloc()
 {
-    return (SystemTimer*) SYSTEM_TIMER_ADDRESS;
+    return calloc(1, sizeof(SystemTimer));
 }
+
+#endif
+
 
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 {

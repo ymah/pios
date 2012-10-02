@@ -21,11 +21,16 @@
 struct SystemTimer;
 typedef struct SystemTimer SystemTimer;
 
+#if defined PIOS_SIMULATOR
+
 /*!
- *  @brief Get a pointer to the system timer 
- *  @return The system timer address
+ *  @brief Allocate a system timer
+ *  @return an empty system timer 
  */
-SystemTimer* getSystemTimerAddress(void);
+SystemTimer* st_alloc();
+
+#endif
+
 
 /*!
  *  @brief wait or the given number of microseconds
