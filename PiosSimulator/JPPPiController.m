@@ -8,35 +8,44 @@
 
 #import "JPPPiController.h"
 
+@interface JPPPiController ()
+
+-(JPPPiSimulator*) simulator;
+
+@end
+
+static JPPPiSimulator* simulator = nil;
+
 @implementation JPPPiController
+
+-(JPPPiSimulator*) simulator
 {
-    JPPHardwareThread* hardware;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken,
+    ^{
+        simulator = [[JPPPiSimulator alloc] init];
+    });
+    return simulator;
 }
 
 -(IBAction) turnOnOrOff:(id)sender
 {
     if ([[self onOffSwitch] selectedSegment] == 0)
     {
-        [hardware cancel];
+        [[self simulator] powerOff];
     }
     else
     {
-        hardware = [[JPPHardwareThread alloc] init];
-        [hardware setDelegate: self];
-        [hardware start];
+        [simulator setDelegate: self];
+        [[self simulator] powerOn];
     }
 }
 
-#pragma mark JPPHWDelegate methods
+#pragma mark JPPPiSimulatorDelegate methods
 
--(void) hasStarted: (JPPHardwareThread*) startedThread
+-(void) updateUIWithSimulator: (JPPPiSimulator*) aSimulator
 {
-    [[self powerLight] setIntValue: 1];
-}
-
--(void) hasFinished:(JPPHardwareThread*) finishedThread
-{
-    [[self powerLight] setIntValue: 0];
+    [[self powerLight] setIntValue: [[self simulator] powerLED] ? 1 : 0];
 }
 
 @end

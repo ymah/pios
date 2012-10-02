@@ -1,0 +1,41 @@
+//
+//  JPPPiSimulator.h
+//  BakingPi
+//
+//  Created by Jeremy Pereira on 02/10/2012.
+//  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "JPPHardwareThread.h"
+
+@class JPPPiSimulator;
+
+/*!
+ *  @brief protocol to which the delegate must confoem
+ */
+@protocol JPPPiSimulatorDelegate <NSObject>
+
+/*!
+ *  @brief Message sent when the simulator needs to notify the delegate that
+ *  user interface changes are needed.  This message will always be sent on the
+ *  main thread.
+ *  @param aSimulator simulator that needs updating
+ */
+-(void) updateUIWithSimulator: (JPPPiSimulator*) aSimulator;
+
+@end
+
+/*!
+ *  @brief A Raspberry Pi hardware simulator.
+ */
+@interface JPPPiSimulator : NSObject <JPPHWThreadDelegate>
+
+@property (nonatomic, weak) id<JPPPiSimulatorDelegate> delegate;
+
+-(void) powerOn;
+-(void) powerOff;
+
+@property (nonatomic, readonly, assign) bool powerLED;
+
+@end

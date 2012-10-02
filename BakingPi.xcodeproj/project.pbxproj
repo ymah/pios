@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FC164344161AC4E4001D70FA /* JPPPiSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = FC164343161AC4E4001D70FA /* JPPPiSimulator.m */; };
 		FC18EECB1619693B00679AAA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC18EECA1619693B00679AAA /* Cocoa.framework */; };
 		FC18EED51619693B00679AAA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FC18EED31619693B00679AAA /* InfoPlist.strings */; };
 		FC18EED71619693B00679AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EED61619693B00679AAA /* main.m */; };
@@ -19,6 +20,10 @@
 		FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */; };
 		FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEFE16196D8100679AAA /* JPPPiController.m */; };
 		FC18EF02161972BB00679AAA /* JPPHardwareThread.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EF01161972BB00679AAA /* JPPHardwareThread.m */; };
+		FC4AA134161A02BF0060DD5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FC2C81731610CDFA003B6ECB /* main.c */; };
+		FC4AA137161A058C0060DD5E /* PhysicalMemoryMap.c in Sources */ = {isa = PBXBuildFile; fileRef = FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */; };
+		FC4AA139161A0D1C0060DD5E /* gpio.c in Sources */ = {isa = PBXBuildFile; fileRef = FC17CA1B1607050F0092C197 /* gpio.c */; };
+		FC4AA13A161A0D4B0060DD5E /* SystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FC3419591612DDDE00207E3C /* SystemTimer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FC164342161AC4E4001D70FA /* JPPPiSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPPiSimulator.h; sourceTree = "<group>"; };
+		FC164343161AC4E4001D70FA /* JPPPiSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPPiSimulator.m; sourceTree = "<group>"; };
 		FC17CA1B1607050F0092C197 /* gpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gpio.c; path = source/gpio.c; sourceTree = "<group>"; };
 		FC17CA1C1607055F0092C197 /* gpio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = gpio.h; path = source/gpio.h; sourceTree = "<group>"; };
 		FC18EEC61619693B00679AAA /* PiosSimulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PiosSimulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +68,8 @@
 		FC2C81731610CDFA003B6ECB /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = source/main.c; sourceTree = "<group>"; };
 		FC3419591612DDDE00207E3C /* SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SystemTimer.c; sourceTree = "<group>"; };
 		FC34195B1612DDFE00207E3C /* SystemTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTimer.h; sourceTree = "<group>"; };
+		FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PhysicalMemoryMap.c; path = source/PhysicalMemoryMap.c; sourceTree = "<group>"; };
+		FC4AA138161A05C10060DD5E /* PhysicalMemoryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhysicalMemoryMap.h; path = source/PhysicalMemoryMap.h; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
 		FCC39E951614CBD1001D2576 /* FrameBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameBuffer.h; sourceTree = "<group>"; };
 		FCC39E961614CBF2001D2576 /* FrameBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FrameBuffer.c; sourceTree = "<group>"; };
@@ -127,6 +136,8 @@
 				FC18EEFE16196D8100679AAA /* JPPPiController.m */,
 				FC18EF00161972BB00679AAA /* JPPHardwareThread.h */,
 				FC18EF01161972BB00679AAA /* JPPHardwareThread.m */,
+				FC164342161AC4E4001D70FA /* JPPPiSimulator.h */,
+				FC164343161AC4E4001D70FA /* JPPPiSimulator.m */,
 			);
 			path = PiosSimulator;
 			sourceTree = "<group>";
@@ -184,6 +195,8 @@
 		FCB0F968160061BE00745F21 = {
 			isa = PBXGroup;
 			children = (
+				FC4AA138161A05C10060DD5E /* PhysicalMemoryMap.h */,
+				FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */,
 				FCC39E931614CB95001D2576 /* graphics */,
 				FC3419571612DDAC00207E3C /* SystemTimer */,
 				FC2C81731610CDFA003B6ECB /* main.c */,
@@ -337,6 +350,11 @@
 				FC18EEDE1619693B00679AAA /* JPPAppDelegate.m in Sources */,
 				FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */,
 				FC18EF02161972BB00679AAA /* JPPHardwareThread.m in Sources */,
+				FC4AA134161A02BF0060DD5E /* main.c in Sources */,
+				FC4AA137161A058C0060DD5E /* PhysicalMemoryMap.c in Sources */,
+				FC4AA139161A0D1C0060DD5E /* gpio.c in Sources */,
+				FC4AA13A161A0D4B0060DD5E /* SystemTimer.c in Sources */,
+				FC164344161AC4E4001D70FA /* JPPPiSimulator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,6 +421,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "PIOS_SIMULATOR=1";
 				INFOPLIST_FILE = "PiosSimulator/PiosSimulator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -418,6 +437,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PiosSimulator/PiosSimulator-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = "PIOS_SIMULATOR=1";
 				INFOPLIST_FILE = "PiosSimulator/PiosSimulator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -544,6 +564,7 @@
 				FC18EEF71619693B00679AAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FC18EEFB1619693B00679AAA /* Build configuration list for PBXNativeTarget "PiosSimulatorTests" */ = {
 			isa = XCConfigurationList;
@@ -552,6 +573,7 @@
 				FC18EEF91619693B00679AAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FCB0F96D160061BE00745F21 /* Build configuration list for PBXProject "BakingPi" */ = {
 			isa = XCConfigurationList;

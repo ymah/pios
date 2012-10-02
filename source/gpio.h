@@ -51,11 +51,11 @@ typedef enum GPIOFunction GPIOFunction;
 struct GPIO;
 typedef struct GPIO GPIO;
 
-/*!
- *  @brief get the address of the GPIO controller
- *  @return the address of the GPIO controller.
- */
-GPIO* getGPIOAddress(void);
+#if defined PIOS_SIMULATOR
+
+GPIO* gpio_alloc();
+
+#endif
 
 /*!
  *  @brief set the GPIO pin function

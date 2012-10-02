@@ -8,6 +8,8 @@
 
 #import "JPPHardwareThread.h"
 
+#import "PhysicalMemoryMap.h"
+
 @interface JPPHardwareThread ()
 
 -(void) notifyFinished;
@@ -35,6 +37,7 @@
 {
     @autoreleasepool
     {
+        pmm_init();
         @try
         {
             [self performSelector: @selector(notifyStarted)
