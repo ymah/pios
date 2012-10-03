@@ -61,6 +61,8 @@
 
 -(void) hasStarted: (JPPHardwareThread*) startedThread
 {
+    NSLog(@"Thread %@ has started", startedThread);
+
     if (startedThread == [self hardwareThread])
     {
         [self setPowerLED: true];
@@ -73,6 +75,7 @@
     {
         [self setPowerLED: false];
     }
+    NSLog(@"Thread %@ has exited", finishedThread);
 }
 
 @end

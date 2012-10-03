@@ -29,6 +29,11 @@ typedef struct SystemTimer SystemTimer;
  */
 SystemTimer* st_alloc();
 
+/*!
+ *  @brief advance the microsecond counter by one tick
+ */
+void st_microsecondTick(SystemTimer* timer);
+
 #endif
 
 

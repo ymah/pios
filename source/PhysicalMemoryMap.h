@@ -19,7 +19,26 @@ typedef struct PhysicalMemoryMap PhysicalMemoryMap;
 
 void pmm_init();
 
+
 #endif
+/*!
+ *  @brief Get the stop flag.
+ *
+ *  The physical memory map has a stop flag that can be checked to exit tight
+ *  spin loops and hopefully stop the operating system.  This is a bit of a
+ *  nuclear option.
+ *  @return the stop flag.
+ */
+bool pmm_getStopFlag(PhysicalMemoryMap* map);
+
+/*!
+ *  @brief Set the stop flag.
+ *
+ *  The effect of this is that all tight spin loops exit straight away.
+ *  @param map The physical memory map.
+ *  @param shouldStop true if everything should stop now.
+ */
+void pmm_setStopFlag(PhysicalMemoryMap* map, bool shouldStop);
 
 /*!
  *  @brief Get the physical memory map.
