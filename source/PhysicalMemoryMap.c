@@ -18,6 +18,7 @@ struct PhysicalMemoryMap
 {
     SystemTimer* systemTimerAddress;
     GPIO* gpioAddress;
+    volatile bool stopFlag;
 };
 
 struct PhysicalMemoryMap defaultMap =
@@ -56,3 +57,14 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map)
 {
     return map->systemTimerAddress;
 }
+
+bool pmm_getStopFlag(PhysicalMemoryMap* map)
+{
+    return map->stopFlag;
+}
+
+void pmm_setStopFlag(PhysicalMemoryMap* map, bool shouldStop)
+{
+    map->stopFlag = shouldStop;
+}
+

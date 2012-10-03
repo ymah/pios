@@ -9,6 +9,7 @@
 #import "JPPSimThread.h"
 
 #import "PhysicalMemoryMap.h"
+#import "SystemTimer.h"
 
 
 @interface JPPSimThread ()
@@ -32,6 +33,7 @@
     if (self != nil)
     {
         parentThread = [NSThread currentThread];
+        [self setName: [self className]];
     }
     return self;
 }
@@ -87,10 +89,18 @@
 
 -(void) simThreadMain
 {
+    uint64_t iterations = 0;
     while (![self isCancelled])
     {
-        [NSThread sleepForTimeInterval: 1.0];
-        NSLog(@"Thread %@ still running", self);
+        st_microsecondTick(pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap()));
+        iterations++;
+        [NSThread sleepForTimeInterval: 1.0/1000000];
+        if (iterations % 1000000 == 0)
+        {
+            NSLog(@"Thread %@ still running, iterations %lld",
+                  self,
+                  (long long) iterations);
+        }
     }
 }
 
@@ -107,4 +117,9 @@ static char* simulatorArgs[] = { "simulator", NULL };
     piosMain(1, simulatorArgs);
 }
 
+-(void) cancel
+{
+    [super cancel];
+    pmm_setStopFlag(pmm_getPhysicalMemoryMap(), true);
+}
 @end
