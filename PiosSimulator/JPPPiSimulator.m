@@ -36,7 +36,7 @@
 
 -(bool) okLED
 {
-    return ![self gpioPin: SIMULATOR_OK_LED_PIN];
+    return ![self gpioPin: SIMULATOR_OK_LED_PIN] && [self powerLED];
 }
 
 -(bool) gpioPin: (uint32_t) pinNumber
