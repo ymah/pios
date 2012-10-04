@@ -37,6 +37,7 @@ void pmm_init()
         defaultMap.systemTimerAddress = st_alloc();
         defaultMap.gpioAddress        = gpio_alloc();
     });
+    defaultMap.stopFlag = false;
 }
 
 #endif
