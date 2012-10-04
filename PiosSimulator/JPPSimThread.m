@@ -10,6 +10,7 @@
 
 #import "PhysicalMemoryMap.h"
 #import "SystemTimer.h"
+#import <time.h>
 
 
 @interface JPPSimThread ()
@@ -102,15 +103,21 @@
 {
     uint64_t iterations = 0;
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    clock_t lastClock = clock();
     while (![self isCancelled])
     {
-        st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
-        if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
+        if (clock() > lastClock)
         {
-            [self performSelector: @selector(notifyUpdate)
-                         onThread: [self parentThread]
-                       withObject: nil
-                    waitUntilDone: YES];
+            lastClock = clock();
+            st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
+            if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
+            {
+                [self performSelector: @selector(notifyUpdate)
+                             onThread: [self parentThread]
+                           withObject: nil
+                        waitUntilDone: YES];
+            }
+            
         }
         iterations++;
 #if 0
