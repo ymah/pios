@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "JPPSimThread.h"
 
+enum
+{
+    SIMULATOR_OK_LED_PIN = 16,
+};
+
 @class JPPPiSimulator;
 
 /*!
@@ -37,5 +42,8 @@
 -(void) powerOff;
 
 @property (nonatomic, readonly, assign) bool powerLED;
+@property (nonatomic, readonly, assign) bool okLED;
+
+-(bool) gpioPin: (uint32_t) pinNumber;
 
 @end

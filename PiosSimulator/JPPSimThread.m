@@ -14,8 +14,11 @@
 
 @interface JPPSimThread ()
 
+@property (readonly, strong) NSThread* parentThread;
+
 -(void) notifyFinished;
 -(void) notifyStarted;
+-(void) notifyUpdate;
 
 @end
 
@@ -23,16 +26,17 @@
 @implementation JPPSimThread
 {
 @private
-    NSThread* parentThread;
+    NSThread* parentThread_;
 }
 
+@synthesize parentThread = parentThread_;
 
 -(id) init
 {
     self = [super init];
     if (self != nil)
     {
-        parentThread = [NSThread currentThread];
+        parentThread_ = [NSThread currentThread];
         [self setName: [self className]];
     }
     return self;
@@ -47,7 +51,7 @@
         @try
         {
             [self performSelector: @selector(notifyStarted)
-                         onThread: parentThread
+                         onThread: [self parentThread]
                        withObject: nil
                     waitUntilDone: NO];
             
@@ -60,7 +64,7 @@
         @finally
         {
             [self performSelector: @selector(notifyFinished)
-                         onThread: parentThread
+                         onThread: [self parentThread]
                        withObject: nil
                     waitUntilDone: YES];
         }
@@ -77,6 +81,13 @@
     [[self delegate] hasFinished: self];
 }
 
+
+-(void) notifyUpdate
+{
+    [[self delegate] hasBeenUpdated: self];
+}
+
+
 -(void) simThreadMain
 {
     // Do nothing
@@ -90,17 +101,27 @@
 -(void) simThreadMain
 {
     uint64_t iterations = 0;
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     while (![self isCancelled])
     {
-        st_microsecondTick(pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap()));
+        st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
+        if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
+        {
+            [self performSelector: @selector(notifyUpdate)
+                         onThread: [self parentThread]
+                       withObject: nil
+                    waitUntilDone: YES];
+        }
         iterations++;
-        [NSThread sleepForTimeInterval: 1.0/1000000];
+#if 0
+        [NSThread sleepForTimeInterval: 1.0/4000000];
         if (iterations % 1000000 == 0)
         {
             NSLog(@"Thread %@ still running, iterations %lld",
                   self,
                   (long long) iterations);
         }
+#endif
     }
 }
 

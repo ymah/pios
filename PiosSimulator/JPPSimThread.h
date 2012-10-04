@@ -16,6 +16,7 @@
  * All methods in the delegate are executed on the same thread that created the
  * hardware thread.  This means that, if you wish to do UI updated, the 
  * hardware thread should be created on the main thread.
+ * Also, the thread that creates the JPPSimThread needs to have a run loop.
  */
 @protocol JPPThreadDelegate <NSObject>
 
@@ -30,12 +31,23 @@
  */
 -(void) hasFinished: (JPPSimThread*) finishedThread;
 
+/*!
+ *  @brief sent when the hardware has been updatd.
+ *
+ *  This is sent synchronously to avoid swamping the run loop of the main 
+ *  thread.
+ *  @param updatedThread Thread that has been updated.
+ */
+-(void) hasBeenUpdated: (JPPSimThread*) updatedThread;
+
 @end
 
 /*!
  *  @brief Superclass of simulator threads that can have a delegate.
  *  
  *  Subclasses should override -simThreadMain to do work.  
+ *  Delegate methods are sent on the same thread on which the JPPSimThread is
+ *  created.  This means you need to have a run loop on this thread.
  */
 @interface JPPSimThread : NSThread
 

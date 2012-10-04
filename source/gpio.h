@@ -31,6 +31,10 @@ enum
 enum GPIOFunction
 {
     /*!
+     *  @brief Returned if the pin number is invalid
+     */
+    GPIO_FN_INVALID = -1,
+    /*!
      *  @brief Sets the pin as an input pin
      */
     GPIO_FN_INPUT  = 0,
@@ -55,6 +59,10 @@ typedef struct GPIO GPIO;
 
 GPIO* gpio_alloc();
 
+bool gpio_outputPinsHaveChanged(GPIO* gpio);
+
+bool gpio_outputPinValue(GPIO* gpio, uint32_t pinNumber);
+
 #endif
 
 /*!
@@ -65,7 +73,17 @@ GPIO* gpio_alloc();
  *	@return true if the function and pin number are valid and the function was
  *          set.
  */
-bool setGPIOFunction(GPIO* gpio, uint32_t pinNumber, GPIOFunction function);
+bool gpio_setFunction(GPIO* gpio, uint32_t pinNumber, GPIOFunction function);
+
+/*!
+ *  @brief Get the current function of the given pin
+ *
+ *  @param gpio Address of the GPIO 
+ *  @param pinNumber The lin number to get the function of.
+ *  @return the function of the pin or GPIO_FN_INVALID if the pin is not between
+ *  0 and 53
+ */
+GPIOFunction gpio_getFunction(GPIO* gpio, uint32_t pinNumber);
 
 /*!
  *  @brief Set the pin either on or off.
