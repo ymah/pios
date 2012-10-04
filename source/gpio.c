@@ -54,6 +54,11 @@ struct GPIO
     uint32_t pullUpDownEnable;
     uint32_t pullUpDownEnableClock[PIN_BANK_SIZE];
     uint32_t reserved12;
+#if defined PIOS_SIMULATOR
+    volatile uint64_t pinOutputMask;
+    volatile uint64_t lastPinOutputState;
+    volatile uint64_t pinOutputState;
+#endif
 };
 
 #if defined PIOS_SIMULATOR
@@ -63,10 +68,30 @@ GPIO* gpio_alloc()
     return calloc(1, sizeof(GPIO));
 }
 
+bool gpio_outputPinsHaveChanged(GPIO* gpio)
+{
+    bool ret =  (gpio->pinOutputMask & gpio->pinOutputState)
+                != (gpio->pinOutputMask & gpio->lastPinOutputState);
+    gpio->lastPinOutputState = gpio->pinOutputState;
+    return ret;
+}
+
+bool gpio_outputPinValue(GPIO* gpio, uint32_t pinNumber)
+{
+    bool ret = true;	// If no output set pull up
+    if (gpio_getFunction(gpio, pinNumber) == GPIO_FN_OUTPUT)
+    {
+        ret = (gpio->pinOutputState & (1 << pinNumber)) != 0;
+    }
+    return ret;
+}
+
 #endif
 
 
-bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction function)
+bool gpio_setFunction(GPIO* gpioAddress,
+                      uint32_t pinNumber,
+                      GPIOFunction function)
 {
     bool ret = false;
     
@@ -78,12 +103,13 @@ bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction functio
          *  division requires a library call
          */
         unsigned int selectRegisterIndex = 0;
-        while (pinNumber >= PINS_PER_BLOCK)
+        uint32_t pinOffset = pinNumber;
+        while (pinOffset >= PINS_PER_BLOCK)
         {
-            pinNumber -= PINS_PER_BLOCK;
+            pinOffset -= PINS_PER_BLOCK;
             selectRegisterIndex++;
         }
-        uint32_t pinLowBit = 3 * pinNumber;
+        uint32_t pinLowBit = 3 * pinOffset;
         /*
          *  Get the register masking out the function bits for our pin
          */
@@ -97,7 +123,41 @@ bool setGPIOFunction(GPIO* gpioAddress, uint32_t pinNumber, GPIOFunction functio
         
         ret = true;
     }
-    
+#if defined PIOS_SIMULATOR
+    switch (function)
+    {
+        case GPIO_FN_OUTPUT:
+            gpioAddress->pinOutputMask |= 1 << pinNumber;
+            break;
+            
+        default:
+            gpioAddress->pinOutputMask &= ~(1 << pinNumber);
+            break;
+    }
+#endif
+    return ret;
+}
+
+GPIOFunction gpio_getFunction(GPIO* gpio, uint32_t pinNumber)
+{
+    GPIOFunction ret = GPIO_FN_INVALID;
+    if (pinNumber < GPIO_NUM_PINS)
+    {
+        /*
+         *  First find the index of the 32 bit word containing the pin
+         *  function bits.  This is done by repeated subtraction because
+         *  division requires a library call
+         */
+        unsigned int selectRegisterIndex = 0;
+        while (pinNumber >= PINS_PER_BLOCK)
+        {
+            pinNumber -= PINS_PER_BLOCK;
+            selectRegisterIndex++;
+        }
+        uint32_t pinLowBit = 3 * pinNumber;
+        uint32_t registerValue = gpio->functionSelect[selectRegisterIndex];
+        ret = (registerValue >> pinLowBit) & 7;
+    }
     return ret;
 }
 
@@ -125,6 +185,24 @@ bool setGPIOPin(GPIO* gpioAddress, uint32_t pinNumber, bool pinOn)
         {
             gpioAddress->outputClear[pinBank] |= 1 << pinNumber;
         }
+#if defined PIOS_SIMULATOR
+        /*
+         *  In the simulator we need to update the state of the pin we have just
+         *  set.
+         */
+        if (pinBank == 1)
+    	{
+            pinNumber += 32;
+        }
+        if (pinOn)
+        {
+            gpioAddress->pinOutputState |= 1 << pinNumber;
+        }
+        else
+        {
+            gpioAddress->pinOutputState &= ~(1 << pinNumber);
+        }
+#endif
         ret = true;
     }
     return ret;

@@ -46,6 +46,7 @@ static JPPPiSimulator* simulator = nil;
 -(void) updateUIWithSimulator: (JPPPiSimulator*) aSimulator
 {
     [[self powerLight] setIntValue: [[self simulator] powerLED] ? 1 : 0];
+    [[self okLight] setIntValue: [[self simulator] okLED] ? 1 : 0];
 }
 
 @end

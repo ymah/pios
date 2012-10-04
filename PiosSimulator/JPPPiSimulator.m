@@ -7,6 +7,8 @@
 //
 
 #import "JPPPiSimulator.h"
+#import "PhysicalMemoryMap.h"
+#import "gpio.h"
 
 @interface JPPPiSimulator ()
 
@@ -30,6 +32,17 @@
 {
     powerLED_ = powerLED;
     [self notifyUIUpdate];
+}
+
+-(bool) okLED
+{
+    return ![self gpioPin: SIMULATOR_OK_LED_PIN];
+}
+
+-(bool) gpioPin: (uint32_t) pinNumber
+{
+    return gpio_outputPinValue(pmm_getGPIOAddress(pmm_getPhysicalMemoryMap()),
+                               pinNumber);
 }
 
 -(void) notifyUIUpdate
@@ -76,6 +89,11 @@
         [self setPowerLED: false];
     }
     NSLog(@"Thread %@ has exited", finishedThread);
+}
+
+-(void) hasBeenUpdated: (JPPSimThread*)updatedThread
+{
+    [[self delegate] updateUIWithSimulator: self];
 }
 
 @end

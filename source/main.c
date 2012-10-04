@@ -45,7 +45,7 @@ int MAIN(int argc, char** argv)
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     GPIO* gpio = pmm_getGPIOAddress(memoryMap);
     SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
-    setGPIOFunction(gpio, 16, GPIO_FN_OUTPUT);
+    gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
     setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
     st_microsecondSpin(timer, 1000000); // and wait 1 second
     
@@ -63,7 +63,7 @@ void runLEDSequence(int iterations,
 {
     GPIO* gpio = pmm_getGPIOAddress(pmm_getPhysicalMemoryMap());
     SystemTimer* timer = pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap());
-    setGPIOFunction(gpio, 16, GPIO_FN_OUTPUT);
+    gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
 
     int iterationsToGo = iterations > 0 ? iterations : 1;
     while (iterationsToGo > 0)
