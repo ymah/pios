@@ -9,6 +9,8 @@
 #if defined PIOS_SIMULATOR
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <libkern/OSAtomic.h>
 
 #endif
 
@@ -24,7 +26,8 @@ enum
 struct SystemTimer
 {
     volatile uint32_t controlStatus;
-    volatile uint32_t counter[2];
+    volatile uint32_t counterLow;
+    volatile uint32_t counterHigh;
     volatile uint32_t compare[NUM_COMPARES];
 };
 
@@ -37,11 +40,10 @@ SystemTimer* st_alloc()
 
 void st_microsecondTick(SystemTimer* timer)
 {
-    uint64_t timerValue = timer->counter[0] | ((uint64_t) timer->counter[1] << 32);
-    timerValue++;
-    timer->counter[0] = timerValue & 0xFFFFFFFF;
-    timer->counter[1] = timerValue >> 32;
-    // TODO:  We need a memory barrier
+    if ((uint32_t)OSAtomicIncrement32((int32_t*)(&timer->counterLow)) == 0)
+    {
+        OSAtomicIncrement32Barrier((int32_t*)&timer->counterHigh);
+    }
 }
 
 #endif
@@ -49,14 +51,20 @@ void st_microsecondTick(SystemTimer* timer)
 
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 {
-    uint32_t startTime = timer->counter[0];
+#if defined PIOS_SIMULATOR
+    fprintf(stderr, "Spinning for %d us\n", (int) microseconds);
+#endif
+    uint32_t startTime = timer->counterLow;
     volatile int foo = 0;
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     
-    while (timer->counter[0] - startTime < microseconds
+    while (timer->counterLow - startTime < microseconds
            && !pmm_getStopFlag(memoryMap))
     {
         foo++;	// Need to make sure the compiler does not optimise out the loop
     }
+#if defined PIOS_SIMULATOR
+    fprintf(stderr, "Spun for %d us\n", (int) microseconds);
+#endif
 }
 

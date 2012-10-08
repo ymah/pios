@@ -13,10 +13,9 @@
 /*!
  * @brief Delegate for a hardware thread.  This object is informed of major 
  * state changes such as the thread stopping.
- * All methods in the delegate are executed on the same thread that created the
- * hardware thread.  This means that, if you wish to do UI updated, the 
- * hardware thread should be created on the main thread.
- * Also, the thread that creates the JPPSimThread needs to have a run loop.
+ * All methods in the delegate are executed on the new thred.  This means that, 
+ * if you wish to do UI updated, the delegate method should arrange for the 
+ * UI updates to happen on the main thread.
  */
 @protocol JPPThreadDelegate <NSObject>
 
@@ -46,8 +45,7 @@
  *  @brief Superclass of simulator threads that can have a delegate.
  *  
  *  Subclasses should override -simThreadMain to do work.  
- *  Delegate methods are sent on the same thread on which the JPPSimThread is
- *  created.  This means you need to have a run loop on this thread.
+ *  Delegate methods are sent on the new thread 
  */
 @interface JPPSimThread : NSThread
 

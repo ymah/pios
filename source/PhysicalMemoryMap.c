@@ -9,6 +9,7 @@
 #if defined PIOS_SIMULATOR
 
 #include <dispatch/dispatch.h>
+#include <libkern/OSAtomic.h>
 
 #endif
 
@@ -24,7 +25,8 @@ struct PhysicalMemoryMap
 struct PhysicalMemoryMap defaultMap =
 {
     (SystemTimer*) 0x20003000,
-           (GPIO*) 0x20200000
+           (GPIO*) 0x20200000,
+    false
 };
 
 #if defined PIOS_SIMULATOR
@@ -36,6 +38,7 @@ void pmm_init()
     ^{
         defaultMap.systemTimerAddress = st_alloc();
         defaultMap.gpioAddress        = gpio_alloc();
+        OSMemoryBarrier();
     });
     defaultMap.stopFlag = false;
 }

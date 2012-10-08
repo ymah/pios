@@ -23,9 +23,9 @@ const char* kernelArgs[] = { "Pios", NULL };
 static bool SOSSequence[] =
 {
     false, false, false, false,
-	true, false, true, false, true, false,
-	true, true, true, false, true, true, true, false, true, true, true, false,
-	true, false, true, false, true
+	true, false, true, false, true, false, false,
+	true, true, true, false, true, true, true, false, true, true, true, false, false,
+	true, false, true, false, true, false, false
 };
 /*!
  *  @brief Run a sequence of LED flashes.
