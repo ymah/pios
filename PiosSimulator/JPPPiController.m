@@ -36,7 +36,7 @@ static JPPPiSimulator* simulator = nil;
     }
     else
     {
-        [simulator setDelegate: self];
+        [[self simulator] setDelegate: self];
         [[self simulator] powerOn];
     }
 }

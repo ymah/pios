@@ -56,8 +56,8 @@
 
 -(void) powerOff
 {
-    [[self hardwareThread] cancel];
     [[self softwareThread] cancel];
+    [[self hardwareThread] cancel];
 }
 
 -(void) powerOn
@@ -67,7 +67,6 @@
     [[self hardwareThread] start];
     [self setSoftwareThread: [[JPPSoftwareThread alloc] init]];
     [[self softwareThread] setDelegate: self];
-    [[self softwareThread] start];
 }
 
 #pragma mark JPPHardwareThreadDelegate
@@ -79,6 +78,8 @@
     if (startedThread == [self hardwareThread])
     {
         [self setPowerLED: true];
+        [self notifyUIUpdate];
+        [[self softwareThread] start];
     }
 }
 
@@ -93,7 +94,7 @@
 
 -(void) hasBeenUpdated: (JPPSimThread*)updatedThread
 {
-    [[self delegate] updateUIWithSimulator: self];
+    [self notifyUIUpdate];
 }
 
 @end

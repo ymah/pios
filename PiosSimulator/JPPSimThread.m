@@ -15,8 +15,6 @@
 
 @interface JPPSimThread ()
 
-@property (readonly, strong) NSThread* parentThread;
-
 -(void) notifyFinished;
 -(void) notifyStarted;
 -(void) notifyUpdate;
@@ -25,19 +23,12 @@
 
 
 @implementation JPPSimThread
-{
-@private
-    NSThread* parentThread_;
-}
-
-@synthesize parentThread = parentThread_;
 
 -(id) init
 {
     self = [super init];
     if (self != nil)
     {
-        parentThread_ = [NSThread currentThread];
         [self setName: [self className]];
     }
     return self;
@@ -51,10 +42,7 @@
         pmm_init();
         @try
         {
-            [self performSelector: @selector(notifyStarted)
-                         onThread: [self parentThread]
-                       withObject: nil
-                    waitUntilDone: NO];
+            [self notifyStarted];
             
             [self simThreadMain];
         }
@@ -64,10 +52,7 @@
         }
         @finally
         {
-            [self performSelector: @selector(notifyFinished)
-                         onThread: [self parentThread]
-                       withObject: nil
-                    waitUntilDone: YES];
+            [self notifyFinished];
         }
     }
 }
@@ -112,10 +97,7 @@
             st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
             if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
             {
-                [self performSelector: @selector(notifyUpdate)
-                             onThread: [self parentThread]
-                           withObject: nil
-                        waitUntilDone: YES];
+                [self notifyUpdate];
             }
             
         }
