@@ -24,14 +24,99 @@ enum
 struct FBPostBox;
 typedef struct FBPostBox FBPostBox;
 
-struct FrameBuffer;
-typedef struct FrameBuffer FrameBuffer;
+/*!
+ *  @brief A descriptor for requesting a frame buffer
+ */
+struct FrameBufferDescriptor
+{
+    /*!
+     *  @brief Width in pixels
+     */
+    uint32_t width;
+    /*!
+     *  @brief Height in pixels
+     */
+    uint32_t height;
+    /*!
+     *  @brief Don't know but set to same as width
+     */
+    uint32_t vWidth;
+    /*!
+     *  @brief Don't know but set to same as height
+     */
+    uint32_t vHeight;
+    /*!
+     * @brief width of a raster line in bytes (set by GPU)
+     */
+    uint32_t pitch;
+    /*!
+     *  @brief Number of bits per pixel
+     */
+    uint32_t bitDepth;
+    /*!
+     *  @brief x offset of top left corner of screen
+     */
+    uint32_t x;
+    /*!
+     * @brief y offset of top left corner of screen
+     */
+    uint32_t y;
+    /*!
+     *  @brief pointer to frame buffer (set by GPU)
+     */
+    void* frameBufferPtr;
+    /*!
+     *  @brief frame buffer size calculated by GPU
+     */
+    uint32_t frameBufferSize;
+};
 
 /*!
- *  @brief get the address of the frame buffer postbox
- *  @return The frame buffer postbox
+ *  @brief Error codes returned when getting a frame buffer.
  */
-FBPostBox* fb_getFPBostBox();
+enum FBError
+{
+    /*!
+     *  @brief Success!
+     */
+    FB_OK 		  = 0,
+    /*!
+     *  @brief PArameter validation error
+     */
+    FB_PARAMETER  = 1,
+    /*!
+     *  @brief Descriptor alignment error
+     */
+ 	FB_ALIGNMENT  = 2,
+    /*!
+     *  @brief The actual get from the GPU failed.
+     */
+    FB_FAILED_GET = 3,
+};
+
+typedef enum FBError FBError;
+
+typedef struct FrameBufferDescriptor FrameBufferDescriptor;
+
+#if defined PIOS_SIMULATOR
+
+/*!
+ *  @brief Allocate a post box structure
+ *  @return frame buffer postbox
+ */
+FBPostBox* fb_postBoxAlloc();
+
+#endif
+
+/*!
+ *  @brief Get a frame buffer
+ *  @param postbox The GPU frame buffer postbox address
+ *  @param fbDescriptor a pointer to a frame buffer descriptor.  This needs to
+ *  be at least 16 byte aligned, possibly even page aligned.  The GPU will fill
+ *  in the address and some other stuff.
+ *  @return An error code.  0 means success.
+ */
+FBError fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor);
 
 /*!
  *  @brief Low level send to mailbox.

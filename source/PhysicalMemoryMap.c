@@ -19,6 +19,7 @@ struct PhysicalMemoryMap
 {
     SystemTimer* systemTimerAddress;
     GPIO* gpioAddress;
+    FBPostBox* frameBufferPostBox;
     volatile bool stopFlag;
 };
 
@@ -26,6 +27,7 @@ struct PhysicalMemoryMap defaultMap =
 {
     (SystemTimer*) 0x20003000,
            (GPIO*) 0x20200000,
+      (FBPostBox*) 0x2000B880,
     false
 };
 
@@ -61,6 +63,13 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map)
 {
     return map->systemTimerAddress;
 }
+
+
+FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map)
+{
+    return map->frameBufferPostBox;
+}
+
 
 bool pmm_getStopFlag(PhysicalMemoryMap* map)
 {
