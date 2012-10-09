@@ -11,6 +11,7 @@
 
 #include "gpio.h"
 #include "SystemTimer.h"
+#include "FrameBuffer.h"
 
 struct PhysicalMemoryMap;
 typedef struct PhysicalMemoryMap PhysicalMemoryMap;
@@ -63,6 +64,12 @@ GPIO* pmm_getGPIOAddress(PhysicalMemoryMap* map);
  *  @return the address of the system timer
  */
 SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
+
+/*!
+ *  @brief get the address of the frame buffer postbox
+ *  @return The frame buffer postbox
+ */
+FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map);
 
 
 #endif

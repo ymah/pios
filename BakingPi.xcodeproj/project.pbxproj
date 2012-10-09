@@ -24,6 +24,7 @@
 		FC4AA139161A0D1C0060DD5E /* gpio.c in Sources */ = {isa = PBXBuildFile; fileRef = FC17CA1B1607050F0092C197 /* gpio.c */; };
 		FC4AA13A161A0D4B0060DD5E /* SystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FC3419591612DDDE00207E3C /* SystemTimer.c */; };
 		FC6EE94F161B579200D14766 /* JPPSimThread.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6EE94E161B579200D14766 /* JPPSimThread.m */; };
+		FC719F57162406A200223470 /* FrameBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCC39E961614CBF2001D2576 /* FrameBuffer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -355,6 +356,7 @@
 				FC4AA13A161A0D4B0060DD5E /* SystemTimer.c in Sources */,
 				FC164344161AC4E4001D70FA /* JPPPiSimulator.m in Sources */,
 				FC6EE94F161B579200D14766 /* JPPSimThread.m in Sources */,
+				FC719F57162406A200223470 /* FrameBuffer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

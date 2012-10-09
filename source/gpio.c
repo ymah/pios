@@ -65,7 +65,13 @@ struct GPIO
 
 GPIO* gpio_alloc()
 {
-    return calloc(1, sizeof(GPIO));
+    GPIO* gpio = calloc(1, sizeof(GPIO));
+    /*
+     *  We force the pins high to start
+     */
+    gpio->lastPinOutputState = 0xFFFFFFFF;
+    gpio->pinOutputState = 0xFFFFFFFF;
+    return gpio;
 }
 
 bool gpio_outputPinsHaveChanged(GPIO* gpio)
