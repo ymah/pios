@@ -6,6 +6,10 @@
 //  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
 //
 
+#if defined PIOS_SIMULATOR
+#include <stdlib.h>
+#include <string.h>
+#endif
 #include "bptypes.h"
 #include "gpio.h"
 #include "SystemTimer.h"
@@ -68,6 +72,7 @@ int MAIN(int argc, char** argv)
 int MAIN(int argc, char** argv)
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    pmm_initialiseFreePages(memoryMap);
     SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
     st_microsecondSpin(timer, 200000); // and wait 1 second
     GPIO* gpio = pmm_getGPIOAddress(memoryMap);
@@ -103,8 +108,11 @@ static FrameBufferDescriptor fbDescriptor =
 
 FBError initFrameBuffer()
 {
-    FBPostBox* postbox = pmm_getFBPostBox(pmm_getPhysicalMemoryMap());
-    FBError ret = fb_getFrameBuffer(postbox, &fbDescriptor);
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    FBPostBox* postbox = pmm_getFBPostBox(memoryMap);
+    FrameBufferDescriptor* alignedDescriptor = pmm_allocatePage(memoryMap);
+    memcpy(alignedDescriptor, &fbDescriptor, sizeof fbDescriptor);
+    FBError ret = fb_getFrameBuffer(postbox, alignedDescriptor);
     return ret;
 }
 

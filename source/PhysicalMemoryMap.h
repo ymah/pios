@@ -71,5 +71,26 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
  */
 FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map);
 
+/*!
+ *  @brief Initialise the free page list for the map.  
+ *  
+ *  This will only work once at the moment because the page ist is allocated out
+ *  of static storage.
+ *  @param map Memory pmap containing the free page list
+ */
+void pmm_initialiseFreePages(PhysicalMemoryMap* map);
+/*!
+ *  @brief Allocate a page of memory
+ *  @param map Memory pmap containing the free page list
+ *  @return A single aligned page of memory or NULL if we don't have any left.
+ */
+void* pmm_allocatePage(PhysicalMemoryMap* map);
+/*!
+ *  @brief free a page of memory.
+ *  @param map Memory pmap containing the free page list
+ *  @param pagePtr a pointer to the beginning of the page.  If it does not 
+ *  point to the beginning of a page, it is ignored and nothing happens.
+ */
+void pmm_freePage(PhysicalMemoryMap* map, void* pagePtr);
 
 #endif
