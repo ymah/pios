@@ -20,7 +20,6 @@ typedef struct PhysicalMemoryMap PhysicalMemoryMap;
 
 void pmm_init();
 
-
 #endif
 /*!
  *  @brief Get the stop flag.

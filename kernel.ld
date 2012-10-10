@@ -28,6 +28,9 @@ SECTIONS {
 	.data : {
 		*(.data)
 	}
+	.bss : {
+		*(.bss)
+	}
 
 	/*
 	* Finally comes everything else. A fun trick here is to put all other 
