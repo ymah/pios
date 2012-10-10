@@ -14,6 +14,7 @@
 #include "gpio.h"
 #include "SystemTimer.h"
 #include "PhysicalMemoryMap.h"
+#include "klib.h"
 
 #if defined PIOS_SIMULATOR
 #define MAIN piosMain
@@ -111,7 +112,7 @@ FBError initFrameBuffer()
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     FBPostBox* postbox = pmm_getFBPostBox(memoryMap);
     FrameBufferDescriptor* alignedDescriptor = pmm_allocatePage(memoryMap);
-    memcpy(alignedDescriptor, &fbDescriptor, sizeof fbDescriptor);
+    klib_memcpy(alignedDescriptor, &fbDescriptor, sizeof fbDescriptor);
     FBError ret = fb_getFrameBuffer(postbox, alignedDescriptor);
     return ret;
 }
