@@ -82,8 +82,13 @@ int MAIN(int argc, char** argv)
     st_microsecondSpin(timer, 500000); // and wait 1 second
 
 
+    setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
-    if (fbError != FB_OK)
+    if (fbError == FB_OK)
+    {
+        setGPIOPin(gpio, 16, false); // Turn on OK again        
+    }
+    else
     {
         runLEDFlash(10, (int) fbError);
     }
