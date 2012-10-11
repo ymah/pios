@@ -18,6 +18,15 @@ enum
      */
     FB_POSTBOX_CHANNELS = 8,
 };
+
+enum PostBoxChannel
+{
+    PB_FRAME_BUFFER_CHANNEL = 1,
+};
+
+typedef enum PostBoxChannel PostBoxChannel;
+
+typedef enum FBChannel FBChannel;
 /*!
  *  @brief an opaque type that rerpesents the frame buffer postbox
  */
@@ -42,7 +51,8 @@ struct FrameBufferDescriptor
      */
     uint32_t vWidth;
     /*!
-     *  @brief Don't know but set to same as height
+     *  @brief Don't know but set to same as height.  Might be the width of a 
+     *  raster line.
      */
     uint32_t vHeight;
     /*!
@@ -92,11 +102,44 @@ enum FBError
      *  @brief The actual get from the GPU failed.
      */
     FB_FAILED_GET = 3,
+    /*!
+     *  @brief The communication was interrupted because we are stopping
+     */
+    FB_STOPPED    = 4,
 };
 
 typedef enum FBError FBError;
 
 typedef struct FrameBufferDescriptor FrameBufferDescriptor;
+
+/*!
+ *  @brief Bit positions of various important bits within postbox messages.
+ */
+enum FBBits
+{
+/*!
+ *  @brief How many low order bits of a message will be used for the channel
+ */
+    FB_CHANNEL_BITS 		   	= 4,
+/*!
+ *  @brief Required alignment for a pointer to the frame buffer descriptor
+ */
+    FB_DESCRIPTOR_ALIGNMENT 	= 12,
+};
+
+/*!
+ *  @brief Masks out the channel bits of a message leaving just the value
+ */
+#define FB_VALUE_MASK		((~(uintptr_t) 0) << FB_CHANNEL_BITS)
+/*!
+ *  @brief MAsks out the value bits of a message leaving just the channel
+ */
+#define FB_CHANNEL_MASK		(~FB_VALUE_MASK)
+/*!
+ *  @brief Mask to align a pointer to be used as a frame buffer descriptor
+ */
+#define FB_DESCRIPTOR_ALIGNMENT_MASK	\
+							~((~(uintptr_t) 0) << FB_DESCRIPTOR_ALIGNMENT)
 
 #if defined PIOS_SIMULATOR
 
@@ -105,6 +148,31 @@ typedef struct FrameBufferDescriptor FrameBufferDescriptor;
  *  @return frame buffer postbox
  */
 FBPostBox* fb_postBoxAlloc();
+
+/*!
+ *  @brief Check if the postbax has been written.
+ *
+ *  Gives us access to the message that was written.  Also clears the write 
+ *  status flag so the postbox can be written again.
+ *  @param postbox postbox to check
+ *  @param message reference to the location where the message will be put if
+ *  the postbox was written.  If NULL, the message written will be discarded.
+ *  @return true if the post box was written.
+ */
+bool fb_postBoxWasWritten(FBPostBox* postbox, uintptr_t* messageRef);
+
+/*!
+ *  @brief Set up a postbox read if we can.
+ *
+ *  If the last read was done, we set the read value and the status bit.
+ *  @param postbox Postbox to try this on.
+ *  @param channel Channel to set.
+ *  @param message Message to send.
+ *  @return true if the postbox read was available i.e. the previously set read
+ *  value has been read.
+ */
+bool fb_tryMakeRead(FBPostBox* postbox, uint32_t channel, uintptr_t message);
+
 
 #endif
 
@@ -128,7 +196,7 @@ FBError fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescripto
  *  @param channel the mail box channel - 0 to 7 at the moment
  *  @return true if the parameters validate OK
  */
-bool fb_send(FBPostBox* postbox, uint32_t message, uint32_t channel);
+bool fb_send(FBPostBox* postbox, uintptr_t message, uint32_t channel);
 
 /*!
  *  @brief Read the postbox for data from the specified channel.
@@ -139,11 +207,11 @@ bool fb_send(FBPostBox* postbox, uint32_t message, uint32_t channel);
  *  one for the specified channel will be discarded.
  *  @param postbox Address of the GPU postbox.
  *  @param channel Channel to read from, must be in the range 0-7.
- *  @return The data on the channel or ((uint32_t)-1) if the parameters are 
+ *  @return The data on the channel or ((uintptr_t)-1) if the parameters are 
  *  incorrect.
  *  Valid channel data will always have the low four bits clear.
  */
-uint32_t fb_read(FBPostBox* postbox, uint32_t channel);
+uintptr_t fb_read(FBPostBox* postbox, uint32_t channel);
 
 
 #endif

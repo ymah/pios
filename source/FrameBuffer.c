@@ -11,32 +11,30 @@
 #endif
 
 #include "FrameBuffer.h"
+#include "PhysicalMemoryMap.h"
 
-enum Bits
+enum
 {
+    
     STATUS_WRITE_READY_BIT = 31,
     STATUS_READ_READY_BIT  = 30,
-    CHANNEL_BITS 		   = 4,
-    FB_DESCRIPTOR_ALIGNMENT = 12,
 };
 
 enum Masks
 {
     STATUS_WRITE_READY_MASK = 1 << STATUS_WRITE_READY_BIT,
     STATUS_READ_READY_MASK  = 1 << STATUS_READ_READY_BIT,
-    VALUE_MASK 				= ~0 << CHANNEL_BITS,
-    CHANNEL_MASK 			= ~VALUE_MASK,
-    FB_DESCRIPTOR_ALIGNMENT_MASK = ~(~0 << FB_DESCRIPTOR_ALIGNMENT)
 };
+
 
 struct FBPostBox
 {
-	volatile uint32_t read;
-    volatile uint32_t poll;
-    volatile uint32_t sender;
-    volatile uint32_t status;
-    volatile uint32_t configuration;
-    volatile uint32_t write;
+	volatile uintptr_t read;
+    volatile uint32_t  poll;
+    volatile uint32_t  sender;
+    volatile uint32_t  status;
+    volatile uint32_t  configuration;
+    volatile uintptr_t write;
 };
 
 enum FrameBufferConsts
@@ -50,42 +48,85 @@ enum FrameBufferConsts
 
 FBPostBox* fb_postBoxAlloc()
 {
-    return calloc(1, sizeof(FBPostBox));
+    FBPostBox* ret = calloc(1, sizeof(FBPostBox));
+    /*
+     *  There is nothing to read at the moment, obviously
+     */
+    ret->status = STATUS_READ_READY_MASK;
+    
+    return ret;
 }
 
-#endif
-
-bool fb_send(FBPostBox* postbox, uint32_t message, uint32_t channel)
+bool fb_postBoxWasWritten(FBPostBox* postbox, uintptr_t* messageRef)
 {
-    bool ret =false;
-    if ((message & 0xF) == 0 && channel < FB_POSTBOX_CHANNELS)
+    bool ret = false;
+    if ((postbox->status & STATUS_WRITE_READY_MASK) != 0)
     {
-        while ((postbox->status & STATUS_WRITE_READY_MASK) != 0)
+        if (messageRef != NULL)
         {
-            // spin
+            *messageRef = postbox->write;
         }
-        postbox->write = message | channel;
+        postbox->status &= ~STATUS_WRITE_READY_MASK;
     }
     return ret;
 }
 
-uint32_t fb_read(FBPostBox* postbox, uint32_t channel)
+bool fb_tryMakeRead(FBPostBox* postbox, uint32_t channel, uintptr_t message)
 {
-    uint32_t ret = -1;
+    bool ret = false;
+    if ((postbox->status & STATUS_READ_READY_MASK) != 0)
+    {
+        postbox->read = (message & FB_VALUE_MASK) | (channel & FB_CHANNEL_MASK);
+        postbox->status &= ~STATUS_READ_READY_MASK;
+        ret = true;
+    }
+    return ret;
+}
+
+#endif
+
+bool fb_send(FBPostBox* postbox, uintptr_t message, uint32_t channel)
+{
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    bool ret =false;
+    if ((message & 0xF) == 0 && channel < FB_POSTBOX_CHANNELS)
+    {
+        while ((postbox->status & STATUS_WRITE_READY_MASK) != 0
+               && !pmm_getStopFlag(memoryMap))
+        {
+            // spin
+        }
+        postbox->write = message | channel;
+        ret = true;
+#if defined PIOS_SIMULATOR
+        postbox->status |= STATUS_WRITE_READY_MASK;
+#endif
+    }
+    return ret;
+}
+
+uintptr_t fb_read(FBPostBox* postbox, uint32_t channel)
+{
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    uintptr_t ret = -1;
     if (channel < FB_POSTBOX_CHANNELS)
     {
-        uint32_t readValue = 0xFFFFFFFF;
+        uintptr_t readValue = (uintptr_t)-1;
         uint32_t readChannel = 0x7FFFFFFF; // Requested channel will never be this
-        while (readChannel != channel)
+        while (readChannel != channel && !pmm_getStopFlag(memoryMap))
         {
-            while ((postbox->status & STATUS_READ_READY_MASK) != 0)
+            while ((postbox->status & STATUS_READ_READY_MASK) != 0
+                   && !pmm_getStopFlag(memoryMap))
             {
                 // spin
             }
             readValue = postbox->read;
-            readChannel = readValue & CHANNEL_MASK;
+            readChannel = readValue & FB_CHANNEL_MASK;
+#if defined PIOS_SIMULATOR
+            postbox->status |= STATUS_READ_READY_MASK;
+#endif
         }
-        ret = readValue & VALUE_MASK;
+        ret = readValue & FB_VALUE_MASK;
     }
     return ret;
 }
@@ -93,6 +134,8 @@ uint32_t fb_read(FBPostBox* postbox, uint32_t channel)
 FBError
 fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
 {
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+
     FBError ret = FB_OK;
     if (fbDescriptor->width >= MAX_PIXEL_WIDTH
         || fbDescriptor->height >= MAX_PIXEL_HEIGHT
@@ -103,6 +146,34 @@ fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
     else if ((((uint32_t)fbDescriptor) & FB_DESCRIPTOR_ALIGNMENT_MASK) != 0)
     {
         ret = FB_ALIGNMENT;
+    }
+    else
+    {
+        if (!fb_send(postbox, (uintptr_t)fbDescriptor, PB_FRAME_BUFFER_CHANNEL))
+        {
+            ret = FB_PARAMETER;
+        }
+        else
+        {
+            uintptr_t readResult = fb_read(postbox, PB_FRAME_BUFFER_CHANNEL);
+            if (readResult == 0)
+            {
+                while (fbDescriptor->frameBufferPtr == NULL
+                       && !pmm_getStopFlag(memoryMap))
+                {
+                    // spin.  Apparently if we have no pointer, we can just
+                    // wait.
+                }
+            }
+            else
+            {
+                ret = FB_FAILED_GET;
+            }
+        }
+    }
+    if (pmm_getStopFlag(memoryMap))
+    {
+        ret = FB_STOPPED;
     }
     return ret;
 }
