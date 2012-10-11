@@ -127,8 +127,7 @@
         int channel = message & FB_CHANNEL_MASK;
         if (channel == PB_FRAME_BUFFER_CHANNEL)
         {
-            //           fbDescriptor = (FrameBufferDescriptor*)(message & FB_VALUE_MASK);
-            fbDescriptor = (FrameBufferDescriptor*)message;
+            fbDescriptor = (FrameBufferDescriptor*)(message & FB_VALUE_MASK);
             if (frameBuffer != NULL)
             {
                 free(frameBuffer);
@@ -145,7 +144,7 @@
             fbDescriptor->frameBufferPtr = frameBuffer;
             while (!fb_tryMakeRead(frameBufferPostbox,
                                    PB_FRAME_BUFFER_CHANNEL,
-                                   message)
+                                   0)
                    && ![self isCancelled])
             {
                 // spin

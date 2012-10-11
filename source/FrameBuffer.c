@@ -8,6 +8,8 @@
 
 #if defined PIOS_SIMULATOR
 #include <stdlib.h>
+#include <libkern/OSAtomic.h>
+#include <stdio.h>
 #endif
 
 #include "FrameBuffer.h"
@@ -67,6 +69,7 @@ bool fb_postBoxWasWritten(FBPostBox* postbox, uintptr_t* messageRef)
             *messageRef = postbox->write;
         }
         postbox->status &= ~STATUS_WRITE_READY_MASK;
+        ret = true;
     }
     return ret;
 }
@@ -77,7 +80,7 @@ bool fb_tryMakeRead(FBPostBox* postbox, uint32_t channel, uintptr_t message)
     if ((postbox->status & STATUS_READ_READY_MASK) != 0)
     {
         postbox->read = (message & FB_VALUE_MASK) | (channel & FB_CHANNEL_MASK);
-        postbox->status &= ~STATUS_READ_READY_MASK;
+        OSAtomicAnd32Barrier(~STATUS_READ_READY_MASK, &postbox->status);
         ret = true;
     }
     return ret;
@@ -99,7 +102,15 @@ bool fb_send(FBPostBox* postbox, uintptr_t message, uint32_t channel)
         postbox->write = message | channel;
         ret = true;
 #if defined PIOS_SIMULATOR
-        postbox->status |= STATUS_WRITE_READY_MASK;
+        fprintf(stderr,
+                "Before change status: mask 0x%08x, value 0x%08x\n",
+                (unsigned int)STATUS_WRITE_READY_MASK,
+                (unsigned int) postbox->status);
+        OSAtomicOr32Barrier(STATUS_WRITE_READY_MASK, &postbox->status);
+        fprintf(stderr,
+                "After change status: mask 0x%08x, value 0x%08x\n",
+                (unsigned int)STATUS_WRITE_READY_MASK,
+                (unsigned int) postbox->status);
 #endif
     }
     return ret;

@@ -60,6 +60,7 @@ void pmm_init()
     ^{
         defaultMap.systemTimerAddress = st_alloc();
         defaultMap.gpioAddress        = gpio_alloc();
+        defaultMap.frameBufferPostBox = fb_postBoxAlloc();
         OSMemoryBarrier();
     });
     defaultMap.stopFlag = false;
