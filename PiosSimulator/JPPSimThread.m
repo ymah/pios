@@ -11,7 +11,7 @@
 #import "PhysicalMemoryMap.h"
 #import "SystemTimer.h"
 #import <time.h>
-
+#import <assert.h>
 
 @interface JPPSimThread ()
 
@@ -82,15 +82,29 @@
 
 @end
 
+@interface JPPHardwareThread ()
+
+-(void) checkFrameBufferPostbox;
+
+@end
+
 @implementation JPPHardwareThread
+{
+    uint8_t* frameBuffer;
+    PhysicalMemoryMap* memoryMap;
+    FBPostBox* frameBufferPostbox;
+    FrameBufferDescriptor* fbDescriptor;
+}
 
 -(void) simThreadMain
 {
     uint64_t iterations = 0;
-    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    memoryMap = pmm_getPhysicalMemoryMap();
+    frameBufferPostbox = pmm_getFBPostBox(memoryMap);
     clock_t lastClock = clock();
     while (![self isCancelled])
     {
+        [self checkFrameBufferPostbox];
         if (clock() > lastClock)
         {
             lastClock = clock();
@@ -102,15 +116,41 @@
             
         }
         iterations++;
-#if 0
-        [NSThread sleepForTimeInterval: 1.0/4000000];
-        if (iterations % 1000000 == 0)
+    }
+}
+
+-(void) checkFrameBufferPostbox
+{
+    uintptr_t message = -1;
+    if (fb_postBoxWasWritten(frameBufferPostbox, &message))
+    {
+        int channel = message & FB_CHANNEL_MASK;
+        if (channel == PB_FRAME_BUFFER_CHANNEL)
         {
-            NSLog(@"Thread %@ still running, iterations %lld",
-                  self,
-                  (long long) iterations);
+            //           fbDescriptor = (FrameBufferDescriptor*)(message & FB_VALUE_MASK);
+            fbDescriptor = (FrameBufferDescriptor*)message;
+            if (frameBuffer != NULL)
+            {
+                free(frameBuffer);
+                frameBuffer = NULL;
+            }
+            // TODO:  this may not be correct for 24 bit RGB
+            size_t bytesWide
+            	= ((size_t)(fbDescriptor->vWidth) * fbDescriptor->bitDepth + 7) / 8;
+            size_t bytesNeeded = bytesWide * fbDescriptor->vHeight;
+            frameBuffer = calloc(bytesNeeded, sizeof(uint8_t));
+            assert(((uintptr_t)frameBuffer & FB_CHANNEL_MASK) == 0);
+            fbDescriptor->pitch = (uint32_t)bytesWide;
+            fbDescriptor->frameBufferSize = (uint32_t)bytesNeeded;
+            fbDescriptor->frameBufferPtr = frameBuffer;
+            while (!fb_tryMakeRead(frameBufferPostbox,
+                                   PB_FRAME_BUFFER_CHANNEL,
+                                   message)
+                   && ![self isCancelled])
+            {
+                // spin
+            }
         }
-#endif
     }
 }
 
