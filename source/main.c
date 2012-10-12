@@ -7,9 +7,11 @@
 //
 
 #if defined PIOS_SIMULATOR
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #endif
+
 #include "bptypes.h"
 #include "gpio.h"
 #include "SystemTimer.h"
@@ -51,6 +53,8 @@ static void runLEDSequence(int iterations,
 static void runLEDFlash(int repeat, int numberOfFlashes);
 
 static FBError initFrameBuffer(void);
+static void runRainbow(void);
+
 
 #if defined OK_EXERCISE
 
@@ -84,6 +88,7 @@ int MAIN(int argc, char** argv)
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
+    runRainbow();
     if (fbError == FB_OK)
     {
         setGPIOPin(gpio, 16, false); // Turn on OK again        
@@ -112,11 +117,13 @@ static FrameBufferDescriptor fbDescriptor =
     .frameBufferSize =    0		// To be filled in by GPU
 };
 
+static FrameBufferDescriptor* alignedDescriptor = NULL;
+
 FBError initFrameBuffer()
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     FBPostBox* postbox = pmm_getFBPostBox(memoryMap);
-    FrameBufferDescriptor* alignedDescriptor = pmm_allocatePage(memoryMap);
+    alignedDescriptor = pmm_allocatePage(memoryMap);
     klib_memcpy(alignedDescriptor, &fbDescriptor, sizeof fbDescriptor);
     FBError ret = fb_getFrameBuffer(postbox, alignedDescriptor);
     return ret;
@@ -131,6 +138,24 @@ static void runLEDFlash(int repeat, int numberOfFlashes)
     {
         runLEDSequence(numberOfFlashes, 250000, singleFlash, sizeof singleFlash / sizeof(bool));
         runLEDSequence(1, 250000, gap, sizeof gap / sizeof(bool));
+    }
+}
+
+void runRainbow()
+{
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    uint16_t colour = 0;
+	while (!pmm_getStopFlag(memoryMap))
+    {
+        uint16_t* pixelPtr = alignedDescriptor->frameBufferPtr;
+        for (size_t y = 0; y < alignedDescriptor->height; ++y)
+        {
+            for (size_t x = 0 ; x < alignedDescriptor->width ; ++x)
+            {
+                *pixelPtr++ = colour;
+            }
+            colour++;
+        }
     }
 }
 
