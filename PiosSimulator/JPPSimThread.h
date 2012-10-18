@@ -77,6 +77,22 @@
  *  of the Rspberry Pi, including GPIO, Timer, GPU postbox and other.
  */
 @interface JPPHardwareThread : JPPSimThread
+
+/*!
+ *  @brief Determine the latest set of scan lines to have been updated.
+ *  @param linesToUpdateRef An NSRange that will be filled in with the first
+ *  scan line updated and the number of lines updated.
+ *  @return true if the lines updated have changed since the last time this
+ *  method was invoked.
+ */
+-(bool) scanLinesUpdated: (NSRange*) linesToUpdateRef;
+
+-(bool) getScanLine: (const uint8_t**) scanLinePtr
+		 pixelBytes: (uint8_t*) pixelBytes
+       colourDepths: (uint8_t*) colourDepths
+          lineBytes: (size_t*) lineBytes
+      scanLineIndex: (size_t) scanLineIndex;
+
 @end
 /*!
  *  @brief Thread that emulates Raspberry Pi CPU thread of execution.

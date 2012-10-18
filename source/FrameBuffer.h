@@ -130,7 +130,7 @@ enum FBBits
 /*!
  *  @brief Masks out the channel bits of a message leaving just the value
  */
-#define FB_VALUE_MASK		((~(uintptr_t) 0) << FB_CHANNEL_BITS)
+#define FB_VALUE_MASK		(0xFFFFFFFFFFFFFFFFl << FB_CHANNEL_BITS)
 /*!
  *  @brief MAsks out the value bits of a message leaving just the channel
  */
