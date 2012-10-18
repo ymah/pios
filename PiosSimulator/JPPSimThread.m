@@ -12,6 +12,58 @@
 #import "SystemTimer.h"
 #import <time.h>
 #import <assert.h>
+#import "JPPPiSimulator.h"
+
+/*
+ *  We assume a screen refresh of 30Hz at 1000 lines.  We won't send an update
+ *  for every single line but we group them together to try to avoid flooding
+ *  the main thread.
+ */
+enum ScreenScanConsts
+{
+    SCREEN_LINES_PER_UPDATE = 10,
+    SCREEN_REFRESH_HZ 		= 30,
+    SCREEN_NOMINAL_LINES	= 1000,
+    SCREEN_UPDATE_CLOCKS 	= CLOCKS_PER_SEC
+                              / (SCREEN_REFRESH_HZ
+                                 * (SCREEN_NOMINAL_LINES / SCREEN_LINES_PER_UPDATE)),
+};
+
+enum ColourBits
+{
+    RED_16_BITS 		= 5,
+    GREEN_16_BITS 		= 6,
+    BLUE_16_BITS 		= 5,
+    BLUE_16_BIT_POS		= 0,
+    GREEN_16_BIT_POS	= BLUE_16_BIT_POS + BLUE_16_BITS,
+    RED_16_BIT_POS		= GREEN_16_BIT_POS + GREEN_16_BITS,
+    RED_16_MASK			= (0xFFFF << RED_16_BIT_POS) & 0xFFFF,
+    GREEN_16_MASK		= ((0xFFFF << GREEN_16_BIT_POS) & ~RED_16_MASK) & 0xFFFF,
+    BLUE_16_MASK		= (((0xFFFF << BLUE_16_BIT_POS) & ~RED_16_MASK)
+    					  	& ~GREEN_16_MASK)
+                          & 0xFFFF,
+    
+    RED_32_BITS			= 8,
+    GREEN_32_BITS		= 8,
+    BLUE_32_BITS		= 8,
+    ALPHA_32_BITS		= 8,
+    ALPHA_32_BIT_POS	= 0,
+    BLUE_32_BIT_POS		= ALPHA_32_BIT_POS + ALPHA_32_BITS,
+    GREEN_32_BIT_POS	= BLUE_32_BIT_POS + BLUE_32_BITS,
+    RED_32_BIT_POS		= GREEN_32_BIT_POS + GREEN_32_BITS,
+    RED_32_MASK			= (0xFFFFFFFF << RED_32_BIT_POS) & 0xFFFFFFFF,
+    GREEN_32_MASK		= ((0xFFFFFFFF << GREEN_32_BIT_POS) & ~RED_32_MASK) & 0xFFFFFFFF,
+    BLUE_32_MASK		= (((0xFFFFFFFF << BLUE_32_BIT_POS) & ~RED_32_MASK)
+    						& ~GREEN_16_MASK)
+                          & 0xFFFFFFFF,
+    ALPHA_32_MASK		= ((((0xFFFFFFFF << ALPHA_32_BIT_POS) & ~RED_32_MASK)
+                           		& ~GREEN_16_MASK)
+                           	& ~BLUE_32_MASK)
+    					& 0xFFFFFFFF,
+
+};
+
+
 
 @interface JPPSimThread ()
 
@@ -85,6 +137,7 @@
 @interface JPPHardwareThread ()
 
 -(void) checkFrameBufferPostbox;
+-(void) refreshTheScreen: (clock_t) microSeconds;
 
 @end
 
@@ -94,6 +147,18 @@
     PhysicalMemoryMap* memoryMap;
     FBPostBox* frameBufferPostbox;
     FrameBufferDescriptor* fbDescriptor;
+    CGContextRef screenBitmap;
+    
+    NSRange scanLinesToUpdate;
+    bool scanLinesNeedReading;
+}
+
+-(void) dealloc
+{
+    if (screenBitmap != NULL)
+    {
+        CGContextRelease(screenBitmap);
+    }
 }
 
 -(void) simThreadMain
@@ -105,15 +170,19 @@
     while (![self isCancelled])
     {
         [self checkFrameBufferPostbox];
-        if (clock() > lastClock)
+        clock_t now = clock();
+        if (now > lastClock)
         {
-            lastClock = clock();
             st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
             if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
             {
                 [self notifyUpdate];
             }
-            
+            if ((now - lastClock) > SCREEN_UPDATE_CLOCKS)
+            {
+                [self refreshTheScreen: now - lastClock];
+            }
+            lastClock = now;
         }
         iterations++;
     }
@@ -127,18 +196,30 @@
         int channel = message & FB_CHANNEL_MASK;
         if (channel == PB_FRAME_BUFFER_CHANNEL)
         {
-            fbDescriptor = (FrameBufferDescriptor*)(message & FB_VALUE_MASK);
+            uintptr_t pointerAsInt = message - channel;
+            fbDescriptor = (FrameBufferDescriptor*)pointerAsInt;
             if (frameBuffer != NULL)
             {
                 free(frameBuffer);
                 frameBuffer = NULL;
             }
+            if (screenBitmap != NULL)
+            {
+                CGContextRelease(screenBitmap);
+            }
+            /*
+             *  Create the bitmap that the software thread can write to
+             */
             // TODO:  this may not be correct for 24 bit RGB
             size_t bytesWide
-            	= ((size_t)(fbDescriptor->vWidth) * fbDescriptor->bitDepth + 7) / 8;
-            size_t bytesNeeded = bytesWide * fbDescriptor->vHeight;
+            	= ((size_t)(fbDescriptor->width) * fbDescriptor->bitDepth + 7) / 8;
+            size_t bytesNeeded = bytesWide * fbDescriptor->height;
             frameBuffer = calloc(bytesNeeded, sizeof(uint8_t));
             assert(((uintptr_t)frameBuffer & FB_CHANNEL_MASK) == 0);
+            /*
+             *  Fill in the frame buffer descriptor and notify the software
+             *  thread.
+             */
             fbDescriptor->pitch = (uint32_t)bytesWide;
             fbDescriptor->frameBufferSize = (uint32_t)bytesNeeded;
             fbDescriptor->frameBufferPtr = frameBuffer;
@@ -149,9 +230,96 @@
             {
                 // spin
             }
+            NSLog(@"Screen started, updates every %d microseconds", (int) SCREEN_UPDATE_CLOCKS);
+			[self notifyUpdate];
         }
     }
 }
+
+-(void) refreshTheScreen: (clock_t) microseconds
+{
+    if (fbDescriptor != NULL && fbDescriptor->frameBufferPtr != NULL)
+    {
+        @synchronized(self)
+        {
+            scanLinesToUpdate.location += scanLinesToUpdate.length;
+            if (scanLinesToUpdate.location >= fbDescriptor->height)
+            {
+                scanLinesToUpdate.location = 0;
+            }
+            scanLinesToUpdate.length = MIN(SCREEN_LINES_PER_UPDATE,
+                                           fbDescriptor->height - scanLinesToUpdate.location);
+            scanLinesNeedReading = true;
+        }
+        [self notifyUpdate];
+    }
+}
+
+-(bool) scanLinesUpdated: (NSRange*) linesToUpdateRef
+{
+    bool ret = false;
+    @synchronized(self)
+    {
+        *linesToUpdateRef = scanLinesToUpdate;
+        ret = scanLinesNeedReading;
+        scanLinesNeedReading = false;
+    }
+    return ret;
+}
+
+
+-(bool) getScanLine: (const uint8_t**) scanLinePtr
+		 pixelBytes: (uint8_t*) pixelBytes
+       colourDepths: (uint8_t*) colourDepths
+          lineBytes: (size_t*) lineBytes
+      scanLineIndex: (size_t) scanLineIndex
+{
+    bool ret = false;
+    if (fbDescriptor != NULL
+        && fbDescriptor->frameBufferPtr != NULL
+        && scanLineIndex < fbDescriptor->height)
+    {
+        size_t myPixelBytes = fbDescriptor->bitDepth / 8;
+        size_t myLineBytes = fbDescriptor->width * myPixelBytes;
+        ret = true;
+        if (pixelBytes != NULL)
+        {
+            *pixelBytes = myPixelBytes; // Assume byte is 8 bits
+        }
+        if (colourDepths != NULL)
+        {
+            switch (fbDescriptor->bitDepth)
+            {
+                case 16:
+                    colourDepths[CDI_ALPHA] = 0;
+                    colourDepths[CDI_BLUE]  = BLUE_16_BITS;
+                    colourDepths[CDI_GREEN] = GREEN_16_BITS;
+                    colourDepths[CDI_RED] 	= RED_16_BITS;
+                    break;
+                case 32:
+                    colourDepths[CDI_ALPHA] = ALPHA_32_BITS;
+                    colourDepths[CDI_BLUE]  = BLUE_32_BITS;
+                    colourDepths[CDI_GREEN] = GREEN_32_BITS;
+                    colourDepths[CDI_RED] 	= RED_32_BITS;
+                    break;
+                default:
+                    ret = false;
+                    break;
+            }
+        }
+        if (lineBytes != NULL)
+        {
+            *lineBytes = myLineBytes;
+        }
+        if (scanLinePtr != NULL)
+        {
+            *scanLinePtr = (uint8_t*) fbDescriptor->frameBufferPtr
+            			 + (myLineBytes * scanLineIndex);
+        }
+    }
+    return ret;
+}
+
 
 @end
 

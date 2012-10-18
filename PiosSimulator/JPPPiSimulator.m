@@ -45,6 +45,11 @@
                                pinNumber);
 }
 
+-(bool) scanLinesUpdated: (NSRange*) linesToUpdateRef
+{
+    return [[self hardwareThread] scanLinesUpdated: linesToUpdateRef];
+}
+
 -(void) notifyUIUpdate
 {
     dispatch_async(dispatch_get_main_queue(),
@@ -96,5 +101,19 @@
 {
     [self notifyUIUpdate];
 }
+
+-(bool) getScanLine: (const uint8_t**) scanLinePtr
+		 pixelBytes: (uint8_t*) pixelBytes
+       colourDepths: (uint8_t*) colourDepths
+          lineBytes: (size_t*) lineBytes
+      scanLineIndex: (size_t) scanLineIndex
+{
+    return [[self hardwareThread] getScanLine: scanLinePtr
+                                   pixelBytes: pixelBytes
+                                 colourDepths: colourDepths
+                                    lineBytes: lineBytes
+                                scanLineIndex: scanLineIndex];
+}
+
 
 @end
