@@ -242,12 +242,20 @@ enum ColourBits
     {
         @synchronized(self)
         {
-            scanLinesToUpdate.location += scanLinesToUpdate.length;
+            size_t numberOfScanLines = SCREEN_LINES_PER_UPDATE;
+            if (scanLinesNeedReading)
+            {
+                numberOfScanLines += scanLinesToUpdate.length;
+            }
+            else
+            {
+                scanLinesToUpdate.location += scanLinesToUpdate.length;
+            }
             if (scanLinesToUpdate.location >= fbDescriptor->height)
             {
                 scanLinesToUpdate.location = 0;
             }
-            scanLinesToUpdate.length = MIN(SCREEN_LINES_PER_UPDATE,
+            scanLinesToUpdate.length = MIN(numberOfScanLines,
                                            fbDescriptor->height - scanLinesToUpdate.location);
             scanLinesNeedReading = true;
         }

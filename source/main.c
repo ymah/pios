@@ -88,10 +88,10 @@ int MAIN(int argc, char** argv)
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
-    runRainbow();
     if (fbError == FB_OK)
     {
         setGPIOPin(gpio, 16, false); // Turn on OK again        
+        runRainbow();
     }
     else
     {
