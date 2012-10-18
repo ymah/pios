@@ -27,6 +27,7 @@ typedef unsigned char uint8_t;
  *  @brief uint32_t as per C99
  */
 typedef unsigned int uint32_t;
+typedef unsigned short uint16_t;
 
 /*!
  *  @brief uint64_t as per C99
