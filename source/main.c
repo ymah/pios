@@ -17,6 +17,7 @@
 #include "SystemTimer.h"
 #include "PhysicalMemoryMap.h"
 #include "klib.h"
+#include "gdi.h"
 
 #if defined PIOS_SIMULATOR
 #define MAIN piosMain
@@ -53,7 +54,8 @@ static void runLEDSequence(int iterations,
 static void runLEDFlash(int repeat, int numberOfFlashes);
 
 static FBError initFrameBuffer(void);
-static void runRainbow(void);
+void runRainbow(void);
+void runDrawTest(void);
 
 
 #if defined OK_EXERCISE
@@ -90,8 +92,12 @@ int MAIN(int argc, char** argv)
     FBError fbError = initFrameBuffer();
     if (fbError == FB_OK)
     {
-        setGPIOPin(gpio, 16, false); // Turn on OK again        
+        setGPIOPin(gpio, 16, false); // Turn on OK again
+#if defined SCREEN_01
         runRainbow();
+#else
+        runDrawTest();
+#endif
     }
     else
     {
@@ -157,6 +163,14 @@ void runRainbow()
             colour++;
         }
     }
+}
+
+void runDrawTest(void)
+{
+    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+    gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
+    gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
+    
 }
 
 void runLEDSequence(int iterations,

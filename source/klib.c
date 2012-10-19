@@ -17,3 +17,13 @@ void* klib_memcpy(void *restrict s1, const void *restrict s2, size_t n)
     return s1;
 }
 
+void* klib_memset(void* restrict ptr, uint8_t value, size_t length)
+{
+    for (size_t i = 0 ; i < length ; ++i)
+    {
+        ((uint8_t*) ptr)[i] = value;
+    }
+    return ptr;
+}
+
+
