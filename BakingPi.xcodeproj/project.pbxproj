@@ -27,6 +27,7 @@
 		FC5CBA31162D515B00005AF3 /* JPPiScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC5CBA30162D515B00005AF3 /* JPPiScreenView.m */; };
 		FC6EE94F161B579200D14766 /* JPPSimThread.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6EE94E161B579200D14766 /* JPPSimThread.m */; };
 		FC719F57162406A200223470 /* FrameBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCC39E961614CBF2001D2576 /* FrameBuffer.c */; };
+		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,8 @@
 		FC6EE94D161B579200D14766 /* JPPSimThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPSimThread.h; sourceTree = "<group>"; };
 		FC6EE94E161B579200D14766 /* JPPSimThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPSimThread.m; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
+		FCB817F51631337B0043450F /* gdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gdi.c; sourceTree = "<group>"; };
+		FCB817F71631338C0043450F /* gdi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdi.h; sourceTree = "<group>"; };
 		FCC39E951614CBD1001D2576 /* FrameBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameBuffer.h; sourceTree = "<group>"; };
 		FCC39E961614CBF2001D2576 /* FrameBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FrameBuffer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,6 +246,8 @@
 			children = (
 				FCC39E951614CBD1001D2576 /* FrameBuffer.h */,
 				FCC39E961614CBF2001D2576 /* FrameBuffer.c */,
+				FCB817F51631337B0043450F /* gdi.c */,
+				FCB817F71631338C0043450F /* gdi.h */,
 			);
 			name = graphics;
 			path = source;
@@ -386,6 +391,7 @@
 				FC719F57162406A200223470 /* FrameBuffer.c in Sources */,
 				FC3C588E1625493C00FE6594 /* klib.c in Sources */,
 				FC5CBA31162D515B00005AF3 /* JPPiScreenView.m in Sources */,
+				FCB817F8163144370043450F /* gdi.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

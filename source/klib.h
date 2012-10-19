@@ -21,5 +21,7 @@
  */
 void* klib_memcpy(void *restrict s1, const void *restrict s2, size_t n);
 
+void* klib_memset(void* restrict ptr, uint8_t value, size_t length);
+
 
 #endif
