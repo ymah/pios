@@ -148,6 +148,8 @@ fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     GPIO* gpio = pmm_getGPIOAddress(memoryMap);
+    
+    uintptr_t messageToSend = (uintptr_t)fbDescriptor;
 
     FBError ret = FB_OK;
     if (fbDescriptor->width >= MAX_PIXEL_WIDTH
@@ -156,13 +158,22 @@ fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
     {
         ret = FB_PARAMETER;
     }
-    else if ((((uint32_t)fbDescriptor) & FB_DESCRIPTOR_ALIGNMENT_MASK) != 0)
+    else if ((messageToSend & FB_DESCRIPTOR_ALIGNMENT_MASK) != 0)
     {
         ret = FB_ALIGNMENT;
     }
     else
     {
-        if (!fb_send(postbox, (uintptr_t)fbDescriptor, PB_FRAME_BUFFER_CHANNEL))
+#if !defined PIOS_SIMULATOR
+        /*
+         *  This forces the Videocore to use the cache coherent alias for the
+         *  SDRAM.  Hopefully, that means we'll recognise straight away when
+         *  the pointer arrives.
+         */
+        messageToSend += 0x40000000;
+#endif
+        
+        if (!fb_send(postbox, messageToSend, PB_FRAME_BUFFER_CHANNEL))
         {
             ret = FB_PARAMETER;
         }
