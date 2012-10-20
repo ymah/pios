@@ -32,6 +32,7 @@ enum Masks
 struct FBPostBox
 {
 	volatile uintptr_t read;
+    uint32_t padding[3];			// This caught me out from Baking Pi
     volatile uint32_t  poll;
     volatile uint32_t  sender;
     volatile uint32_t  status;
@@ -146,6 +147,7 @@ FBError
 fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    GPIO* gpio = pmm_getGPIOAddress(memoryMap);
 
     FBError ret = FB_OK;
     if (fbDescriptor->width >= MAX_PIXEL_WIDTH
@@ -167,6 +169,7 @@ fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
         else
         {
             uintptr_t readResult = fb_read(postbox, PB_FRAME_BUFFER_CHANNEL);
+            setGPIOPin(gpio, 16, false);
             if (readResult == 0)
             {
                 while (fbDescriptor->frameBufferPtr == NULL

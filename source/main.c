@@ -25,6 +25,8 @@
 #define MAIN main
 #endif
 
+#define SCREEN_01
+
 extern const char* kernelArgs[];
 const char* kernelArgs[] = { "Pios", NULL };
 
@@ -85,14 +87,15 @@ int MAIN(int argc, char** argv)
     GPIO* gpio = pmm_getGPIOAddress(memoryMap);
     gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
     setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
-    st_microsecondSpin(timer, 500000); // and wait 1 second
+    st_microsecondSpin(timer, 1000000); // and wait 1 second
 
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
+    setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
+
     if (fbError == FB_OK)
     {
-        setGPIOPin(gpio, 16, false); // Turn on OK again
 #if defined SCREEN_01
         runRainbow();
 #else
@@ -170,7 +173,14 @@ void runDrawTest(void)
     GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
     gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
     gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
-    
+    gdi_fillFrame(context, GDI_BACKGROUND);
+    GDIRect frame = gdi_frame(context);
+    size_t maxPixel = MIN(frame.size.width, frame.size.height);
+    for (size_t i = 0 ; i < maxPixel ; ++i)
+    {
+        GDIPoint point = { .x = maxPixel, .y = maxPixel };
+        gdi_setPixel(context, point, GDI_PEN);
+    }
 }
 
 void runLEDSequence(int iterations,

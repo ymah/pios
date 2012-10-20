@@ -25,7 +25,7 @@ enum
     MAX_CONTEXTS = 20,
 };
 
-GDIContext theContexts[MAX_CONTEXTS];
+GDIContext theContexts[MAX_CONTEXTS] = { { 0 } };
 
 GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
 {
@@ -60,6 +60,52 @@ bool gdi_setColour(GDIContext* context,
         }
     }
     return ret;
+}
+
+GDIRect gdi_frame(GDIContext* context)
+{
+    GDIRect ret;
+    ret.origin.x = 0;
+    ret.origin.y = 0;
+    ret.size.width = context->fbDescriptor->width;
+    ret.size.height = context->fbDescriptor->height;
+    return ret;
+}
+
+
+void gdi_fillFrame(GDIContext* context, GDIColourType colour)
+{
+    if (colour < GDI_NUM_COLOUR_TYPES)
+    {
+        size_t frameBufferSize = context->fbDescriptor->frameBufferSize;
+        uint8_t* bufferPtr = context->fbDescriptor->frameBufferPtr;
+        uint32_t fillColour = context->deviceColours[colour];
+        size_t bytesPerPixel = context->fbDescriptor->bitDepth / 8;
+        uint8_t* colourBytePtr = (uint8_t*)&fillColour;
+        size_t colourIndex = 0;
+        for (size_t bufferIndex = 0 ; bufferIndex < frameBufferSize ; ++bufferIndex)
+        {
+            bufferPtr[bufferIndex] = colourBytePtr[colourIndex++];
+            if (colourIndex >= bytesPerPixel)
+            {
+                colourIndex = 0;
+            }
+        }
+    }
+}
+
+
+void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour)
+{
+    if (colour < GDI_NUM_COLOUR_TYPES
+        && coords.x < context->fbDescriptor->width
+        && coords.y < context->fbDescriptor->height)
+    {
+        size_t bytesPerPixel = context->fbDescriptor->bitDepth / 8;
+        uint8_t* frameBufferPtr = context->fbDescriptor->frameBufferPtr;
+        size_t index = coords.y * context->fbDescriptor->pitch + coords.x * bytesPerPixel;
+        
+    }
 }
 
 GDIColour gdi_makeColour(uint8_t red,
