@@ -44,4 +44,8 @@ typedef unsigned long uintptr_t;
 
 #endif
 
+#if !defined MIN
+#define MIN(x,y) ((x)<(y)?(x):(y))
+#endif
+
 #endif

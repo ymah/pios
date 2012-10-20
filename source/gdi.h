@@ -63,6 +63,39 @@ typedef union GDIColour GDIColour;
 extern const GDIColour GDI_BLACK_COLOUR;
 extern const GDIColour GDI_WHITE_COLOUR;
 
+/*!
+ *  @brief Coordinates of a pixel in a GDI context
+ */
+struct GDIPoint
+{
+    size_t x;
+    size_t y;
+};
+
+typedef struct GDIPoint GDIPoint;
+
+/*!
+ *  @brief A rectangular size in GDI pixels
+ */
+struct GDISize
+{
+    size_t width;
+    size_t height;
+};
+
+typedef struct GDISize GDISize;
+
+/*!
+ *  @brief Defines a rectangle in the GDI.  
+ *
+ *  The orifin deternines the coordinate of the rectangle closest to the origin
+ */
+struct GDIRect
+{
+    GDIPoint origin;
+    GDISize size;
+};
+typedef struct GDIRect GDIRect;
 
 /*!
  *  @brief Initialise the GDI with the given frame buffer.
@@ -109,5 +142,27 @@ GDIColour gdi_makeColour(uint8_t red,
                          uint8_t green,
                          uint8_t blue,
                          uint8_t alpha);
+
+/*!
+ *  @brief Gives the frame rectangle for the context
+ *  @param context The graphics context to get the frame of
+ *  @return A rectangle encompassing the whole frame buffer.
+ */
+GDIRect gdi_frame(GDIContext* context);
+
+/*!
+ *  @brief fills the entire context with the same colour.
+ *  @param context The GDI context to fill.
+ *  @param colour The colour must be the background, fill or pen colour.
+ */
+void gdi_fillFrame(GDIContext* context, GDIColourType colour);
+
+/*!
+ *  @brief Set the given pixel to the given colour
+ *  @param context The graphics context to set the pixel in.
+ *  @param coords Device coordinates of the pixel to set
+ *  @param colour The colour must be the background, fill or pen colour.
+ */
+void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour);
 
 #endif
