@@ -184,6 +184,46 @@ void runDrawTest(void)
         GDIPoint point = { .x = i, .y = i };
         gdi_setPixel(context, point, GDI_PEN);
     }
+    /*
+     *  Now let's draw a border around the screen
+     */
+    GDIRect border = frame;
+    border.size.height--;
+    border.size.width--;
+    GDIPoint borderPoint = { .x = border.origin.x, .y = border.origin.y };
+    gdi_setColour(context, GDI_PEN, gdi_makeColour(255, 0, 0, 255));
+	/*
+     *  Top of the border rectangle
+     */
+	for (size_t i = 0 ; i < border.size.width ; ++i)
+    {
+        gdi_setPixel(context, borderPoint, GDI_PEN);
+        borderPoint.x++;
+    }
+    /*
+     *  Right edge of the border rectangle
+     */
+    for (size_t i = 0 ; i < border.size.height ; ++i)
+    {
+        gdi_setPixel(context, borderPoint, GDI_PEN);
+		borderPoint.y++;
+    }
+    /*
+     *  Bottom edge
+     */
+    for (size_t i = 0 ; i < border.size.width ; ++i)
+    {
+        gdi_setPixel(context, borderPoint, GDI_PEN);
+        borderPoint.x--;
+    }
+    /*
+     *  Left edge
+     */
+    for (size_t i = 0 ; i < border.size.height ; ++i)
+    {
+        gdi_setPixel(context, borderPoint, GDI_PEN);
+		borderPoint.y--;
+    }
 }
 
 void runLEDSequence(int iterations,
