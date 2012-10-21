@@ -76,8 +76,8 @@ extern const GDIColour GDI_WHITE_COLOUR;
  */
 struct GDIPoint
 {
-    size_t x;
-    size_t y;
+    int x;
+    int y;
 };
 
 typedef struct GDIPoint GDIPoint;
@@ -172,5 +172,13 @@ void gdi_fillFrame(GDIContext* context, GDIColourType colour);
  *  @param colour The colour must be the background, fill or pen colour.
  */
 void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour);
+
+/*!
+ *  @brief draws a line between the two given points in the pen colour
+ *  @param context Graphics context.
+ *  @param p0 Start point
+ *  @param p1 End point
+ */
+void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1);
 
 #endif
