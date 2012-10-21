@@ -179,7 +179,7 @@ void runDrawTest(void)
     gdi_fillFrame(context, GDI_BACKGROUND);
     GDIRect frame = gdi_frame(context);
     size_t maxPixel = MIN(frame.size.width, frame.size.height);
-    for (size_t i = 0 ; i < maxPixel ; ++i)
+    for (int i = 0 ; i < maxPixel ; ++i)
     {
         GDIPoint point = { .x = i, .y = i };
         gdi_setPixel(context, point, GDI_PEN);
@@ -224,6 +224,12 @@ void runDrawTest(void)
         gdi_setPixel(context, borderPoint, GDI_PEN);
 		borderPoint.y--;
     }
+    /*
+     *  Test GI line
+     */
+    GDIPoint p0 = { .x = 10, .y = 12 };
+    GDIPoint p1 = { .x = 200, .y = 40 };
+    gdi_line(context, p0, p1);
 }
 
 void runLEDSequence(int iterations,

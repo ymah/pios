@@ -177,6 +177,63 @@ void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour)
     }
 }
 
+void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1)
+{
+    int dx = p1.x - p0.x;
+    int dy = p1.y - p0.y;
+    
+    if (dx < 0)
+    {
+        dx = -dx;
+    }
+    if (dy < 0)
+    {
+        dy = -dy;
+    }
+    
+    int sx = p0.x < p1.x ? 1 : -1;
+    int sy = p0.y < p1.y ? 1 : -1;
+    int error = dx - dy;
+    while(p0.x != p1.x && p0.y != p1.y)
+    {
+        gdi_setPixel(context, p0, GDI_PEN);
+        int e2 = 2 * error;
+        if (e2 > -dy)
+        {
+            error -= dy;
+            p0.x += sx;
+        }
+        if (e2 < dx)
+        {
+            error += dx;
+            p0.y += sy;
+        }
+    }
+    gdi_setPixel(context, p0, GDI_PEN);
+
+/*
+ function line(x0, y0, x1, y1)
+ dx := abs(x1-x0)
+ dy := abs(y1-y0)
+ if x0 < x1 then sx := 1 else sx := -1
+ if y0 < y1 then sy := 1 else sy := -1
+ err := dx-dy
+ 
+ loop
+ 	setPixel(x0,y0)
+ 	if x0 = x1 and y0 = y1 exit loop
+ 	e2 := 2*err
+ 	if e2 > -dy then
+ 		err := err - dy
+ 		x0 := x0 + sx
+ 	end if
+ 	if e2 <  dx then
+ 		err := err + dx
+ 		y0 := y0 + sy
+ 	end if
+ end loop    */
+}
+
 GDIColour gdi_makeColour(uint8_t red,
                          uint8_t green,
                          uint8_t blue,
@@ -187,7 +244,7 @@ GDIColour gdi_makeColour(uint8_t red,
     ret.components.blue = blue;
     ret.components.green = green;
     ret.components.red = red;
-    return ret;
+  	return ret;
 }
 
 void pixelCopy16(uint8_t* start, uint32_t newValue, size_t pixelCount)
