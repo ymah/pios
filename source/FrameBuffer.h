@@ -24,6 +24,38 @@ enum PostBoxChannel
     PB_FRAME_BUFFER_CHANNEL = 1,
 };
 
+/*!
+ *  @prief pixel formats for diffewrent colours.
+ *
+ *  In all cases, pixels are stored RGBA with alpha in the least significant
+ *  position.
+ */
+enum FBPixelFormat
+{
+    FBPF_ALPHA_16_BITS 		= 0,
+    FBPF_RED_16_BITS 		= 5,
+    FBPF_GREEN_16_BITS 		= 6,
+    FBPF_BLUE_16_BITS 		= 5,
+    
+    FBPF_ALPHA_16_BIT_POS 	= 0,
+    FBPF_BLUE_16_BIT_POS	= FBPF_ALPHA_16_BITS,
+    FBPF_GREEN_16_BIT_POS	= FBPF_BLUE_16_BIT_POS + FBPF_BLUE_16_BITS,
+    FBPF_RED_16_BIT_POS		= FBPF_GREEN_16_BIT_POS + FBPF_GREEN_16_BITS,
+
+    
+    FBPF_RED_32_BITS		= 8,
+    FBPF_GREEN_32_BITS		= 8,
+    FBPF_BLUE_32_BITS		= 8,
+    FBPF_ALPHA_32_BITS		= 8,
+    
+    FBPF_ALPHA_32_BIT_POS	= 0,
+    FBPF_BLUE_32_BIT_POS	= FBPF_ALPHA_32_BIT_POS + FBPF_ALPHA_32_BITS,
+    FBPF_GREEN_32_BIT_POS	= FBPF_BLUE_32_BIT_POS + FBPF_BLUE_32_BITS,
+    FBPF_RED_32_BIT_POS		= FBPF_GREEN_32_BIT_POS + FBPF_GREEN_32_BITS,
+
+};
+
+
 typedef enum PostBoxChannel PostBoxChannel;
 
 typedef enum FBChannel FBChannel;

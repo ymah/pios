@@ -41,6 +41,14 @@ enum GDIColourType
 };
 typedef enum GDIColourType GDIColourType;
 
+enum
+{
+    /*!
+     *  @brief Number of bits in a pixel for each colour
+     */
+    GDI_BITS_PER_COLOUR = 8,
+};
+
 /*!
  *  @brief represents a GDI colour
  *

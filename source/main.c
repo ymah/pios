@@ -19,14 +19,17 @@
 #include "klib.h"
 #include "gdi.h"
 
+/*
+ *  The simulator is a Mac OS X application and, as such, already has a main
+ *  function.  So when we compile for the simulator we call it something else.
+ */
 #if defined PIOS_SIMULATOR
 #define MAIN piosMain
 #else
 #define MAIN main
 #endif
 
-#define SCREEN_01
-
+// TODO: Relace these args with the args passed in by the boot loader
 extern const char* kernelArgs[];
 const char* kernelArgs[] = { "Pios", NULL };
 
@@ -178,7 +181,7 @@ void runDrawTest(void)
     size_t maxPixel = MIN(frame.size.width, frame.size.height);
     for (size_t i = 0 ; i < maxPixel ; ++i)
     {
-        GDIPoint point = { .x = maxPixel, .y = maxPixel };
+        GDIPoint point = { .x = i, .y = i };
         gdi_setPixel(context, point, GDI_PEN);
     }
 }

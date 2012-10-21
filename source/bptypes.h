@@ -30,7 +30,7 @@ typedef unsigned int uint32_t;
 typedef unsigned short uint16_t;
 
 /*!
- *  @brief uint64_t as per C99
+ *  @brief uint64_t as per C9900
  */
 typedef unsigned long long uint64_t;
 

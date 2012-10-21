@@ -31,32 +31,18 @@ enum ScreenScanConsts
 
 enum ColourBits
 {
-    RED_16_BITS 		= 5,
-    GREEN_16_BITS 		= 6,
-    BLUE_16_BITS 		= 5,
-    BLUE_16_BIT_POS		= 0,
-    GREEN_16_BIT_POS	= BLUE_16_BIT_POS + BLUE_16_BITS,
-    RED_16_BIT_POS		= GREEN_16_BIT_POS + GREEN_16_BITS,
-    RED_16_MASK			= (0xFFFF << RED_16_BIT_POS) & 0xFFFF,
-    GREEN_16_MASK		= ((0xFFFF << GREEN_16_BIT_POS) & ~RED_16_MASK) & 0xFFFF,
-    BLUE_16_MASK		= (((0xFFFF << BLUE_16_BIT_POS) & ~RED_16_MASK)
+    RED_16_MASK			= (0xFFFF << FBPF_RED_16_BIT_POS) & 0xFFFF,
+    GREEN_16_MASK		= ((0xFFFF << FBPF_GREEN_16_BIT_POS) & ~RED_16_MASK) & 0xFFFF,
+    BLUE_16_MASK		= (((0xFFFF << FBPF_BLUE_16_BIT_POS) & ~RED_16_MASK)
     					  	& ~GREEN_16_MASK)
                           & 0xFFFF,
     
-    RED_32_BITS			= 8,
-    GREEN_32_BITS		= 8,
-    BLUE_32_BITS		= 8,
-    ALPHA_32_BITS		= 8,
-    ALPHA_32_BIT_POS	= 0,
-    BLUE_32_BIT_POS		= ALPHA_32_BIT_POS + ALPHA_32_BITS,
-    GREEN_32_BIT_POS	= BLUE_32_BIT_POS + BLUE_32_BITS,
-    RED_32_BIT_POS		= GREEN_32_BIT_POS + GREEN_32_BITS,
-    RED_32_MASK			= (0xFFFFFFFF << RED_32_BIT_POS) & 0xFFFFFFFF,
-    GREEN_32_MASK		= ((0xFFFFFFFF << GREEN_32_BIT_POS) & ~RED_32_MASK) & 0xFFFFFFFF,
-    BLUE_32_MASK		= (((0xFFFFFFFF << BLUE_32_BIT_POS) & ~RED_32_MASK)
+    RED_32_MASK			= (0xFFFFFFFF << FBPF_RED_32_BIT_POS) & 0xFFFFFFFF,
+    GREEN_32_MASK		= ((0xFFFFFFFF << FBPF_GREEN_32_BIT_POS) & ~RED_32_MASK) & 0xFFFFFFFF,
+    BLUE_32_MASK		= (((0xFFFFFFFF << FBPF_BLUE_32_BIT_POS) & ~RED_32_MASK)
     						& ~GREEN_16_MASK)
                           & 0xFFFFFFFF,
-    ALPHA_32_MASK		= ((((0xFFFFFFFF << ALPHA_32_BIT_POS) & ~RED_32_MASK)
+    ALPHA_32_MASK		= ((((0xFFFFFFFF << FBPF_ALPHA_32_BIT_POS) & ~RED_32_MASK)
                            		& ~GREEN_16_MASK)
                            	& ~BLUE_32_MASK)
     					& 0xFFFFFFFF,
@@ -299,16 +285,16 @@ enum ColourBits
             switch (fbDescriptor->bitDepth)
             {
                 case 16:
-                    colourDepths[CDI_ALPHA] = 0;
-                    colourDepths[CDI_BLUE]  = BLUE_16_BITS;
-                    colourDepths[CDI_GREEN] = GREEN_16_BITS;
-                    colourDepths[CDI_RED] 	= RED_16_BITS;
+                    colourDepths[CDI_ALPHA] = FBPF_ALPHA_16_BITS;
+                    colourDepths[CDI_BLUE]  = FBPF_BLUE_16_BITS;
+                    colourDepths[CDI_GREEN] = FBPF_GREEN_16_BITS;
+                    colourDepths[CDI_RED] 	= FBPF_RED_16_BITS;
                     break;
                 case 32:
-                    colourDepths[CDI_ALPHA] = ALPHA_32_BITS;
-                    colourDepths[CDI_BLUE]  = BLUE_32_BITS;
-                    colourDepths[CDI_GREEN] = GREEN_32_BITS;
-                    colourDepths[CDI_RED] 	= RED_32_BITS;
+                    colourDepths[CDI_ALPHA] = FBPF_ALPHA_32_BITS;
+                    colourDepths[CDI_BLUE]  = FBPF_BLUE_32_BITS;
+                    colourDepths[CDI_GREEN] = FBPF_GREEN_32_BITS;
+                    colourDepths[CDI_RED] 	= FBPF_RED_32_BITS;
                     break;
                 default:
                     ret = false;
