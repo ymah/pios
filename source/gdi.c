@@ -228,7 +228,29 @@ void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
     // TODO: We assume character width is 8 pixels and height is 16 rows
 	if (character >= context->fontMinChar && character <= context->fontMaxChar)
     {
+        GDIPoint currentPixel = point;
         
+        uint8_t* charStart = context->font
+                           + character * CHAR_HEIGHT * (CHAR_WIDTH / 8);
+        for (int row = 0 ; row < CHAR_HEIGHT ; ++row)
+        {
+            uint8_t rasterLine = *charStart;
+            if (rasterLine != 0) // Quick check for a blank line
+            {
+                for (int col = 0 ; col < CHAR_WIDTH ; ++col)
+                {
+                    if ((rasterLine & (1 << (CHAR_WIDTH - 1))) != 0)
+                    {
+                        gdi_setPixel(context, currentPixel, GDI_PEN);
+                    }
+                    rasterLine <<= 1;
+                    currentPixel.x++;
+                }
+            }
+            currentPixel.y++;
+            currentPixel.x = point.x;
+            charStart += CHAR_WIDTH / 8;
+        }
     }
 }
 
