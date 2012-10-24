@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @class JPPSimThread;
+@class JPPHardwareThread;
+@class JPPPiSimulator;
 
 /*!
  * @brief Delegate for a hardware thread.  This object is informed of major 
@@ -39,6 +41,12 @@
  */
 -(void) hasBeenUpdated: (JPPSimThread*) updatedThread;
 
+/*!
+ *  @brief Get the simulator to which  the thread belongs
+ *  @return simulator to which  the thread belongs
+ */
+-(JPPPiSimulator*) simulatorForThread: (JPPHardwareThread*) thread;
+
 @end
 
 /*!
@@ -48,6 +56,14 @@
  *  Delegate methods are sent on the new thread 
  */
 @interface JPPSimThread : NSThread
+
+/*!
+ *  @brief Do initialisation tasks.
+ *
+ *  This method is for setting up state in the thread.  It is invoked before 
+ *  the -hasStarted: message is sent to the delegate.
+ */
+-(void) doInitialisation;
 
 /*!
  *  @brief Override to do some work in the thread.
@@ -96,6 +112,9 @@
 @end
 /*!
  *  @brief Thread that emulates Raspberry Pi CPU thread of execution.
+ *
+ *  This thread must not be started until after the -hasStarted: message has 
+ *  been sent from the hardware thread.
  */
 @interface JPPSoftwareThread : JPPSimThread
 @end

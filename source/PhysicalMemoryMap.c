@@ -37,8 +37,10 @@ struct PhysicalMemoryMap
     SystemTimer* systemTimerAddress;
     GPIO* gpioAddress;
     FBPostBox* frameBufferPostBox;
-    volatile bool stopFlag;
+    uint32_t* tagSpace;
     Page* freePages;
+    uint8_t* systemFont;
+    volatile bool stopFlag;
 };
 
 static Page pageSpace[ALLOCATABLE_PAGES + 1];
@@ -48,12 +50,14 @@ struct PhysicalMemoryMap defaultMap =
     (SystemTimer*) 0x20003000,
            (GPIO*) 0x20200000,
       (FBPostBox*) 0x2000B880,
-    false,
-    NULL
+       (uint32_t*) 0x00000100,
+    NULL,	// free pages
+    NULL,	// system font
+    false
 };
 
 #if defined PIOS_SIMULATOR
-void pmm_init()
+void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
 {
     static dispatch_once_t pred;
     dispatch_once(&pred,
@@ -61,6 +65,8 @@ void pmm_init()
         defaultMap.systemTimerAddress = st_alloc();
         defaultMap.gpioAddress        = gpio_alloc();
         defaultMap.frameBufferPostBox = fb_postBoxAlloc();
+        defaultMap.tagSpace			  = tagSpace;
+        defaultMap.systemFont		  = systemFont;
         OSMemoryBarrier();
     });
     defaultMap.stopFlag = false;
@@ -99,6 +105,17 @@ void pmm_setStopFlag(PhysicalMemoryMap* map, bool shouldStop)
 {
     map->stopFlag = shouldStop;
 }
+
+TagList* pmm_getTagList(PhysicalMemoryMap* map)
+{
+    return tag_initialiseTagList(map->tagSpace);
+}
+
+uint8_t* pmm_getSystemFont(PhysicalMemoryMap* map)
+{
+    return map->systemFont;
+}
+
 
 void pmm_initialiseFreePages(PhysicalMemoryMap* map)
 {

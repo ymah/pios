@@ -7,9 +7,9 @@
 //
 
 #if defined PIOS_SIMULATOR
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #endif
 
 #include "bptypes.h"
@@ -59,9 +59,15 @@ static void runLEDSequence(int iterations,
 static void runLEDFlash(int repeat, int numberOfFlashes);
 
 static FBError initFrameBuffer(void);
+/*
+ *  Following functions not declared static to suppress not used warnings if
+ *  their use is commented out.
+ */
 void runRainbow(void);
 void runDrawTest(void);
+void displayTags(void);
 
+static void printTag(GDIContext* context, Tag* tagToPrint);
 
 #if defined OK_EXERCISE
 
@@ -101,8 +107,10 @@ int MAIN(int argc, char** argv)
     {
 #if defined SCREEN_01
         runRainbow();
-#else
+#elif defined SCREEN_02
         runDrawTest();
+#else
+        displayTags();
 #endif
     }
     else
@@ -255,3 +263,36 @@ void runLEDSequence(int iterations,
         }
     }
 }
+
+void displayTags()
+{
+    TagList* tagList = pmm_getTagList(pmm_getPhysicalMemoryMap());
+    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+    gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
+    gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
+    gdi_fillFrame(context, GDI_BACKGROUND);
+    
+    GDIPoint textPoint = { .x = 0, .y = 0 };
+    gdi_drawChar(context, textPoint, 'A');
+    
+    /*
+     *  Iterate athrough and print the tags
+     */
+    Tag* tag = tag_getFirstTag(tagList);
+    while (tag_type(tag) != TAG_TERMINATOR)
+    {
+        printTag(context, tag);
+        tag = tag_getNextTag(tagList, tag);
+    }
+}
+
+static void printTag(GDIContext* context, Tag* tagToPrint)
+{
+    uint16_t tagLength = tag_length(tagToPrint);
+    uint16_t tagType = tag_type(tagToPrint);
+#if defined PIOS_SIMULATOR
+    // TODO: Print to the screen not stdout
+    fprintf(stdout, "type %d, length %d\n", (int) tagType, (int) tagLength);
+#endif
+}
+

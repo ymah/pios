@@ -9,6 +9,15 @@
 #ifndef BakingPi_bptypes_h
 #define BakingPi_bptypes_h
 
+#if defined PIOS_SIMULATOR
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <sys/types.h>
+
+#else
+
 #if !defined __bool_true_false_are_defined
 /*!
  *  @brief Boolean type as per C99
@@ -44,8 +53,12 @@ typedef unsigned long uintptr_t;
 
 #endif
 
+#endif
+
 #if !defined MIN
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #endif
+
+typedef uint16_t PiosChar;
 
 #endif

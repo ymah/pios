@@ -8,6 +8,7 @@
 
 #include "gdi.h"
 #include "klib.h"
+#include "PhysicalMemoryMap.h"
 
 const GDIColour GDI_BLACK_COLOUR = { .components = { 255, 0, 0, 0 }};
 const GDIColour GDI_WHITE_COLOUR = { .components = { 255, 255, 255, 255 }};
@@ -25,6 +26,9 @@ struct GDIContext
     GDIContext* previousContext;
     PixelCopy* pixelCopy;
     uint8_t bytesPerPixel;
+    uint8_t* font;
+    uint32_t fontMinChar;
+    uint32_t fontMaxChar;
 };
 
 enum
@@ -43,6 +47,9 @@ GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
     klib_memset(theContexts, 0, sizeof theContexts);
     GDIContext* ret = &theContexts[0];
     ret->fbDescriptor = fbDescriptor;
+    ret->font = pmm_getSystemFont(pmm_getPhysicalMemoryMap());
+    ret->fontMinChar = 32;
+    ret->fontMaxChar = 0x7E;
     switch(fbDescriptor->bitDepth)
     {
         case 16:
@@ -211,27 +218,18 @@ void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1)
     }
     gdi_setPixel(context, p0, GDI_PEN);
 
-/*
- function line(x0, y0, x1, y1)
- dx := abs(x1-x0)
- dy := abs(y1-y0)
- if x0 < x1 then sx := 1 else sx := -1
- if y0 < y1 then sy := 1 else sy := -1
- err := dx-dy
- 
- loop
- 	setPixel(x0,y0)
- 	if x0 = x1 and y0 = y1 exit loop
- 	e2 := 2*err
- 	if e2 > -dy then
- 		err := err - dy
- 		x0 := x0 + sx
- 	end if
- 	if e2 <  dx then
- 		err := err + dx
- 		y0 := y0 + sy
- 	end if
- end loop    */
+}
+
+#define CHAR_WIDTH	8
+#define CHAR_HEIGHT	16
+
+void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
+{
+    // TODO: We assume character width is 8 pixels and height is 16 rows
+	if (character >= context->fontMinChar && character <= context->fontMaxChar)
+    {
+        
+    }
 }
 
 GDIColour gdi_makeColour(uint8_t red,
