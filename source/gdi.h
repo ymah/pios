@@ -181,4 +181,12 @@ void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour);
  */
 void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1);
 
+/*!
+ *  @brief put a character on the screen at the specified point
+ *  @param context Graphics context
+ *  @param point origin of GDIRect containing the chracter.
+ *  @param character Character to put on the screen.
+ */
+void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character);
+
 #endif

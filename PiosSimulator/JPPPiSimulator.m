@@ -9,6 +9,7 @@
 #import "JPPPiSimulator.h"
 #import "PhysicalMemoryMap.h"
 #import "gpio.h"
+#import "JPPiArmTags.h"
 
 @interface JPPPiSimulator ()
 
@@ -24,9 +25,22 @@
 {
 @private
     bool powerLED_;
+    JPPiArmTags* tags_;
+    NSData* systemFont_;
 }
 
 @synthesize powerLED = powerLED_;
+@synthesize tags = tags_;
+
+-(id) init
+{
+    self = [super init];
+    if (self != nil)
+    {
+        tags_ = [[JPPiArmTags alloc] init];
+    }
+    return self;
+}
 
 -(void) setPowerLED: (bool) powerLED
 {
@@ -67,6 +81,10 @@
 
 -(void) powerOn
 {
+    [[self tags] clear];
+    [[self tags] addCommandLine: @"Hello, World"];
+    [[self tags] addTerminator];
+    
     [self setHardwareThread: [[JPPHardwareThread alloc] init]];
     [[self hardwareThread] setDelegate: self];
     [[self hardwareThread] start];
@@ -74,7 +92,27 @@
     [[self softwareThread] setDelegate: self];
 }
 
+-(NSData*) systemFont
+{
+    @synchronized(self)
+    {
+        if (systemFont_ == nil)
+        {
+            NSBundle* thisBundle = [NSBundle bundleForClass: [self class]];
+            NSURL* fontUrl = [thisBundle URLForResource: @"font0"
+                                          withExtension: @"bin"];
+            systemFont_ = [NSData dataWithContentsOfURL: fontUrl];
+        }
+    }
+    return systemFont_;
+}
+
 #pragma mark JPPHardwareThreadDelegate
+
+-(JPPPiSimulator*) simulatorForThread: (JPPHardwareThread*) thread;
+{
+    return self;
+}
 
 -(void) hasStarted: (JPPHardwareThread*) startedThread
 {

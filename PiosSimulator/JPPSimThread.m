@@ -13,6 +13,7 @@
 #import <time.h>
 #import <assert.h>
 #import "JPPPiSimulator.h"
+#import "JPPiArmTags.h"
 
 /*
  *  We assume a screen refresh of 30Hz at 1000 lines.  We won't send an update
@@ -77,7 +78,7 @@ enum ColourBits
 {
     @autoreleasepool
     {
-        pmm_init();
+        [self doInitialisation];
         @try
         {
             [self notifyStarted];
@@ -112,11 +113,15 @@ enum ColourBits
 }
 
 
--(void) simThreadMain
+-(void) doInitialisation
 {
     // Do nothing
 }
 
+-(void) simThreadMain
+{
+    // Do nothing
+}
 
 @end
 
@@ -133,18 +138,17 @@ enum ColourBits
     PhysicalMemoryMap* memoryMap;
     FBPostBox* frameBufferPostbox;
     FrameBufferDescriptor* fbDescriptor;
-    CGContextRef screenBitmap;
     
     NSRange scanLinesToUpdate;
     bool scanLinesNeedReading;
 }
 
--(void) dealloc
+
+-(void) doInitialisation
 {
-    if (screenBitmap != NULL)
-    {
-        CGContextRelease(screenBitmap);
-    }
+    JPPPiSimulator* simulator = [[self delegate] simulatorForThread: self];
+    pmm_init((uint32_t*)[[simulator tags] bytes],
+             (uint8_t*)[[simulator systemFont] bytes]);
 }
 
 -(void) simThreadMain
@@ -188,10 +192,6 @@ enum ColourBits
             {
                 free(frameBuffer);
                 frameBuffer = NULL;
-            }
-            if (screenBitmap != NULL)
-            {
-                CGContextRelease(screenBitmap);
             }
             /*
              *  Create the bitmap that the software thread can write to

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "JPPSimThread.h"
 
+@class JPPiArmTags;
+
 enum
 {
     SIMULATOR_OK_LED_PIN = 16,
@@ -89,4 +91,18 @@ enum ColourDepthIndex
        colourDepths: (uint8_t*) colourDepths
           lineBytes: (size_t*) lineBytes
       scanLineIndex: (size_t) scanLineIndex;
+
+/*!
+ *  @brief ARM boot tags
+ */
+@property (nonatomic, readonly, strong) JPPiArmTags* tags;
+
+/*!
+ *  @brief The system font.
+ *
+ *  Guaranteed to be an 8 x 16 monospaced raster bitmap font with characters
+ *  from space to ~ (0x20 - 0x7E).
+ */
+@property (nonatomic, readonly, strong) NSData* systemFont;
+
 @end

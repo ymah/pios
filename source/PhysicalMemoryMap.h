@@ -12,13 +12,21 @@
 #include "gpio.h"
 #include "SystemTimer.h"
 #include "FrameBuffer.h"
+#include "Tag.h"
 
 struct PhysicalMemoryMap;
 typedef struct PhysicalMemoryMap PhysicalMemoryMap;
 
 #if defined PIOS_SIMULATOR
 
-void pmm_init();
+/*!
+ *  @brief initialise the physical memory.
+ *  @param tagSpace poiter to faked up ARM tags.
+ *  @param systemFont location of system font which must be an 8 x 16 
+ *  monospace raster font with at least characters from space (ASCII 32) to
+ *  ~ (ASCII 0x7E)
+ */
+void pmm_init(uint32_t* tagSpace, uint8_t* systemFont);
 
 #endif
 /*!
@@ -69,6 +77,23 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
  *  @return The frame buffer postbox
  */
 FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map);
+
+/*!
+ *  @brief Get the list of ARM tags
+ *  @param map Memory map
+ *  @return the tag list
+ */
+TagList* pmm_getTagList(PhysicalMemoryMap* map);
+
+/*!
+ *  @brief Get the system font.
+ *  
+ *  The system font is guaranteed to have characters for all of the ASCII 
+ *  printable characters.
+ *  @param map The physical memory map.
+ *  @return A pointer to the beginning of the system font.
+ */
+uint8_t* pmm_getSystemFont(PhysicalMemoryMap* map);
 
 /*!
  *  @brief Initialise the free page list for the map.  
