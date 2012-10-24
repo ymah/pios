@@ -6,14 +6,20 @@
 //  Copyright (c) 2012 Jeremy Pereira. All rights reserved.
 //
 
+#include "PhysicalMemoryMap.h"
+
 #if defined PIOS_SIMULATOR
 
 #include <dispatch/dispatch.h>
 #include <libkern/OSAtomic.h>
 
+#else
+
+extern uint8_t* fontMap;
+
 #endif
 
-#include "PhysicalMemoryMap.h"
+
 
 enum
 {
@@ -75,6 +81,12 @@ void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
 
 PhysicalMemoryMap* pmm_getPhysicalMemoryMap()
 {
+#if !defined PIOS_SIMULATOR
+    if (defaultMap.systemFont == NULL)
+    {
+        defaultMap.systemFont = fontMap;
+    }
+#endif
     return &defaultMap;
 }
 
