@@ -26,6 +26,12 @@ typedef struct Console Console;
 Console* con_initialiseConsole(GDIContext* gdiContext);
 
 /*!
+ *  @brief Clear the current line to background colour 
+ *  @param console The console to operate on.
+ */
+void con_clearCurrentLine(Console* console);
+
+/*!
  *  @brief Put the given characters on the console at the cursor location.
  *  
  *  Newlines are respected.

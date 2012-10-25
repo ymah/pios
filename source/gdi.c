@@ -170,6 +170,22 @@ void gdi_fillFrame(GDIContext* context, GDIColourType colour)
     }
 }
 
+void gdi_fillRect(GDIContext* context, GDIRect rect, GDIColourType colour)
+{
+    GDIPoint currentPoint = rect.origin;
+    
+    for (int y = 0 ; y < rect.size.height ; ++y)
+    {
+        for (int x = 0 ; x < rect.size.width ; ++x)
+        {
+            gdi_setPixel(context, currentPoint, colour);
+            currentPoint.x++;
+        }
+        currentPoint.y++;
+        currentPoint.x = rect.origin.x;
+    }
+}
+
 
 void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour)
 {

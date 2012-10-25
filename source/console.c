@@ -30,6 +30,7 @@ Console* con_initialiseConsole(GDIContext* gdiContext)
     defaultConsole.context = gdiContext;
     defaultConsole.cursorPos.x = 0;
     defaultConsole.cursorPos.y = 0;
+    con_clearCurrentLine(&defaultConsole);
     return &defaultConsole;
 }
 
@@ -67,6 +68,7 @@ void con_newLine(Console* console)
         // TODO: Scroll the screen instead
         console->cursorPos.y = 0;
     }
+    con_clearCurrentLine(console);
 }
 
 #define DIGIT_BITS	4
@@ -91,5 +93,16 @@ void con_putHex32(Console* console, uint32_t aNumber)
         aNumber >>= DIGIT_BITS;
     }
     con_putChars(console, digits, NUM_DIGITS);
+}
+
+void con_clearCurrentLine(Console* console)
+{
+    GDIRect frame = gdi_frame(console->context);
+	GDIRect currentLineRect;
+    GDISize charSize = gdi_systemFontCharSize(console->context);
+    currentLineRect.origin = console->cursorPos;
+    currentLineRect.size.width = frame.size.width;
+    currentLineRect.size.height = charSize.height;
+    gdi_fillRect(console->context, currentLineRect, GDI_BACKGROUND);
 }
 

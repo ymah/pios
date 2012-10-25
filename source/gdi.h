@@ -166,6 +166,14 @@ GDIRect gdi_frame(GDIContext* context);
 void gdi_fillFrame(GDIContext* context, GDIColourType colour);
 
 /*!
+ *  @brief Fill a rectangle with a colour.
+ *  @param context GDI context
+ *  @param rect Rectangle to fill
+ *  @param colour The colour must be the background, fill or pen colour.
+ */
+void gdi_fillRect(GDIContext* context, GDIRect rect, GDIColourType colour);
+
+/*!
  *  @brief Set the given pixel to the given colour
  *  @param context The graphics context to set the pixel in.
  *  @param coords Device coordinates of the pixel to set
