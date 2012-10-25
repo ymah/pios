@@ -82,7 +82,7 @@
 -(void) powerOn
 {
     [[self tags] clear];
-    [[self tags] addCommandLine: @"Hello, World"];
+    [[self tags] addCommandLine: @"Hello, World\nGoodbye"];
     [[self tags] addTerminator];
     
     [self setHardwareThread: [[JPPHardwareThread alloc] init]];

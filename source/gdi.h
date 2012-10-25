@@ -182,11 +182,22 @@ void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour);
 void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1);
 
 /*!
+ *  @brief Get the character size of the system font.
+ *
+ *  The width might not be trustworthy for fonts that are not monospaced.
+ *  @param context The context to get the character size for.
+ *  @return A size containing the average width and height of a character in the
+ *  system font.
+ */
+GDISize gdi_systemFontCharSize(GDIContext* context);
+
+/*!
  *  @brief put a character on the screen at the specified point
  *  @param context Graphics context
  *  @param point origin of GDIRect containing the chracter.
  *  @param character Character to put on the screen.
+ *  @return The rectangle in which the character was drawn.
  */
-void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character);
+GDIRect gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character);
 
 #endif

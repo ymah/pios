@@ -21,6 +21,7 @@
 		FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */; };
 		FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEFE16196D8100679AAA /* JPPPiController.m */; };
 		FC3C588E1625493C00FE6594 /* klib.c in Sources */ = {isa = PBXBuildFile; fileRef = FC3C588D162547AE00FE6594 /* klib.c */; };
+		FC4077F1163862B5009C2B3D /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = FC4077F0163862B5009C2B3D /* console.c */; };
 		FC4AA134161A02BF0060DD5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FC2C81731610CDFA003B6ECB /* main.c */; };
 		FC4AA137161A058C0060DD5E /* PhysicalMemoryMap.c in Sources */ = {isa = PBXBuildFile; fileRef = FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */; };
 		FC4AA139161A0D1C0060DD5E /* gpio.c in Sources */ = {isa = PBXBuildFile; fileRef = FC17CA1B1607050F0092C197 /* gpio.c */; };
@@ -77,6 +78,8 @@
 		FC34195B1612DDFE00207E3C /* SystemTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTimer.h; sourceTree = "<group>"; };
 		FC3C588C1625479E00FE6594 /* klib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = klib.h; sourceTree = "<group>"; };
 		FC3C588D162547AE00FE6594 /* klib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = klib.c; sourceTree = "<group>"; };
+		FC4077EE1638629A009C2B3D /* console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = console.h; sourceTree = "<group>"; };
+		FC4077F0163862B5009C2B3D /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = console.c; sourceTree = "<group>"; };
 		FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PhysicalMemoryMap.c; sourceTree = "<group>"; };
 		FC4AA138161A05C10060DD5E /* PhysicalMemoryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhysicalMemoryMap.h; sourceTree = "<group>"; };
 		FC5CBA2F162D515B00005AF3 /* JPPiScreenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPiScreenView.h; sourceTree = "<group>"; };
@@ -263,6 +266,8 @@
 				FCC39E961614CBF2001D2576 /* FrameBuffer.c */,
 				FCB817F51631337B0043450F /* gdi.c */,
 				FCB817F71631338C0043450F /* gdi.h */,
+				FC4077EE1638629A009C2B3D /* console.h */,
+				FC4077F0163862B5009C2B3D /* console.c */,
 			);
 			name = graphics;
 			path = source;
@@ -410,6 +415,7 @@
 				FCB817F8163144370043450F /* gdi.c in Sources */,
 				FC147FF516351E8300915560 /* Tag.c in Sources */,
 				FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */,
+				FC4077F1163862B5009C2B3D /* console.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

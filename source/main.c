@@ -18,6 +18,7 @@
 #include "PhysicalMemoryMap.h"
 #include "klib.h"
 #include "gdi.h"
+#include "console.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -288,8 +289,25 @@ void displayTags()
 
 static void printTag(GDIContext* context, Tag* tagToPrint)
 {
-    uint16_t tagLength = tag_length(tagToPrint);
-    uint16_t tagType = tag_type(tagToPrint);
+    Console* console = con_initialiseConsole(context);
+    size_t tagLength = tag_length(tagToPrint);
+    uint32_t tagType = tag_type(tagToPrint);
+    tagToPrint++;
+    switch (tagType)
+    {
+        case TAG_CMDLINE:
+            {
+                const char* commandLine = (const char*) tagToPrint;
+                con_putChars(console,
+                             commandLine,
+                             klib_strnlen(commandLine,
+                                          tagLength * sizeof(uint32_t)));
+            }
+            break;
+            
+        default:
+            break;
+    }
 #if defined PIOS_SIMULATOR
     // TODO: Print to the screen not stdout
     fprintf(stdout, "type %d, length %d\n", (int) tagType, (int) tagLength);
