@@ -293,6 +293,10 @@ static void printTag(GDIContext* context, Tag* tagToPrint)
     size_t tagLength = tag_length(tagToPrint);
     uint32_t tagType = tag_type(tagToPrint);
     tagToPrint++;
+    con_putHex32(console, tagType);
+    con_putChars(console, " ", 1);
+    con_putHex32(console, (uint32_t) tagLength);
+    con_putChars(console, " ", 1);
     switch (tagType)
     {
         case TAG_CMDLINE:
@@ -308,6 +312,7 @@ static void printTag(GDIContext* context, Tag* tagToPrint)
         default:
             break;
     }
+    con_newLine(console);
 #if defined PIOS_SIMULATOR
     // TODO: Print to the screen not stdout
     fprintf(stdout, "type %d, length %d\n", (int) tagType, (int) tagLength);

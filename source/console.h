@@ -41,4 +41,11 @@ void con_putChars(Console* console, const char* chars, size_t numChars);
  */
 void con_newLine(Console* console);
 
+/*!
+ *  @brief Ouput an unsigned 32 bit integer
+ *  @param console The console object
+ *  @param aNumber The number to output.
+ */
+void con_putHex32(Console* console, uint32_t aNumber);
+
 #endif

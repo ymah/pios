@@ -68,3 +68,28 @@ void con_newLine(Console* console)
         console->cursorPos.y = 0;
     }
 }
+
+#define DIGIT_BITS	4
+#define NUM_DIGITS  (32 / DIGIT_BITS)
+
+void con_putHex32(Console* console, uint32_t aNumber)
+{
+    char digits[NUM_DIGITS];
+    
+    for (size_t i = 0 ; i <  NUM_DIGITS ; ++i)
+    {
+        char thisDigit = aNumber & 0xF;
+        if (thisDigit < 0xA)
+        {
+            thisDigit += '0';
+        }
+        else
+        {
+            thisDigit += 'A' - 0xA;
+        }
+        digits[NUM_DIGITS - i - 1] = thisDigit;
+        aNumber >>= DIGIT_BITS;
+    }
+    con_putChars(console, digits, NUM_DIGITS);
+}
+
