@@ -223,7 +223,7 @@ void gdi_line(GDIContext* context, GDIPoint p0, GDIPoint p1)
 #define CHAR_WIDTH	8
 #define CHAR_HEIGHT	16
 
-void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
+GDIRect gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
 {
     // TODO: We assume character width is 8 pixels and height is 16 rows
 	if (character >= context->fontMinChar && character <= context->fontMaxChar)
@@ -239,11 +239,11 @@ void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
             {
                 for (int col = 0 ; col < CHAR_WIDTH ; ++col)
                 {
-                    if ((rasterLine & (1 << (CHAR_WIDTH - 1))) != 0)
+                    if ((rasterLine & 1) != 0)
                     {
                         gdi_setPixel(context, currentPixel, GDI_PEN);
                     }
-                    rasterLine <<= 1;
+                    rasterLine >>= 1;
                     currentPixel.x++;
                 }
             }
@@ -252,6 +252,17 @@ void gdi_drawChar(GDIContext* context, GDIPoint point, PiosChar character)
             charStart += CHAR_WIDTH / 8;
         }
     }
+    GDIRect ret;
+    ret.origin = point;
+    ret.size.width = CHAR_WIDTH;
+    ret.size.height = CHAR_HEIGHT;
+    return ret;
+}
+
+GDISize gdi_systemFontCharSize(GDIContext* context)
+{
+    GDISize ret = { .width = CHAR_WIDTH, .height = CHAR_HEIGHT };
+    return ret;
 }
 
 GDIColour gdi_makeColour(uint8_t red,

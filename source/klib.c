@@ -27,3 +27,13 @@ void* klib_memset(void* restrict ptr, uint8_t value, size_t length)
 }
 
 
+size_t klib_strnlen(const char* restrict charSequence, size_t maxLength)
+{
+    size_t ret = 0;
+    while (*charSequence != '\0' && ret < maxLength)
+    {
+        ret++;
+        charSequence++;
+    }
+    return ret;
+}
