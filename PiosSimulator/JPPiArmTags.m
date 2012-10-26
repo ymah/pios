@@ -98,7 +98,7 @@ do {						\
                points: (uint16_t) points
 {
     size_t commandOffset = [theBytes length];
-    uint32_t tagSizeInBytes = sizeof(Tag) + 2 * sizeof(uintptr_t);
+    uint32_t tagSizeInBytes = sizeof(Tag) + sizeof(TagVideo);
     [theBytes increaseLengthBy: tagSizeInBytes];
     Tag* tagHeader = [theBytes mutableBytes] + commandOffset;
     tagHeader->length = tagSizeInBytes / sizeof(uint32_t);
@@ -114,6 +114,23 @@ do {						\
     SERIALISE(lines, uint8_t, bodyPointer);
     SERIALISE(isVGA, uint8_t, bodyPointer);
     SERIALISE(points, uint16_t, bodyPointer);
+}
+
+-(void) addRAMDiskFlags: (uint32_t) flags
+                   size: (uint32_t) size
+                  start: (uint32_t) start
+{
+    size_t commandOffset = [theBytes length];
+    uint32_t tagSizeInBytes = sizeof(Tag) + sizeof(TagRamDisk);
+    [theBytes increaseLengthBy: tagSizeInBytes];
+    Tag* tagHeader = [theBytes mutableBytes] + commandOffset;
+    tagHeader->length = tagSizeInBytes / sizeof(uint32_t);
+    tagHeader->tagType = TAG_RAMDISK;
+    tagHeader++;
+    uint8_t* bodyPointer = (uint8_t*)tagHeader;
+    SERIALISE(flags, uint32_t, bodyPointer);
+    SERIALISE(size, uint32_t, bodyPointer);
+    SERIALISE(start, uint32_t, bodyPointer);
 }
 
 -(void) addTerminator

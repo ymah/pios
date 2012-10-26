@@ -352,6 +352,18 @@ static void printTag(Tag* tagToPrint)
             }
             break;
             
+        case TAG_RAMDISK:
+            {
+                TagRamDisk* ramDisk = (TagRamDisk*) tagToPrint;
+                con_putCString(console, "flags=");
+                con_putHex32(console, ramDisk->flags);
+                con_putCString(console, ", size=");
+                con_putHex32(console, ramDisk->uncompressedSizeKb);
+                con_putCString(console, ", start=");
+                con_putHex32(console, ramDisk->start);
+            }
+            break;
+            
         default:
             con_putChars(console, "Don't understand this tag", 25);
             break;

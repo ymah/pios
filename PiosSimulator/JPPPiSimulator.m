@@ -93,6 +93,7 @@
                          lines: 25
                          isVGA: 1
                         points: 800];
+    [[self tags] addRAMDiskFlags: 1 size: 1024 start: 1024];
     [[self tags] addCommandLine: @"Hello, World\nGoodbye"];
     [[self tags] addTerminator];
     
