@@ -39,6 +39,10 @@
                 isVGA: (uint8_t) isVGA
                points: (uint16_t) points;
 
+-(void) addRAMDiskFlags: (uint32_t) flags
+                   size: (uint32_t) size
+                  start: (uint32_t) start;
+
 /*!
  *  @brief Add a memory region tag.
  *  @param size Size of the region in bytes.
