@@ -124,7 +124,7 @@ int MAIN(int argc, char** argv)
     gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
     gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
     gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
-    con_initialiseConsole(context);
+    Console* console = con_initialiseConsole(context);
     setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
 
     if (fbError == FB_OK)
@@ -135,6 +135,15 @@ int MAIN(int argc, char** argv)
         runDrawTest();
 #else
         displayTags();
+        while(1)
+        {
+            uint64_t theTime = st_microSeconds(timer);
+            con_gotoLineStart(console);
+            con_clearCurrentLine(console);
+            con_putHex32(console, theTime >> 32);
+            con_putHex32(console, theTime & 0xFFFFFFFF);
+            st_microsecondSpin(timer, 200000);
+        }
 #endif
     }
     else

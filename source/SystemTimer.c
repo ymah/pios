@@ -68,3 +68,9 @@ void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 #endif
 }
 
+uint64_t st_microSeconds(SystemTimer* timer)
+{
+    uint64_t ret = ((uint64_t)(timer->counterHigh) << 32) | timer->counterLow;
+    return ret;
+}
+

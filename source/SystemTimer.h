@@ -47,4 +47,6 @@ void st_microsecondTick(SystemTimer* timer);
  */
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds);
 
+uint64_t st_microSeconds(SystemTimer* timer);
+
 #endif

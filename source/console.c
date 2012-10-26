@@ -168,3 +168,8 @@ void con_clearCurrentLine(Console* console)
     gdi_fillRect(console->context, currentLineRect, GDI_BACKGROUND);
 }
 
+void con_gotoLineStart(Console* console)
+{
+    console->cursorPos.x = 0;
+}
+
