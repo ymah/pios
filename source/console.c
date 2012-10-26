@@ -89,8 +89,10 @@ void con_newLine(Console* console)
     con_clearCurrentLine(console);
 }
 
-#define DIGIT_BITS	4
-#define NUM_DIGITS  (32 / DIGIT_BITS)
+#define DIGIT_BITS		4
+#define NUM_DIGITS		(32 / DIGIT_BITS)
+#define NUM_DIGITS_16	(16 / DIGIT_BITS)
+#define NUM_DIGITS_8	(8 / DIGIT_BITS)
 
 void con_putHex32(Console* console, uint32_t aNumber)
 {
@@ -111,6 +113,48 @@ void con_putHex32(Console* console, uint32_t aNumber)
         aNumber >>= DIGIT_BITS;
     }
     con_putChars(console, digits, NUM_DIGITS);
+}
+
+void con_putHex16(Console* console, uint16_t aNumber)
+{
+    char digits[NUM_DIGITS_16];
+    
+    for (size_t i = 0 ; i <  NUM_DIGITS_16 ; ++i)
+    {
+        char thisDigit = aNumber & 0xF;
+        if (thisDigit < 0xA)
+        {
+            thisDigit += '0';
+        }
+        else
+        {
+            thisDigit += 'A' - 0xA;
+        }
+        digits[NUM_DIGITS_16 - i - 1] = thisDigit;
+        aNumber >>= DIGIT_BITS;
+    }
+    con_putChars(console, digits, NUM_DIGITS_16);
+}
+
+void con_putHex8(Console* console, uint8_t aNumber)
+{
+    char digits[NUM_DIGITS_8];
+    
+    for (size_t i = 0 ; i <  NUM_DIGITS_8 ; ++i)
+    {
+        char thisDigit = aNumber & 0xF;
+        if (thisDigit < 0xA)
+        {
+            thisDigit += '0';
+        }
+        else
+        {
+            thisDigit += 'A' - 0xA;
+        }
+        digits[NUM_DIGITS_8 - i - 1] = thisDigit;
+        aNumber >>= DIGIT_BITS;
+    }
+    con_putChars(console, digits, NUM_DIGITS_8);
 }
 
 void con_clearCurrentLine(Console* console)

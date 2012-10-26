@@ -9,6 +9,13 @@
 #import "JPPiArmTags.h"
 #import "Tag.h"
 
+#define SERIALISE(N, T, P)	\
+do {						\
+	*(T*)(P) = (N);		\
+	(P) += sizeof(T);		\
+} while(0)
+
+
 @implementation JPPiArmTags
 {
 @private
@@ -80,6 +87,34 @@
     *bodyPointer++ = start;
 }
 
+-(void) addVideoTextX: (uint8_t) x
+					y: (uint8_t) y
+				 page: (uint16_t) page
+				 mode: (uint8_t) mode
+                 cols: (uint8_t) cols
+                egaBx: (uint16_t) egaBx
+                lines: (uint8_t) lines
+                isVGA: (uint8_t) isVGA
+               points: (uint16_t) points
+{
+    size_t commandOffset = [theBytes length];
+    uint32_t tagSizeInBytes = sizeof(Tag) + 2 * sizeof(uintptr_t);
+    [theBytes increaseLengthBy: tagSizeInBytes];
+    Tag* tagHeader = [theBytes mutableBytes] + commandOffset;
+    tagHeader->length = tagSizeInBytes / sizeof(uint32_t);
+    tagHeader->tagType = TAG_VIDEOTEXT;
+    tagHeader++;
+    uint8_t* bodyPointer = (uint8_t*)tagHeader;
+    SERIALISE(x, uint8_t, bodyPointer);
+    SERIALISE(y, uint8_t, bodyPointer);
+    SERIALISE(page, uint16_t, bodyPointer);
+    SERIALISE(mode, uint8_t, bodyPointer);
+    SERIALISE(cols, uint8_t, bodyPointer);
+    SERIALISE(egaBx, uint16_t, bodyPointer);
+    SERIALISE(lines, uint8_t, bodyPointer);
+    SERIALISE(isVGA, uint8_t, bodyPointer);
+    SERIALISE(points, uint16_t, bodyPointer);
+}
 
 -(void) addTerminator
 {

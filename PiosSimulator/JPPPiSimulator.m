@@ -84,6 +84,15 @@
     [[self tags] clear];
     [[self tags] addCoreFlags: 1 pageSize: 4096 rootDev: 0];
     [[self tags] addMemorySize: 0x8000 start: 0x8000];
+    [[self tags] addVideoTextX: 80
+                             y: 25
+                          page: 1
+                          mode: 1
+                          cols: 80
+                         egaBx: 1
+                         lines: 25
+                         isVGA: 1
+                        points: 800];
     [[self tags] addCommandLine: @"Hello, World\nGoodbye"];
     [[self tags] addTerminator];
     

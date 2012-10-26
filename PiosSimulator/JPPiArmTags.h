@@ -29,6 +29,16 @@
   			pageSize: (uint32_t) pageSize
              rootDev: (uint32_t) rootDev;
 
+-(void) addVideoTextX: (uint8_t) x
+					y: (uint8_t) y
+				 page: (uint16_t) page
+				 mode: (uint8_t) mode
+                 cols: (uint8_t) cols
+                egaBx: (uint16_t) egaBx
+                lines: (uint8_t) lines
+                isVGA: (uint8_t) isVGA
+               points: (uint16_t) points;
+
 /*!
  *  @brief Add a memory region tag.
  *  @param size Size of the region in bytes.
