@@ -20,6 +20,23 @@
 -(void) addCommandLine: (NSString*) commandLine;
 
 /*!
+ *  @brief Add the core tag.
+ *  @param flags No idea what the flags do.
+ *  @param pageSize Set the page size
+ *  @param rootDev What is the root file system device
+ */
+-(void) addCoreFlags: (uint32_t) flags
+  			pageSize: (uint32_t) pageSize
+             rootDev: (uint32_t) rootDev;
+
+/*!
+ *  @brief Add a memory region tag.
+ *  @param size Size of the region in bytes.
+ *  @param start Start of the memory region.
+ */
+-(void) addMemorySize: (uintptr_t) size start: (uintptr_t) start;
+
+/*!
  *  @brief Add the terminator tag to the bytes
  */
 -(void) addTerminator;

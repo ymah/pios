@@ -26,6 +26,14 @@ typedef struct Console Console;
 Console* con_initialiseConsole(GDIContext* gdiContext);
 
 /*!
+ *  @brief Get a pointer to the console.
+ *
+ *  The console must have been initialised before getting it.  
+ *  @return The console.
+ */
+Console* con_getTheConsole();
+
+/*!
  *  @brief Clear the current line to background colour 
  *  @param console The console to operate on.
  */
@@ -40,6 +48,16 @@ void con_clearCurrentLine(Console* console);
  *  @param numChars Number of characters to print.
  */
 void con_putChars(Console* console, const char* chars, size_t numChars);
+
+/*!
+ *  @brief Convenience method to put a C string.
+ *
+ *  The C string is a sequence of 8 bit characters terminated with a '\0'.
+ *  @param console The console.
+ *  @param chars The null terminated C string to put on the screen.
+ */
+void con_putCString(Console* console, const char* chars);
+
 
 /*!
  *  @brief Put a new line to the console

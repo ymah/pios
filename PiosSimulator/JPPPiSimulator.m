@@ -82,6 +82,8 @@
 -(void) powerOn
 {
     [[self tags] clear];
+    [[self tags] addCoreFlags: 1 pageSize: 4096 rootDev: 0];
+    [[self tags] addMemorySize: 0x8000 start: 0x8000];
     [[self tags] addCommandLine: @"Hello, World\nGoodbye"];
     [[self tags] addTerminator];
     

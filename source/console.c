@@ -8,6 +8,7 @@
 
 #include "console.h"
 #include "gdi.h"
+#include "klib.h"
 
 // TODO: When we get the allocator, do not hard code the console size
 
@@ -23,7 +24,7 @@ struct Console
     GDIPoint cursorPos;
 };
 
-static Console defaultConsole;
+static Console defaultConsole = { NULL, { 0, 0 } };
 
 Console* con_initialiseConsole(GDIContext* gdiContext)
 {
@@ -33,6 +34,17 @@ Console* con_initialiseConsole(GDIContext* gdiContext)
     con_clearCurrentLine(&defaultConsole);
     return &defaultConsole;
 }
+
+Console* con_getTheConsole()
+{
+    Console* ret = NULL;
+    if (defaultConsole.context != NULL)
+    {
+        ret = &defaultConsole;
+    }
+    return ret;
+}
+
 
 void con_putChars(Console* console, const char* chars, size_t numChars)
 {
@@ -55,6 +67,12 @@ void con_putChars(Console* console, const char* chars, size_t numChars)
             }
         }
     }
+}
+
+void con_putCString(Console* console, const char* chars)
+{
+    // TODO: The limit is rather arbitrary
+    con_putChars(console, chars, klib_strnlen(chars, 1000));
 }
 
 void con_newLine(Console* console)

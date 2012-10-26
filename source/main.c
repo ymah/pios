@@ -45,6 +45,24 @@ static bool SOSSequence[] =
 
 #endif
 
+
+static FrameBufferDescriptor fbDescriptor =
+{
+    .width           = 1024,
+    .height          =  768,
+    .vWidth          = 1024,
+    .vHeight         =  768,
+    .pitch           =    0,	// To be filled in by GPU
+    .bitDepth        =   16,
+    .x               =    0,
+    .y               =    0,
+    .frameBufferPtr  = NULL,	// To be filled in by GPU
+    .frameBufferSize =    0		// To be filled in by GPU
+};
+
+static FrameBufferDescriptor* alignedDescriptor = NULL;
+
+
 /*!
  *  @brief Run a sequence of LED flashes.
  *  @param iterations how many times to run the sequence.  If negative, we 
@@ -68,7 +86,7 @@ void runRainbow(void);
 void runDrawTest(void);
 void displayTags(void);
 
-static void printTag(GDIContext* context, Tag* tagToPrint);
+static void printTag(Tag* tagToPrint);
 
 #if defined OK_EXERCISE
 
@@ -102,6 +120,11 @@ int MAIN(int argc, char** argv)
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
+    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+    gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
+    gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
+    gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
+    con_initialiseConsole(context);
     setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
 
     if (fbError == FB_OK)
@@ -123,22 +146,6 @@ int MAIN(int argc, char** argv)
 }
 
 #endif
-
-static FrameBufferDescriptor fbDescriptor =
-{
-    .width           = 1024,
-    .height          =  768,
-    .vWidth          = 1024,
-    .vHeight         =  768,
-    .pitch           =    0,	// To be filled in by GPU
-    .bitDepth        =   16,
-    .x               =    0,
-    .y               =    0,
-    .frameBufferPtr  = NULL,	// To be filled in by GPU
-    .frameBufferSize =    0		// To be filled in by GPU
-};
-
-static FrameBufferDescriptor* alignedDescriptor = NULL;
 
 FBError initFrameBuffer()
 {
@@ -267,38 +274,51 @@ void runLEDSequence(int iterations,
 
 void displayTags()
 {
-    TagList* tagList = pmm_getTagList(pmm_getPhysicalMemoryMap());
-    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
-    gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
-    gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
-    gdi_fillFrame(context, GDI_BACKGROUND);
-    
-    GDIPoint textPoint = { .x = 0, .y = 0 };
-    gdi_drawChar(context, textPoint, 'A');
-    
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    TagList* tagList = pmm_getTagList(memoryMap);
     /*
      *  Iterate athrough and print the tags
      */
     Tag* tag = tag_getFirstTag(tagList);
     while (tag_type(tag) != TAG_TERMINATOR)
     {
-        printTag(context, tag);
+        printTag(tag);
         tag = tag_getNextTag(tagList, tag);
     }
 }
 
-static void printTag(GDIContext* context, Tag* tagToPrint)
+static void printTag(Tag* tagToPrint)
 {
-    Console* console = con_initialiseConsole(context);
     size_t tagLength = tag_length(tagToPrint);
     uint32_t tagType = tag_type(tagToPrint);
     tagToPrint++;
+    Console* console = con_getTheConsole();
     con_putHex32(console, tagType);
     con_putChars(console, " ", 1);
     con_putHex32(console, (uint32_t) tagLength);
     con_putChars(console, " ", 1);
     switch (tagType)
     {
+        case TAG_CORE:
+            {
+                TagCore* core = (TagCore*) tagToPrint;
+                con_putCString(console, "flags=");
+                con_putHex32(console, core->flags);
+                con_putCString(console, ", page size=");
+                con_putHex32(console, core->pageSize);
+                con_putCString(console, ", root dev=");
+                con_putHex32(console, core->rootDeviceNo);
+            }
+            break;
+        case TAG_MEM:
+            {
+                TagMem* mem = (TagMem*) tagToPrint;
+                con_putCString(console, "size=");
+                con_putHex32(console, (uint32_t)mem->size);
+                con_putCString(console, ", start=");
+                con_putHex32(console, (uint32_t)mem->start);                
+            }
+            break;
         case TAG_CMDLINE:
             {
                 const char* commandLine = (const char*) tagToPrint;
@@ -310,6 +330,7 @@ static void printTag(GDIContext* context, Tag* tagToPrint)
             break;
             
         default:
+            con_putChars(console, "Don't understand this tag", 25);
             break;
     }
     con_newLine(console);
