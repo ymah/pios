@@ -328,6 +328,29 @@ static void printTag(Tag* tagToPrint)
                                           tagLength * sizeof(uint32_t)));
             }
             break;
+        case TAG_VIDEOTEXT:
+            {
+                TagVideo* video = (TagVideo*) tagToPrint;
+                con_putCString(console, "(x,y)=(");
+                con_putHex8(console, video->width);
+                con_putCString(console, ",");
+                con_putHex8(console, video->height);
+                con_putCString(console, "), page=");
+                con_putHex16(console, video->page);
+                con_putCString(console, ", mode=");
+                con_putHex8(console, video->mode);
+                con_putCString(console, ", cols=");
+                con_putHex8(console, video->cols);
+                con_putCString(console, ", ega bx=");
+                con_putHex16(console, video->egaBx);
+                con_putCString(console, ", lines=");
+                con_putHex8(console, video->lines);
+                con_putCString(console, ", is VGA=");
+                con_putHex8(console, video->isVga);
+                con_putCString(console, ", points=");
+                con_putHex16(console, video->page);                
+            }
+            break;
             
         default:
             con_putChars(console, "Don't understand this tag", 25);
