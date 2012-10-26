@@ -114,6 +114,12 @@ typedef struct GDIRect GDIRect;
 GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor);
 
 /*!
+ *  @brief Gets the current GDI context.
+ *  @return The current context unless it has not been initialised yet.
+ */
+GDIContext* gdi_currentContext();
+
+/*!
  *  @brief Saves the current state of the graphics context.
  *  @param currentContext Context to save.
  *  @return A copy of currentContext

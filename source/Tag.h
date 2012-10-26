@@ -104,8 +104,8 @@ typedef struct TagCore TagCore;
  */
 struct TagMem
 {
-    uint32_t size;
-    uint32_t start;
+    uintptr_t size;
+    uintptr_t start;
 };
 typedef struct TagMem TagMem;
 /*!

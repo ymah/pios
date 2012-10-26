@@ -49,6 +49,38 @@
     strcpy((char*) tagHeader, commandBytes); // We know there's room
 }
 
+-(void) addCoreFlags: (uint32_t) flags
+  			pageSize: (uint32_t) pageSize
+             rootDev: (uint32_t) rootDev
+{
+    size_t commandOffset = [theBytes length];
+    uint32_t tagSizeInBytes = sizeof(Tag) + 3 * sizeof(uint32_t);
+    [theBytes increaseLengthBy: tagSizeInBytes];
+    Tag* tagHeader = [theBytes mutableBytes] + commandOffset;
+    tagHeader->length = tagSizeInBytes / sizeof(uint32_t);
+    tagHeader->tagType = TAG_CORE;
+    tagHeader++;
+    uint32_t* bodyPointer = (uint32_t*)tagHeader;
+    *bodyPointer++ = flags;
+    *bodyPointer++ = pageSize;
+    *bodyPointer = rootDev;
+}
+
+-(void) addMemorySize: (uintptr_t) size start: (uintptr_t) start
+{
+    size_t commandOffset = [theBytes length];
+    uint32_t tagSizeInBytes = sizeof(Tag) + 2 * sizeof(uintptr_t);
+    [theBytes increaseLengthBy: tagSizeInBytes];
+    Tag* tagHeader = [theBytes mutableBytes] + commandOffset;
+    tagHeader->length = tagSizeInBytes / sizeof(uint32_t);
+    tagHeader->tagType = TAG_MEM;
+    tagHeader++;
+    uintptr_t* bodyPointer = (uintptr_t*)tagHeader;
+    *bodyPointer++ = size;
+    *bodyPointer++ = start;
+}
+
+
 -(void) addTerminator
 {
     size_t commandOffset = [theBytes length];

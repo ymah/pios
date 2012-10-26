@@ -77,6 +77,7 @@ void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
     });
     defaultMap.stopFlag = false;
 }
+
 #endif
 
 PhysicalMemoryMap* pmm_getPhysicalMemoryMap()

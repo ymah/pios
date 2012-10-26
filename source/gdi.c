@@ -40,7 +40,8 @@ static void pixelCopy16(uint8_t* start, uint32_t newValue, size_t pixelCount);
 static void pixelCopy32(uint8_t* start, uint32_t newValue, size_t pixelCount);
 
 
-GDIContext theContexts[MAX_CONTEXTS] = { { 0 } };
+static GDIContext theContexts[MAX_CONTEXTS] = { { 0 } };
+static GDIContext* currentContext = NULL;
 
 GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
 {
@@ -63,7 +64,13 @@ GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
         default:
             ret = NULL;
     }
-    return ret;
+    currentContext = ret;
+    return currentContext;
+}
+
+GDIContext* gdi_currentContext()
+{
+    return currentContext;
 }
 
 bool gdi_setColour(GDIContext* context,
