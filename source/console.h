@@ -74,6 +74,8 @@ void con_putHex32(Console* console, uint32_t aNumber);
 
 void con_putHex16(Console* console, uint16_t aNumber);
 void con_putHex8(Console* console, uint8_t aNumber);
+void con_putDecimal64(Console* console, uint64_t number);
+
 
 void con_gotoLineStart(Console* console);
 

@@ -168,6 +168,26 @@ void con_clearCurrentLine(Console* console)
     gdi_fillRect(console->context, currentLineRect, GDI_BACKGROUND);
 }
 
+#define NUM_DEC_DIGITS_64	20
+
+void con_putDecimal64(Console* console, uint64_t number)
+{
+    char digits[NUM_DEC_DIGITS_64];
+    klib_memset(digits, ' ', sizeof digits);
+    
+    size_t digitPosition = NUM_DEC_DIGITS_64 - 1;
+    while (number > 0)
+    {
+        uint8_t thisDigit = number % 10;
+        digits[digitPosition] = '0' + thisDigit;
+        number /= 10;
+        digitPosition--;
+    }
+    
+    con_putChars(console, digits, NUM_DEC_DIGITS_64);
+    
+}
+
 void con_gotoLineStart(Console* console)
 {
     console->cursorPos.x = 0;
