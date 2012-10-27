@@ -134,8 +134,31 @@ int MAIN(int argc, char** argv)
 #elif defined SCREEN_02
         runDrawTest();
 #else
+//        GDIRect digitRect = { .origin = { .x = 0, .y = 0 },
+//            				 .size = { .width = 8, .height = 16 } };
+//        gdi_setColour(context, GDI_FILL, gdi_makeColour(0, 0, 255, 255));
+//        
+//        uint8_t* fontBase = pmm_getSystemFont(memoryMap);
+//        uintptr_t fontBaseInt = (uintptr_t) fontBase;
+//        for (int i = 0 ; i < 32 ; ++i)
+//        {
+//            if ((fontBaseInt & 0x80000000) == 0)
+//            {
+//                gdi_fillRect(context, digitRect, GDI_FILL);
+//            }
+//            else
+//            {
+//                gdi_fillRect(context, digitRect, GDI_PEN);
+//            }
+//            digitRect.origin.x += digitRect.size.width + 2;
+//            fontBaseInt <<= 1;
+//        }
+//#if defined PIOS_SIMULATOR
+//        fprintf(stdout, "0x%08x\n", (unsigned int)fontBase);
+//#endif
+        
         displayTags();
-        while(1)
+        while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
             con_gotoLineStart(console);

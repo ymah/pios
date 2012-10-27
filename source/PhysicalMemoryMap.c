@@ -15,7 +15,7 @@
 
 #else
 
-extern uint8_t* fontMap;
+extern uint8_t fontMap;
 
 #endif
 
@@ -49,8 +49,6 @@ struct PhysicalMemoryMap
     volatile bool stopFlag;
 };
 
-static Page pageSpace[ALLOCATABLE_PAGES + 1];
-
 struct PhysicalMemoryMap defaultMap =
 {
     (SystemTimer*) 0x20003000,
@@ -61,6 +59,8 @@ struct PhysicalMemoryMap defaultMap =
     NULL,	// system font
     false
 };
+
+static Page pageSpace[ALLOCATABLE_PAGES + 1];
 
 #if defined PIOS_SIMULATOR
 void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
@@ -83,10 +83,10 @@ void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
 PhysicalMemoryMap* pmm_getPhysicalMemoryMap()
 {
 #if !defined PIOS_SIMULATOR
-    if (defaultMap.systemFont == NULL)
-    {
-        defaultMap.systemFont = fontMap;
-    }
+//    if (defaultMap.systemFont == NULL)
+//    {
+        defaultMap.systemFont = &fontMap;
+//    }
 #endif
     return &defaultMap;
 }
