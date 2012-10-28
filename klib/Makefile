@@ -8,28 +8,15 @@
 # The toolchain to use. arm-none-eabi works, but there does exist 
 # arm-bcm2708-linux-gnueabi.
 ARMGNU ?= /opt/local/bin/arm-none-eabi
-# Mac Ports has arm-elf
-
-#ARMGNU ?= /opt/local/bin/arm-elf
-
 
 # The intermediate directory for compiled object files.
-BUILD = build/
+BUILD = ../build/
 
 # The directory in which source files are stored.
-SOURCE = source/
+SOURCE = ./
 
 # The name of the output file to generate.
-TARGET = kernel.img
-
-# The name of the assembler listing file to generate.
-LIST = kernel.list
-
-# The name of the map file to generate.
-MAP = kernel.map
-
-# The name of the linker script to use.
-LINKER = kernel.ld
+TARGET = $(BUILD)libklib.a
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
@@ -38,25 +25,14 @@ C_OBJECTS   := $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 OBJECTS     := $(ASM_OBJECTS) $(C_OBJECTS)
 
 # Rule to make everything.
-all: $(TARGET) $(LIST)
+all: $(TARGET)
 
 # Rule to remake everything. Does not include clean.
 rebuild: all
 
-# Rule to make the listing file.
-$(LIST) : $(BUILD)output.elf
-	$(ARMGNU)-objdump -d $(BUILD)output.elf > $(LIST)
-
 # Rule to make the image file.
-$(TARGET) : $(BUILD)output.elf
-	$(ARMGNU)-objcopy $(BUILD)output.elf -O binary $(TARGET) 
-
-# Rule to make the elf file.
-$(BUILD)output.elf : $(OBJECTS) $(LINKER) klib-lib
-	$(ARMGNU)-ld --no-undefined $(OBJECTS) -Map $(MAP) -L$(BUILD) -o $(BUILD)output.elf -T $(LINKER) -lklib
-
-klib-lib: 
-	(cd klib ; make)
+$(TARGET) : $(OBJECTS)
+	$(ARMGNU)-ar -r $(TARGET) $(OBJECTS)
 
 # Rule to make the object files.
 $(BUILD)%.o: $(SOURCE)%.s
@@ -65,7 +41,7 @@ $(BUILD)%.o: $(SOURCE)%.s
 	
 $(BUILD)%.o : $(SOURCE)%.c
 	mkdir -p $(BUILD)
-	$(ARMGNU)-gcc -std=c99 -Iklib -c -o $@ $?
+	$(ARMGNU)-gcc -std=c99 -c -o $@ $?
 
 
 # Rule to clean files.

@@ -224,7 +224,6 @@
 			children = (
 				FC4AA138161A05C10060DD5E /* PhysicalMemoryMap.h */,
 				FC2C81731610CDFA003B6ECB /* main.c */,
-				FC2C81721610CB4C003B6ECB /* bptypes.h */,
 				FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */,
 				FC147FF216351E6E00915560 /* Tag.h */,
 				FC147FF416351E8300915560 /* Tag.c */,
@@ -237,10 +236,10 @@
 			isa = PBXGroup;
 			children = (
 				FC3C588C1625479E00FE6594 /* klib.h */,
+				FC2C81721610CB4C003B6ECB /* bptypes.h */,
 				FC3C588D162547AE00FE6594 /* klib.c */,
 			);
-			name = klib;
-			path = source;
+			path = klib;
 			sourceTree = "<group>";
 		};
 		FCB0F968160061BE00745F21 = {
