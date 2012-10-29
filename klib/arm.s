@@ -1,4 +1,145 @@
 .section .text
+
+.globl	__aeabi_uidivmod
+.globl	__aeabi_uidiv
+
+@
+@  This is a 32 bit unsigned divide and modulus that is used by the EABI 
+@  compiler to emulate division (the ARM CPU has no integer division).  
+@  From disassembling a call to it, it appears that on entry:
+@  r0 is numerator
+@  r1 is divisor
+@
+@  On exit:
+@  r0 is quotient
+@  r1 is remainder
+@
+@  the functioncalculates both the quotient and the remainder but can be used 
+@  as a function to calculate just the quotient since the ABI allows us to zap
+@  r1 even if we are not returning it.
+@ 
+@  The algorithm is a fairly standard long division algorithm.
+@
+@	quotient = 0
+@	shift up divisor so that MSB set aligns with the MSB set of the numerator
+@	calculate iterations needed (number of shifts + 1)
+@
+@	while more iterations needed
+@		shift quotient left
+@		if numerator > divisor
+@			set 1 in bottom bit of quotient
+@			subtract divisor from numerator
+@		shift divisor right
+@
+@	remainder = numerator
+@
+@   Before we do that though, there is a case where the divisor is greater than
+@   the numerator where the quotient will be zero and the remainder will be
+@   the numerator.  We also optimise out the case where the numerator and 
+@   denominator are equal.
+@
+
+__aeabi_uidiv:
+__aeabi_uidivmod:
+@
+@  If the numerator < divisor, the quotient is 0 and the remainder is the 
+@  numerator
+@
+	cmp		r0, r1	
+	beq		uidivmod_equalCase	
+	bpl		uidivmod_standardCase
+@
+@   Case where the numerator is smaller than the denominator
+@
+	mov		r1, r0		@ remainder = numerator
+	mov		r0, #0		@ quotient = 0
+	bx		lr			@ We are done, bailing
+
+uidivmod_equalCase:
+@
+@   Case where numerator and denominator are equal 
+@	
+	mov		r0, #1		@ quotient = 1
+	mov		r1, #0		@ remainder = 0
+	bx 		lr
+	
+uidivmod_standardCase:
+@
+@   r2 will be used as the quotient.
+@   r6 and r7 are used to calculate the initial bit shift
+@
+	push	{ r6, r7, fp, lr}
+@
+@ quotient = 0
+@
+	mov		r2, #0
+@
+@ shift up divisor so that MSB set aligns.  At this point we know the numerator
+@ is bigger than the divisor so we do not need to worry about negative shifts.
+@
+	clz		r6, r0				@ Calculate the leading zeros of the numerator	
+	clz		r7, r1				@ Calculate leading zeros of divisor
+
+@
+@ calculate and perform shift on divisor.  The shift might be 0, so that is 
+@  tested. The shift is done by calculating and getting the number of bits
+@  shifted out of the low word and orring them with the shifted top word
+@
+uidivmod_LZDiff:
+	subs	r6, r6, r7			@ Calculate the required shift
+	beq		uidivmod_calcIterations
+
+	mov		r1, r1, LSL r6		@ bottom word shifted
+	
+uidivmod_calcIterations:
+	adds	r6, r6, #1			@ Iterations is 1  + number of shifts
+	b		uidivmod_loopTest
+
+@
+@ while more iterations needed
+@	
+uidivmod_loop:
+@
+@  Shift quotient left 1 bit
+@
+	mov		r2, r2, LSL #1		@ Shift low word, top bit goes to carry
+@
+@ 	if numerator > divisor
+@
+	cmp		r0, r1
+	bls		uidivmod_setOneEnd
+
+uidivmod_setOne:
+@
+@ 	set 1 in bottom bit of quotient and subtract the divisor from the numerator
+@
+	orr		r2,	r2, #1
+	sub		r0, r0, r1			@ low word setting carry if necessary
+	
+uidivmod_setOneEnd:
+@
+@ 	shift divisor right 1 bit
+@
+	mov		r2, r2, LSR #1
+	
+	subs	r6, r6, #1			@   subtract 1 from iterations
+uidivmod_loopTest:
+	bne		uidivmod_loop
+
+uidivmod_loopExit:
+@
+@   Remainder is what is left of the numerator
+@
+	mov		r1, r0
+@
+@   quotient in r0
+@
+	mov		r0,	r2
+
+__CLEAN_UP_aeabi_uidivmod:
+	pop 	{ r6, r7, fp, lr }
+	bx		lr	
+
 .globl	__aeabi_uldivmod
 
 @
@@ -162,5 +303,5 @@ uldivmod_loopExit:
 	mov		r0,	r4
 
 __CLEAN_UP_aeabi_uldivmod:
-	pop 	{r4, r5, r6, r7, fp, lr }
+	pop 	{r4, r5, r6, r7, r8, fp, lr }
 	bx		lr	

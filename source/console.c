@@ -115,6 +115,13 @@ void con_putHex32(Console* console, uint32_t aNumber)
     con_putChars(console, digits, NUM_DIGITS);
 }
 
+void con_putHex64(Console* console, uint64_t aNumber)
+{
+    con_putHex32(console, aNumber >> 32);
+    con_putHex32(console, aNumber & 0xFFFFFFFF);
+}
+
+
 void con_putHex16(Console* console, uint16_t aNumber)
 {
     char digits[NUM_DIGITS_16];

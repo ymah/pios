@@ -85,6 +85,8 @@ static FBError initFrameBuffer(void);
 void runRainbow(void);
 void runDrawTest(void);
 void displayTags(void);
+void divisionTest(void);
+
 
 static void printTag(Tag* tagToPrint);
 
@@ -156,7 +158,7 @@ int MAIN(int argc, char** argv)
 //#if defined PIOS_SIMULATOR
 //        fprintf(stdout, "0x%08x\n", (unsigned int)fontBase);
 //#endif
-        
+        divisionTest();
         displayTags();
         while(!pmm_getStopFlag(memoryMap))
         {
@@ -409,4 +411,31 @@ static void printTag(Tag* tagToPrint)
     fprintf(stdout, "type %d, length %d\n", (int) tagType, (int) tagLength);
 #endif
 }
+
+void divisionTest(void)
+{
+    Console* console = con_getTheConsole();
+    
+    uint64_t number64 = 12345 * 56789 + 3;
+    uint64_t divisor64 = 56789;
+    
+    uint64_t quotient64 = number64 / divisor64;
+    uint64_t remainder64 = number64 % divisor64;
+    con_putHex64(console, quotient64);
+    con_putCString(console, " ");
+    con_putHex64(console, remainder64);
+    con_newLine(console);
+    
+    uint32_t number32 = 1234 * 567 + 3;
+    uint32_t divisor32 = 567;
+    
+    uint32_t quotient32 = number32 / divisor32;
+    uint32_t remainder32 = number32 % divisor32;
+    con_putHex32(console, quotient32);
+    con_putCString(console, " ");
+    con_putHex32(console, remainder32);
+    con_newLine(console);
+
+}
+
 
