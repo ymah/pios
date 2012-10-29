@@ -58,6 +58,9 @@ typedef unsigned long uintptr_t;
 #if !defined MIN
 #define MIN(x,y) ((x)<(y)?(x):(y))
 #endif
+#if !defined MAX
+#define MAX(x,y) ((x)>(y)?(x):(y))
+#endif
 
 typedef uint16_t PiosChar;
 

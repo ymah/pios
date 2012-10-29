@@ -177,10 +177,12 @@ void con_clearCurrentLine(Console* console)
 
 #define NUM_DEC_DIGITS_64	20
 
-void con_putDecimal64(Console* console, uint64_t number)
+void con_putDecimal64(Console* console, uint64_t number, size_t minWidth)
 {
     char digits[NUM_DEC_DIGITS_64];
-    klib_memset(digits, ' ', sizeof digits);
+    minWidth = MAX(MIN(minWidth, sizeof digits), 1);
+    klib_memset(digits, ' ', (sizeof digits) - minWidth);
+    klib_memset(digits + (sizeof digits) - minWidth, '0', minWidth);
     
     size_t digitPosition = NUM_DEC_DIGITS_64 - 1;
     while (number > 0)
@@ -190,8 +192,12 @@ void con_putDecimal64(Console* console, uint64_t number)
         number /= 10;
         digitPosition--;
     }
-    
-    con_putChars(console, digits, NUM_DEC_DIGITS_64);
+    int start = 0;
+    while (digits[start] == ' ' && start < NUM_DEC_DIGITS_64 - 1)
+    {
+        start++;
+    }
+    con_putChars(console, &digits[start], NUM_DEC_DIGITS_64 - start);
     
 }
 
