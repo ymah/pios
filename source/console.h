@@ -75,7 +75,14 @@ void con_putHex64(Console* console, uint64_t aNumber);
 
 void con_putHex16(Console* console, uint16_t aNumber);
 void con_putHex8(Console* console, uint8_t aNumber);
-void con_putDecimal64(Console* console, uint64_t number);
+
+/*!
+ *  @brief Put a decimal number out
+ *  @param console Console to write to
+ *  @param number 64 bit number to write.
+ *  @param minWidth Minimum width of the number.  Will be padded with zeros.
+ */
+void con_putDecimal64(Console* console, uint64_t number, size_t minWidth);
 
 
 void con_gotoLineStart(Console* console);

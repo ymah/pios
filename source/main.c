@@ -165,12 +165,10 @@ int MAIN(int argc, char** argv)
             uint64_t theTime = st_microSeconds(timer);
             con_gotoLineStart(console);
             con_clearCurrentLine(console);
-            con_putDecimal64(console, theTime / 1000000);
+            con_putDecimal64(console, theTime / 1000000, 1);
             con_putCString(console, ".");
-            con_putDecimal64(console, theTime % 1000000);
-            theTime <<= 10;
-            con_putDecimal64(console, theTime);
-            st_microsecondSpin(timer, 200000);
+            con_putDecimal64(console, theTime % 1000000, 6);
+            st_microsecondSpin(timer, 80000);
         }
 #endif
     }
