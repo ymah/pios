@@ -166,6 +166,8 @@ int MAIN(int argc, char** argv)
             con_putDecimal64(console, theTime / 1000000);
             con_putCString(console, ".");
             con_putDecimal64(console, theTime % 1000000);
+            theTime <<= 10;
+            con_putDecimal64(console, theTime);
             st_microsecondSpin(timer, 200000);
         }
 #endif
