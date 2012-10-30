@@ -78,11 +78,10 @@ enum ColourBits
 {
     @autoreleasepool
     {
-        [self doInitialisation];
         @try
         {
+            [self doInitialisation];
             [self notifyStarted];
-            
             [self simThreadMain];
         }
         @catch (NSException* exception)

@@ -152,9 +152,9 @@ fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor)
     uintptr_t messageToSend = (uintptr_t)fbDescriptor;
 
     FBError ret = FB_OK;
-    if (fbDescriptor->width >= MAX_PIXEL_WIDTH
-        || fbDescriptor->height >= MAX_PIXEL_HEIGHT
-        || fbDescriptor->bitDepth >= MAX_BIT_DEPTH)
+    if (fbDescriptor->width > MAX_PIXEL_WIDTH
+        || fbDescriptor->height > MAX_PIXEL_HEIGHT
+        || fbDescriptor->bitDepth > MAX_BIT_DEPTH)
     {
         ret = FB_PARAMETER;
     }

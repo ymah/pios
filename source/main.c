@@ -53,7 +53,7 @@ static FrameBufferDescriptor fbDescriptor =
     .vWidth          = 1024,
     .vHeight         =  768,
     .pitch           =    0,	// To be filled in by GPU
-    .bitDepth        =   16,
+    .bitDepth        =   32,
     .x               =    0,
     .y               =    0,
     .frameBufferPtr  = NULL,	// To be filled in by GPU
@@ -122,15 +122,16 @@ int MAIN(int argc, char** argv)
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
     FBError fbError = initFrameBuffer();
-    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
-    gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
-    gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
-    gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
-    Console* console = con_initialiseConsole(context);
-    setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
 
     if (fbError == FB_OK)
     {
+        GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+        gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
+        gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
+        gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
+        gdi_fillFrame(context, GDI_BACKGROUND);
+        Console* console = con_initialiseConsole(context);
+        setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
 #if defined SCREEN_01
         runRainbow();
 #elif defined SCREEN_02
