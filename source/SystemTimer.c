@@ -51,9 +51,6 @@ void st_microsecondTick(SystemTimer* timer)
 
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 {
-#if defined PIOS_SIMULATOR
-    fprintf(stderr, "Spinning for %d us\n", (int) microseconds);
-#endif
     uint32_t startTime = timer->counterLow;
     volatile int foo = 0;
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
@@ -63,9 +60,6 @@ void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
     {
         foo++;	// Need to make sure the compiler does not optimise out the loop
     }
-#if defined PIOS_SIMULATOR
-    fprintf(stderr, "Spun for %d us\n", (int) microseconds);
-#endif
 }
 
 uint64_t st_microSeconds(SystemTimer* timer)
