@@ -11,7 +11,7 @@
  * .text = 0x00008000 +
  */
 _start:
-		mov	sp,#0x8000	@@ Set up the stack pointer
+		ldr	sp,=stackTop	@@ Set up the stack pointer
 		mov	r0,#1
 		ldr	r1,=kernelArgs
 		bl	main

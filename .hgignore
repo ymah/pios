@@ -2,5 +2,6 @@
 docs
 build
 kernel\..*
+kernel-qemu\..*
 BakingPi.xcodeproj/xcuserdata/
 BakingPi.xcodeproj/project.xcworkspace/xcuserdata
