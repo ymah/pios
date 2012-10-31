@@ -14,26 +14,26 @@ ARMGNU ?= /opt/local/bin/arm-none-eabi
 
 
 # The intermediate directory for compiled object files.
-BUILD = build/
+BUILD = build.qemu/
 
 # The directory in which source files are stored.
 SOURCE = source/
 
 # The name of the output file to generate.
-TARGET = kernel.img
+TARGET = kernel-qemu.img
 
 # The name of the assembler listing file to generate.
-LIST = kernel.list
+LIST = kernel-qemu.list
 
 # The name of the map file to generate.
-MAP = kernel.map
+MAP = kernel-qemu.map
 
 # The name of the linker script to use.
-LINKER = kernel.ld
+LINKER = kernel-qemu.ld
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
-ASM_OBJECTS := $(BUILD)start.o $(BUILD)font.o
+ASM_OBJECTS := $(BUILD)start-qemu.o $(BUILD)font.o
 C_OBJECTS   := $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 OBJECTS     := $(ASM_OBJECTS) $(C_OBJECTS)
 
@@ -53,7 +53,7 @@ $(TARGET) : $(BUILD)output.elf
 
 # Rule to make the elf file.
 $(BUILD)output.elf : $(OBJECTS) $(LINKER) klib-lib
-	$(ARMGNU)-ld --no-undefined $(OBJECTS) -Map $(MAP) -L$(BUILD) -o $(BUILD)output.elf -T $(LINKER) -lklib
+	$(ARMGNU)-ld --no-undefined $(OBJECTS) -Map $(MAP) -L$(BUILD) -Lbuild -o $(BUILD)output.elf -T $(LINKER) -lklib
 
 klib-lib: 
 	(cd klib ; make)
