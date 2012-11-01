@@ -65,7 +65,7 @@ $(BUILD)%.o: $(SOURCE)%.s
 	
 $(BUILD)%.o : $(SOURCE)%.c
 	mkdir -p $(BUILD)
-	$(ARMGNU)-gcc -std=c99 -Iklib -c -o $@ $?
+	$(ARMGNU)-gcc -std=c99 -DQEMU=1 -Iklib -c -o $@ $?
 
 
 # Rule to clean files.

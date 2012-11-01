@@ -112,8 +112,10 @@ extern uint8_t stackTop;
 
 int MAIN(int argc, char** argv)
 {
+    FBError fbError = FB_OK;
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     pmm_initialiseFreePages(memoryMap);
+#if !defined QEMU
     SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
     st_microsecondSpin(timer, 200000); // and wait 1 second
     GPIO* gpio = pmm_getGPIOAddress(memoryMap);
@@ -123,10 +125,12 @@ int MAIN(int argc, char** argv)
 
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
-    FBError fbError = initFrameBuffer();
+    fbError = initFrameBuffer();
+#endif
 
     if (fbError == FB_OK)
     {
+#if !defined QEMU
         GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
         gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
         gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
@@ -138,30 +142,10 @@ int MAIN(int argc, char** argv)
         runRainbow();
 #elif defined SCREEN_02
         runDrawTest();
-#else
-//        GDIRect digitRect = { .origin = { .x = 0, .y = 0 },
-//            				 .size = { .width = 8, .height = 16 } };
-//        gdi_setColour(context, GDI_FILL, gdi_makeColour(0, 0, 255, 255));
-//        
-//        uint8_t* fontBase = pmm_getSystemFont(memoryMap);
-//        uintptr_t fontBaseInt = (uintptr_t) fontBase;
-//        for (int i = 0 ; i < 32 ; ++i)
-//        {
-//            if ((fontBaseInt & 0x80000000) == 0)
-//            {
-//                gdi_fillRect(context, digitRect, GDI_FILL);
-//            }
-//            else
-//            {
-//                gdi_fillRect(context, digitRect, GDI_PEN);
-//            }
-//            digitRect.origin.x += digitRect.size.width + 2;
-//            fontBaseInt <<= 1;
-//        }
-//#if defined PIOS_SIMULATOR
-//        fprintf(stdout, "0x%08x\n", (unsigned int)fontBase);
-//#endif
+#endif
+#endif	// QEMU
         divisionTest();
+#if !defined QEMU
         displayTags();
         while(!pmm_getStopFlag(memoryMap))
         {
@@ -177,7 +161,9 @@ int MAIN(int argc, char** argv)
     }
     else
     {
+#if !defined QEMU
         runLEDFlash(10, (int) fbError);
+#endif
     }
     
     return 0;
@@ -415,28 +401,32 @@ static void printTag(Tag* tagToPrint)
 
 void divisionTest(void)
 {
+#if !defined QEMU
     Console* console = con_getTheConsole();
+#endif
     
     uint64_t number64 = 12345 * 56789 + 3;
     uint64_t divisor64 = 56789;
     
     uint64_t quotient64 = number64 / divisor64;
     uint64_t remainder64 = number64 % divisor64;
+#if !defined QEMU
     con_putHex64(console, quotient64);
     con_putCString(console, " ");
     con_putHex64(console, remainder64);
     con_newLine(console);
-    
+#endif
     uint32_t number32 = 1234 * 567 + 3;
     uint32_t divisor32 = 567;
     
     uint32_t quotient32 = number32 / divisor32;
     uint32_t remainder32 = number32 % divisor32;
+#if !defined QEMU
     con_putHex32(console, quotient32);
     con_putCString(console, " ");
     con_putHex32(console, remainder32);
     con_newLine(console);
-
+#endif
 }
 
 
