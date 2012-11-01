@@ -108,6 +108,8 @@ int MAIN(int argc, char** argv)
 
 #else
 
+extern uint8_t stackTop;
+
 int MAIN(int argc, char** argv)
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();

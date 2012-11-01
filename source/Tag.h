@@ -232,6 +232,15 @@ TagType tag_type(Tag* tag);
  */
 size_t tag_length(Tag* tag);
 
-
+/*!
+ *  @brief Finds the supplied size of the memory.
+ *  This is a bit broken at the moment because it assumes memory is contiguous.
+ *  Also, if you have 4GB RAM, it will appear like you have none at all.  But 
+ *  that is a limitation of the tag structure anyway.
+ *  @param tagList The list of tags to search.
+ *  @return a pointer that points to the first address that is not in RAM or 
+ *  0 if there was no memory tag.
+ */
+uintptr_t tag_memoryTop(TagList* tagList);
 
 #endif

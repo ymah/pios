@@ -8,6 +8,8 @@
 
 #include "Tag.h"
 
+#define TAG_BODY(TAG, TYPE)	((TYPE*)((TAG) + 1))
+
 struct TagList
 {
     Tag* firstTag;
@@ -48,3 +50,22 @@ Tag* tag_getNextTag(TagList* tagList, Tag* currentTag)
     return ret;
 }
 
+uintptr_t tag_memoryTop(TagList* tagList)
+{
+    uintptr_t theTop = 0;
+    
+    Tag* tag = tag_getFirstTag(tagList);
+    while (tag != NULL && tag_type(tag) != TAG_TERMINATOR)
+    {
+        if (tag_type(tag) == TAG_MEM)
+        {
+            uintptr_t currentTop = TAG_BODY(tag, TagMem)->size;
+            if (currentTop > theTop)
+            {
+                theTop = currentTop;
+            }
+        }
+        tag = tag_getNextTag(tagList, tag);
+    }
+    return theTop;
+}
