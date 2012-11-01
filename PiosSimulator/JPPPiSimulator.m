@@ -11,6 +11,17 @@
 #import "gpio.h"
 #import "JPPiArmTags.h"
 
+/*
+ *  We need some storage to emulate the free heap pages.  We have a uint8_t
+ *  array that pretends to be the top of the area allocated to the 
+ *
+ *  Alignment is not important because the physical memory manager adjusts the 
+ *  pointers it uses to be page aligned.
+ *
+ */
+uint8_t heap[4096 * 32];	// Allocate 31 or 32 pages depending on alignment.
+
+
 @interface JPPPiSimulator ()
 
 @property (nonatomic, assign) bool powerLED;
@@ -83,7 +94,7 @@
 {
     [[self tags] clear];
     [[self tags] addCoreFlags: 1 pageSize: 4096 rootDev: 0];
-    [[self tags] addMemorySize: 0x8000 start: 0x8000];
+    [[self tags] addMemorySize: (uintptr_t)(heap + sizeof heap) start: 0x0000];
     [[self tags] addVideoTextX: 80
                              y: 25
                           page: 1

@@ -60,8 +60,6 @@ struct PhysicalMemoryMap defaultMap =
     false
 };
 
-static Page pageSpace[ALLOCATABLE_PAGES + 1];
-
 #if defined PIOS_SIMULATOR
 void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
 {
@@ -129,6 +127,20 @@ uint8_t* pmm_getSystemFont(PhysicalMemoryMap* map)
     return map->systemFont;
 }
 
+#if defined PIOS_SIMULATOR
+
+extern uint8_t heap[];
+#define stackTop (heap[0])
+
+#else
+/*
+ * Is the byte immediately above the top of the stack
+ */
+extern uint8_t stackTop;
+
+#endif
+
+
 
 void pmm_initialiseFreePages(PhysicalMemoryMap* map)
 {
@@ -136,22 +148,38 @@ void pmm_initialiseFreePages(PhysicalMemoryMap* map)
      *  First thing is to obtain a page aligned pointer.  We have an array of 
      *  pages and there will be a page boundary somewhere in the first page.
      */
-    uintptr_t pageAsInt = (uintptr_t)pageSpace;
-    pageAsInt += PIOS_PAGE_SIZE - 1;
+    uintptr_t bottomAsInt = (uintptr_t)&stackTop;
+    uintptr_t pageAsInt = bottomAsInt + PIOS_PAGE_SIZE - 1;
     pageAsInt &= PIOS_PAGE_MASK;
-    Page* pagePtr = (Page*) pageAsInt;
+    
+    TagList* tagList = pmm_getTagList(map);
+    uintptr_t topOfRAM = tag_memoryTop(tagList);
     /*
-     *  Now chain all the pages together in a linked list. All but the last page
-     *  get a pointer to the next page.  The last usable page gets a NULL pointer
+     *  We can only allocate pages to the free list if we know where the top of
+     *  RAM is.
      */
-    Page* lastPage = NULL;
-    for (int i = 0 ; i < ALLOCATABLE_PAGES ; ++i)
+    if (topOfRAM > pageAsInt)
     {
-        Page* currentPage = &pagePtr[ALLOCATABLE_PAGES - 1 - i];
-        currentPage->next = lastPage;
-        lastPage = currentPage;
+        Page* pagePtr = (Page*) pageAsInt;
+        size_t size = topOfRAM - pageAsInt;
+        size_t allocatablePages = size / PIOS_PAGE_SIZE;
+        /*
+         *  Now chain all the pages together in a linked list. All but the last page
+         *  get a pointer to the next page.  The last usable page gets a NULL pointer
+         */
+        Page* lastPage = NULL;
+        for (int i = 0 ; i < allocatablePages ; ++i)
+        {
+            Page* currentPage = &pagePtr[allocatablePages - 1 - i];
+            currentPage->next = lastPage;
+            lastPage = currentPage;
+        }
+        map->freePages = lastPage;
     }
-    map->freePages = lastPage;
+    else
+    {
+        map->freePages = NULL;
+    }
 }
 
 void* pmm_allocatePage(PhysicalMemoryMap* map)
