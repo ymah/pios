@@ -236,19 +236,44 @@ uldivmod_calcLZDivisor:
 	add		r7, r7, r8
 
 @
-@ calculate and perform shift on divisor.  The shift might be 0, so that is 
+@  calculate and perform shift on divisor.  The shift might be 0, so that is 
 @  tested. The shift is done by calculating and getting the number of bits
 @  shifted out of the low word and orring them with the shifted top word
 @
 uldivmod_LZDiff:
-	subs	r6, r6, r7			@ Calculate the required shift
+	subs	r6, r7, r6			@ Calculate the required shift
 	beq		uldivmod_calcIterations
 
+@
+@  Split the actual shift into two cases, if the required shift is greater than
+@  31:
+@      top_word = low_word << (shift - 32)
+@      low_word = 0
+@
+@  If the shift <= 31:
+@      top_word <<= shift
+@      top_word |= low_word >> (32 - shift)
+@	   low_word <<= shift
+@
+	cmp		r6, #32
+	bpl		uldivmod_bigShift
+@
+@   Shift < 32
+@	
+	mov		r3, r3, LSL	r6
 	mov		r7, #32
-	sub 	r7, r7, r6			@ find out how many bits from the low word carry
-	mov		r8, r2, LSR	r7		@ Get the bits that will carry from low to high
-	orr		r3,	r8, r3, LSL	r6	@ Top word shifted and orred with carried bits
-	mov		r2, r2, LSL r6		@ bottom word shifted
+	sub 	r7, r7, r6			@ 32 - shift
+	orr		r3,	r2,	LSR r7
+	mov 	r2,	r2,	LSL	r6
+	b		uldivmod_calcIterations
+@
+@   Shift >= 32
+@
+uldivmod_bigShift:
+	sub		r6, #32
+	mov		r3, r2, LSL	r6
+	mov		r2,	#0
+	add		r6, #32
 	
 uldivmod_calcIterations:
 	adds	r6, r6, #1			@ Iterations is 1  + number of shifts
