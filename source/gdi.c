@@ -21,7 +21,7 @@ typedef void PixelCopy(uint8_t* start, uint32_t newValue, size_t pixelCount);
 struct GDIContext
 {
     int referenceCount;
-    FrameBufferDescriptor* fbDescriptor;
+    FrameBuffer* fbDescriptor;
     uint32_t deviceColours[GDI_NUM_COLOUR_TYPES];
     GDIContext* previousContext;
     PixelCopy* pixelCopy;
@@ -43,7 +43,7 @@ static void pixelCopy32(uint8_t* start, uint32_t newValue, size_t pixelCount);
 static GDIContext theContexts[MAX_CONTEXTS] = { { 0 } };
 static GDIContext* currentContext = NULL;
 
-GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
+GDIContext* gdi_initialiseGDI(FrameBuffer* fbDescriptor)
 {
     klib_memset(theContexts, 0, sizeof theContexts);
     GDIContext* ret = &theContexts[0];
@@ -51,18 +51,26 @@ GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor)
     ret->font = pmm_getSystemFont(pmm_getPhysicalMemoryMap());
     ret->fontMinChar = 32;
     ret->fontMaxChar = 0x7E;
-    switch(fbDescriptor->bitDepth)
+    FBRequestDimensions dimensions;
+    if (fb_getDimensions(fbDescriptor, &dimensions, NULL) == FB_OK)
     {
-        case 16:
-            ret->pixelCopy = pixelCopy16;
-            ret->bytesPerPixel = 2;
-            break;
-        case 32:
-            ret->pixelCopy = pixelCopy32;
-            ret->bytesPerPixel = 4;
-			break;
-        default:
-            ret = NULL;
+        switch(dimensions.bitDepth)
+        {
+            case 16:
+                ret->pixelCopy = pixelCopy16;
+                ret->bytesPerPixel = 2;
+                break;
+            case 32:
+                ret->pixelCopy = pixelCopy32;
+                ret->bytesPerPixel = 4;
+                break;
+            default:
+                ret = NULL;
+        }
+    }
+    else
+    {
+        ret = NULL;
     }
     currentContext = ret;
     return currentContext;
@@ -87,58 +95,41 @@ bool gdi_setColour(GDIContext* context,
         uint32_t blueComponent = newColour.components.blue;
         uint32_t alphaComponent = newColour.components.alpha;
         
-        switch (context->fbDescriptor->bitDepth)
+        FBBuffer bufferDescriptor;
+        
+        fb_getDimensions(context->fbDescriptor, NULL, &bufferDescriptor);
+        uint8_t redBits		= bufferDescriptor.colourDepths[0];
+        uint8_t greenBits	= bufferDescriptor.colourDepths[1];
+        uint8_t blueBits	= bufferDescriptor.colourDepths[2];
+        uint8_t alphaBits	= bufferDescriptor.colourDepths[3];
+        
+        uint8_t alphaBitPos = 0;
+        uint8_t blueBitPos	= alphaBitPos + alphaBits;
+        uint8_t greenBitPos	= blueBitPos + blueBits;
+        uint8_t redBitPos	= greenBitPos + greenBits;
+        
+        if (GDI_BITS_PER_COLOUR > redBits)
         {
-            case 16:
-                if (GDI_BITS_PER_COLOUR > FBPF_RED_16_BITS)
-                {
-                    redComponent >>= GDI_BITS_PER_COLOUR - FBPF_RED_16_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_GREEN_16_BITS)
-                {
-                    greenComponent >>= GDI_BITS_PER_COLOUR - FBPF_GREEN_16_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_BLUE_16_BITS)
-                {
-                    blueComponent >>= GDI_BITS_PER_COLOUR - FBPF_BLUE_16_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_ALPHA_16_BITS)
-                {
-                    alphaComponent >>= GDI_BITS_PER_COLOUR - FBPF_ALPHA_16_BITS;
-                }
-
-                deviceColour = (redComponent << FBPF_RED_16_BIT_POS)
-                             | (greenComponent << FBPF_GREEN_16_BIT_POS)
-                			 | (blueComponent << FBPF_BLUE_16_BIT_POS)
-                			 | (alphaComponent << FBPF_ALPHA_16_BIT_POS);
-                break;
-            case 32:
-                if (GDI_BITS_PER_COLOUR > FBPF_RED_32_BITS)
-                {
-                    redComponent >>= GDI_BITS_PER_COLOUR - FBPF_RED_32_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_GREEN_32_BITS)
-                {
-                    greenComponent >>= GDI_BITS_PER_COLOUR - FBPF_GREEN_32_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_BLUE_32_BITS)
-                {
-                    blueComponent >>= GDI_BITS_PER_COLOUR - FBPF_BLUE_32_BITS;
-                }
-                if (GDI_BITS_PER_COLOUR > FBPF_ALPHA_16_BITS)
-                {
-                    alphaComponent >>= GDI_BITS_PER_COLOUR - FBPF_ALPHA_32_BITS;
-                }
-                
-                deviceColour = (redComponent << FBPF_RED_32_BIT_POS)
-                			 | (greenComponent << FBPF_GREEN_32_BIT_POS)
-                			 | (blueComponent << FBPF_BLUE_32_BIT_POS)
-                			 | (alphaComponent << FBPF_ALPHA_32_BIT_POS);
-                break;
-            default:
-                ret = false;
-                break;
+            redComponent >>= GDI_BITS_PER_COLOUR - redBits;
         }
+        if (GDI_BITS_PER_COLOUR > greenBits)
+        {
+            greenComponent >>= GDI_BITS_PER_COLOUR - greenBits;
+        }
+        if (GDI_BITS_PER_COLOUR > blueBits)
+        {
+            blueComponent >>= GDI_BITS_PER_COLOUR - blueBits;
+        }
+        if (GDI_BITS_PER_COLOUR > alphaBits)
+        {
+            alphaComponent >>= GDI_BITS_PER_COLOUR - alphaBits;
+        }
+        
+        deviceColour =    (redComponent << redBitPos)
+        				| (greenComponent << greenBitPos)
+        				| (blueComponent << blueBitPos)
+        				| (alphaComponent << alphaBitPos);
+
         if (ret)
         {
             context->deviceColours[colourType] = deviceColour;
@@ -152,8 +143,10 @@ GDIRect gdi_frame(GDIContext* context)
     GDIRect ret;
     ret.origin.x = 0;
     ret.origin.y = 0;
-    ret.size.width = context->fbDescriptor->width;
-    ret.size.height = context->fbDescriptor->height;
+    FBRequestDimensions dimensions;
+    fb_getDimensions(context->fbDescriptor, &dimensions, NULL);
+    ret.size.width = dimensions.width;
+    ret.size.height = dimensions.height;
     return ret;
 }
 
@@ -162,17 +155,16 @@ void gdi_fillFrame(GDIContext* context, GDIColourType colour)
 {
     if (colour < GDI_NUM_COLOUR_TYPES)
     {
-        uint8_t* bufferPtr = context->fbDescriptor->frameBufferPtr;
+        FBRequestDimensions dimensions;
+        FBBuffer buffer;
+        fb_getDimensions(context->fbDescriptor, &dimensions, &buffer);
+
+        uint8_t* bufferPtr = buffer.frameBufferPtr;
         uint32_t fillColour = context->deviceColours[colour];
-        size_t numberOfLines = context->fbDescriptor->height;
-        size_t width = context->fbDescriptor->width;
-        size_t bytesPerLine = context->fbDescriptor->pitch;
-        // TODO: can optimise by doing the whole buffer at once but requires
-        // division or substitute.
-        for (size_t line = 0 ; line < numberOfLines ; ++line)
+        for (size_t line = 0 ; line < dimensions.height ; ++line)
         {
-            context->pixelCopy(bufferPtr, fillColour, width);
-            bufferPtr += bytesPerLine;
+            context->pixelCopy(bufferPtr, fillColour, dimensions.width);
+            bufferPtr += buffer.rasterWidth;
         }
     }
 }
@@ -196,14 +188,20 @@ void gdi_fillRect(GDIContext* context, GDIRect rect, GDIColourType colour)
 
 void gdi_setPixel(GDIContext* context, GDIPoint coords, GDIColourType colour)
 {
+    FBRequestDimensions dimensions;
+    FBBuffer buffer;
+    fb_getDimensions(context->fbDescriptor, &dimensions, &buffer);
+
     if (colour < GDI_NUM_COLOUR_TYPES
-        && coords.x < context->fbDescriptor->width
-        && coords.y < context->fbDescriptor->height)
+        && dimensions.width
+        && dimensions.height)
     {
-        size_t bytesPerPixel = context->fbDescriptor->bitDepth / 8;
-        uint8_t* frameBufferPtr = context->fbDescriptor->frameBufferPtr;
-        size_t index = coords.y * context->fbDescriptor->pitch + coords.x * bytesPerPixel;
-        context->pixelCopy(frameBufferPtr + index, context->deviceColours[colour], 1);
+        size_t bytesPerPixel = dimensions.bitDepth / 8;
+        uint8_t* frameBufferPtr = buffer.frameBufferPtr;
+        size_t index = coords.y * buffer.rasterWidth + coords.x * bytesPerPixel;
+        context->pixelCopy(frameBufferPtr + index,
+                           context->deviceColours[colour],
+                           1);
     }
 }
 

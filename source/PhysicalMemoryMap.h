@@ -13,6 +13,7 @@
 #include "SystemTimer.h"
 #include "FrameBuffer.h"
 #include "Tag.h"
+#include "VideoCore.h"
 
 struct PhysicalMemoryMap;
 typedef struct PhysicalMemoryMap PhysicalMemoryMap;
@@ -73,10 +74,10 @@ GPIO* pmm_getGPIOAddress(PhysicalMemoryMap* map);
 SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
 
 /*!
- *  @brief get the address of the frame buffer postbox
+ *  @brief get the address of the VideoCore postbox
  *  @return The frame buffer postbox
  */
-FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map);
+VCPostBox* pmm_getVCPostBox(PhysicalMemoryMap* map);
 
 /*!
  *  @brief Get the list of ARM tags

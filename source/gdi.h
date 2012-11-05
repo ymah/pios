@@ -111,7 +111,7 @@ typedef struct GDIRect GDIRect;
  *  @param fbDescriptor frame buffer descriptor.
  *  @return An initial graphics context
  */
-GDIContext* gdi_initialiseGDI(FrameBufferDescriptor* fbDescriptor);
+GDIContext* gdi_initialiseGDI(FrameBuffer* fbDescriptor);
 
 /*!
  *  @brief Gets the current GDI context.

@@ -42,7 +42,7 @@ struct PhysicalMemoryMap
 {
     SystemTimer* systemTimerAddress;
     GPIO* gpioAddress;
-    FBPostBox* frameBufferPostBox;
+    VCPostBox* frameBufferPostBox;
     uint32_t* tagSpace;
     Page* freePages;
     uint8_t* systemFont;
@@ -53,7 +53,7 @@ struct PhysicalMemoryMap defaultMap =
 {
     (SystemTimer*) 0x20003000,
            (GPIO*) 0x20200000,
-      (FBPostBox*) 0x2000B880,
+      (VCPostBox*) 0x2000B880,
        (uint32_t*) 0x00000100,
     NULL,	// free pages
     NULL,	// system font
@@ -68,7 +68,7 @@ void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
     ^{
         defaultMap.systemTimerAddress = st_alloc();
         defaultMap.gpioAddress        = gpio_alloc();
-        defaultMap.frameBufferPostBox = fb_postBoxAlloc();
+        defaultMap.frameBufferPostBox = vc_postBoxAlloc();
         defaultMap.tagSpace			  = tagSpace;
         defaultMap.systemFont		  = systemFont;
         OSMemoryBarrier();
@@ -101,7 +101,7 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map)
 }
 
 
-FBPostBox* pmm_getFBPostBox(PhysicalMemoryMap* map)
+VCPostBox* pmm_getVCPostBox(PhysicalMemoryMap* map)
 {
     return map->frameBufferPostBox;
 }

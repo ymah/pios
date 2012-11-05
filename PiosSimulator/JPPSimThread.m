@@ -14,6 +14,7 @@
 #import <assert.h>
 #import "JPPPiSimulator.h"
 #import "JPPiArmTags.h"
+#import "VideoCore.h"
 
 /*
  *  We assume a screen refresh of 30Hz at 1000 lines.  We won't send an update
@@ -32,18 +33,18 @@ enum ScreenScanConsts
 
 enum ColourBits
 {
-    RED_16_MASK			= (0xFFFF << FBPF_RED_16_BIT_POS) & 0xFFFF,
-    GREEN_16_MASK		= ((0xFFFF << FBPF_GREEN_16_BIT_POS) & ~RED_16_MASK) & 0xFFFF,
-    BLUE_16_MASK		= (((0xFFFF << FBPF_BLUE_16_BIT_POS) & ~RED_16_MASK)
+    RED_16_MASK			= (0xFFFF << VCPF_RED_16_BIT_POS) & 0xFFFF,
+    GREEN_16_MASK		= ((0xFFFF << VCPF_GREEN_16_BIT_POS) & ~RED_16_MASK) & 0xFFFF,
+    BLUE_16_MASK		= (((0xFFFF << VCPF_BLUE_16_BIT_POS) & ~RED_16_MASK)
     					  	& ~GREEN_16_MASK)
                           & 0xFFFF,
     
-    RED_32_MASK			= (0xFFFFFFFF << FBPF_RED_32_BIT_POS) & 0xFFFFFFFF,
-    GREEN_32_MASK		= ((0xFFFFFFFF << FBPF_GREEN_32_BIT_POS) & ~RED_32_MASK) & 0xFFFFFFFF,
-    BLUE_32_MASK		= (((0xFFFFFFFF << FBPF_BLUE_32_BIT_POS) & ~RED_32_MASK)
+    RED_32_MASK			= (0xFFFFFFFF << VCPF_RED_32_BIT_POS) & 0xFFFFFFFF,
+    GREEN_32_MASK		= ((0xFFFFFFFF << VCPF_GREEN_32_BIT_POS) & ~RED_32_MASK) & 0xFFFFFFFF,
+    BLUE_32_MASK		= (((0xFFFFFFFF << VCPF_BLUE_32_BIT_POS) & ~RED_32_MASK)
     						& ~GREEN_16_MASK)
                           & 0xFFFFFFFF,
-    ALPHA_32_MASK		= ((((0xFFFFFFFF << FBPF_ALPHA_32_BIT_POS) & ~RED_32_MASK)
+    ALPHA_32_MASK		= ((((0xFFFFFFFF << VCPF_ALPHA_32_BIT_POS) & ~RED_32_MASK)
                            		& ~GREEN_16_MASK)
                            	& ~BLUE_32_MASK)
     					& 0xFFFFFFFF,
@@ -135,8 +136,8 @@ enum ColourBits
 {
     uint8_t* frameBuffer;
     PhysicalMemoryMap* memoryMap;
-    FBPostBox* frameBufferPostbox;
-    FrameBufferDescriptor* fbDescriptor;
+    VCPostBox* frameBufferPostbox;
+    VCFrameBufferDescriptor* fbDescriptor;
     
     NSRange scanLinesToUpdate;
     bool scanLinesNeedReading;
@@ -154,7 +155,7 @@ enum ColourBits
 {
     uint64_t iterations = 0;
     memoryMap = pmm_getPhysicalMemoryMap();
-    frameBufferPostbox = pmm_getFBPostBox(memoryMap);
+    frameBufferPostbox = pmm_getVCPostBox(memoryMap);
     clock_t lastClock = clock();
     while (![self isCancelled])
     {
@@ -180,13 +181,13 @@ enum ColourBits
 -(void) checkFrameBufferPostbox
 {
     uintptr_t message = -1;
-    if (fb_postBoxWasWritten(frameBufferPostbox, &message))
+    if (vc_postBoxWasWritten(frameBufferPostbox, &message))
     {
-        int channel = message & FB_CHANNEL_MASK;
-        if (channel == PB_FRAME_BUFFER_CHANNEL)
+        int channel = message & VC_CHANNEL_MASK;
+        if (channel == VC_FRAME_BUFFER_CHANNEL)
         {
             uintptr_t pointerAsInt = message - channel;
-            fbDescriptor = (FrameBufferDescriptor*)pointerAsInt;
+            fbDescriptor = (VCFrameBufferDescriptor*)pointerAsInt;
             if (frameBuffer != NULL)
             {
                 free(frameBuffer);
@@ -200,7 +201,7 @@ enum ColourBits
             	= ((size_t)(fbDescriptor->width) * fbDescriptor->bitDepth + 7) / 8;
             size_t bytesNeeded = bytesWide * fbDescriptor->height;
             frameBuffer = calloc(bytesNeeded, sizeof(uint8_t));
-            assert(((uintptr_t)frameBuffer & FB_CHANNEL_MASK) == 0);
+            assert(((uintptr_t)frameBuffer & VC_CHANNEL_MASK) == 0);
             /*
              *  Fill in the frame buffer descriptor and notify the software
              *  thread.
@@ -208,8 +209,8 @@ enum ColourBits
             fbDescriptor->pitch = (uint32_t)bytesWide;
             fbDescriptor->frameBufferSize = (uint32_t)bytesNeeded;
             fbDescriptor->frameBufferPtr = frameBuffer;
-            while (!fb_tryMakeRead(frameBufferPostbox,
-                                   PB_FRAME_BUFFER_CHANNEL,
+            while (!vc_tryMakeRead(frameBufferPostbox,
+                                   VC_FRAME_BUFFER_CHANNEL,
                                    0)
                    && ![self isCancelled])
             {
@@ -284,16 +285,16 @@ enum ColourBits
             switch (fbDescriptor->bitDepth)
             {
                 case 16:
-                    colourDepths[CDI_ALPHA] = FBPF_ALPHA_16_BITS;
-                    colourDepths[CDI_BLUE]  = FBPF_BLUE_16_BITS;
-                    colourDepths[CDI_GREEN] = FBPF_GREEN_16_BITS;
-                    colourDepths[CDI_RED] 	= FBPF_RED_16_BITS;
+                    colourDepths[CDI_ALPHA] = VCPF_ALPHA_16_BITS;
+                    colourDepths[CDI_BLUE]  = VCPF_BLUE_16_BITS;
+                    colourDepths[CDI_GREEN] = VCPF_GREEN_16_BITS;
+                    colourDepths[CDI_RED] 	= VCPF_RED_16_BITS;
                     break;
                 case 32:
-                    colourDepths[CDI_ALPHA] = FBPF_ALPHA_32_BITS;
-                    colourDepths[CDI_BLUE]  = FBPF_BLUE_32_BITS;
-                    colourDepths[CDI_GREEN] = FBPF_GREEN_32_BITS;
-                    colourDepths[CDI_RED] 	= FBPF_RED_32_BITS;
+                    colourDepths[CDI_ALPHA] = VCPF_ALPHA_32_BITS;
+                    colourDepths[CDI_BLUE]  = VCPF_BLUE_32_BITS;
+                    colourDepths[CDI_GREEN] = VCPF_GREEN_32_BITS;
+                    colourDepths[CDI_RED] 	= VCPF_RED_32_BITS;
                     break;
                 default:
                     ret = false;

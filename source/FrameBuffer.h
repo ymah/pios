@@ -11,107 +11,6 @@
 
 #include "bptypes.h"
 
-enum
-{
-    /*!
-     *  @brief Number of supported postbox channels for the CPU
-     */
-    FB_POSTBOX_CHANNELS = 8,
-};
-
-enum PostBoxChannel
-{
-    PB_FRAME_BUFFER_CHANNEL = 1,
-};
-
-/*!
- *  @prief pixel formats for diffewrent colours.
- *
- *  In all cases, pixels are stored RGBA with alpha in the least significant
- *  position.
- */
-enum FBPixelFormat
-{
-    FBPF_ALPHA_16_BITS 		= 0,
-    FBPF_RED_16_BITS 		= 5,
-    FBPF_GREEN_16_BITS 		= 6,
-    FBPF_BLUE_16_BITS 		= 5,
-    
-    FBPF_ALPHA_16_BIT_POS 	= 0,
-    FBPF_BLUE_16_BIT_POS	= FBPF_ALPHA_16_BITS,
-    FBPF_GREEN_16_BIT_POS	= FBPF_BLUE_16_BIT_POS + FBPF_BLUE_16_BITS,
-    FBPF_RED_16_BIT_POS		= FBPF_GREEN_16_BIT_POS + FBPF_GREEN_16_BITS,
-
-    
-    FBPF_RED_32_BITS		= 8,
-    FBPF_GREEN_32_BITS		= 8,
-    FBPF_BLUE_32_BITS		= 8,
-    FBPF_ALPHA_32_BITS		= 8,
-    
-    FBPF_ALPHA_32_BIT_POS	= 0,
-    FBPF_BLUE_32_BIT_POS	= FBPF_ALPHA_32_BIT_POS + FBPF_ALPHA_32_BITS,
-    FBPF_GREEN_32_BIT_POS	= FBPF_BLUE_32_BIT_POS + FBPF_BLUE_32_BITS,
-    FBPF_RED_32_BIT_POS		= FBPF_GREEN_32_BIT_POS + FBPF_GREEN_32_BITS,
-
-};
-
-
-typedef enum PostBoxChannel PostBoxChannel;
-
-typedef enum FBChannel FBChannel;
-/*!
- *  @brief an opaque type that rerpesents the frame buffer postbox
- */
-struct FBPostBox;
-typedef struct FBPostBox FBPostBox;
-
-/*!
- *  @brief A descriptor for requesting a frame buffer
- */
-struct FrameBufferDescriptor
-{
-    /*!
-     *  @brief Width in pixels
-     */
-    uint32_t width;
-    /*!
-     *  @brief Height in pixels
-     */
-    uint32_t height;
-    /*!
-     *  @brief Don't know but set to same as width
-     */
-    uint32_t vWidth;
-    /*!
-     *  @brief Don't know but set to same as height.  Might be the width of a 
-     *  raster line.
-     */
-    uint32_t vHeight;
-    /*!
-     * @brief width of a raster line in bytes (set by GPU)
-     */
-    uint32_t pitch;
-    /*!
-     *  @brief Number of bits per pixel
-     */
-    uint32_t bitDepth;
-    /*!
-     *  @brief x offset of top left corner of screen
-     */
-    uint32_t x;
-    /*!
-     * @brief y offset of top left corner of screen
-     */
-    uint32_t y;
-    /*!
-     *  @brief pointer to frame buffer (set by GPU)
-     */
-    void* frameBufferPtr;
-    /*!
-     *  @brief frame buffer size calculated by GPU
-     */
-    uint32_t frameBufferSize;
-};
 
 /*!
  *  @brief Error codes returned when getting a frame buffer.
@@ -123,7 +22,7 @@ enum FBError
      */
     FB_OK 		  = 0,
     /*!
-     *  @brief PArameter validation error
+     *  @brief Parameter validation error
      */
     FB_PARAMETER  = 1,
     /*!
@@ -138,75 +37,101 @@ enum FBError
      *  @brief The communication was interrupted because we are stopping
      */
     FB_STOPPED    = 4,
+    /*!
+     *  @brief Function not implemented yet
+     */
+    FB_NOT_IMPLEMENTED = 6,
+    /*!
+     *  @brief Attempt to do an operation on an uninitialised frame buffer
+     */
+    FB_NOT_INITIALISED = 7,
 };
 
 typedef enum FBError FBError;
 
-typedef struct FrameBufferDescriptor FrameBufferDescriptor;
+struct FrameBuffer;
+typedef struct FrameBuffer FrameBuffer;
+
+struct FBDriver;
+typedef struct FBDriver FBDriver;
+
 
 /*!
- *  @brief Bit positions of various important bits within postbox messages.
+ *  @brief Used when requesting a frame buffer to define the dimensions of the
+ *  buffer.
  */
-enum FBBits
+struct FBRequestDimensions
 {
-/*!
- *  @brief How many low order bits of a message will be used for the channel
- */
-    FB_CHANNEL_BITS 		   	= 4,
-/*!
- *  @brief Required alignment for a pointer to the frame buffer descriptor
- */
-    FB_DESCRIPTOR_ALIGNMENT 	= 12,
+    /*!
+     *  @brief Width of frame buffer in pixels
+     */
+    uint16_t width;
+    /*!
+     *  @brief Height of frame buffer in pixels
+     */
+    uint16_t height;
+    /*!
+     *  @brief Bit depth of frame buffer in bits
+     */
+    uint16_t bitDepth;
+    /*!
+     *  @brief X coordinate of top left corner of the frame buffer
+     */
+    uint16_t x;
+    /*!
+     *  @brief Y coordinate of top left corner of the frame buffer
+     */
+    uint16_t y;
 };
 
-/*!
- *  @brief Masks out the channel bits of a message leaving just the value
- */
-#define FB_VALUE_MASK		(0xFFFFFFFFFFFFFFFFl << FB_CHANNEL_BITS)
-/*!
- *  @brief MAsks out the value bits of a message leaving just the channel
- */
-#define FB_CHANNEL_MASK		(~FB_VALUE_MASK)
-/*!
- *  @brief Mask to align a pointer to be used as a frame buffer descriptor
- */
-#define FB_DESCRIPTOR_ALIGNMENT_MASK	\
-							~((~(uintptr_t) 0) << FB_DESCRIPTOR_ALIGNMENT)
-
-#if defined PIOS_SIMULATOR
+typedef struct FBRequestDimensions FBRequestDimensions;
 
 /*!
- *  @brief Allocate a post box structure
- *  @return frame buffer postbox
+ *  @brief structure that describes the frame buffer bytes returned by 
+ *  fb_initialiseFrameBuffer()
  */
-FBPostBox* fb_postBoxAlloc();
+struct FBBuffer
+{
+    /*!
+     *  @brief Pointer to the top left corner of the frame buffer bytes
+     */
+    void* frameBufferPtr;
+    /*!
+     *  @brief Size of the frame buffer bytes
+     */
+    size_t frameBufferSize;
+    /*!
+     *  @brief Width of a raster line in the frame buffer in bytes
+     */
+    size_t rasterWidth;
+    /*!
+     *  @brief Array of the number of bits assigned to each colour (RGBA)
+     */
+    uint8_t colourDepths[4];
+};
+
+typedef struct FBBuffer FBBuffer;
 
 /*!
- *  @brief Check if the postbax has been written.
+ *  @brief Get a (or the) frame buffer.
  *
- *  Gives us access to the message that was written.  Also clears the write 
- *  status flag so the postbox can be written again.
- *  @param postbox postbox to check
- *  @param message reference to the location where the message will be put if
- *  the postbox was written.  If NULL, the message written will be discarded.
- *  @return true if the post box was written.
+ *  Allocates and initialises a frame buffer.
+ *  @param driver Functions used by the underlying frame buffer driver.
+ *  @return A new frame buffer object or NULL if something goes wrong.
  */
-bool fb_postBoxWasWritten(FBPostBox* postbox, uintptr_t* messageRef);
+FrameBuffer* fb_getFrameBuffer(FBDriver* driver);
 
 /*!
- *  @brief Set up a postbox read if we can.
- *
- *  If the last read was done, we set the read value and the status bit.
- *  @param postbox Postbox to try this on.
- *  @param channel Channel to set.
- *  @param message Message to send.
- *  @return true if the postbox read was available i.e. the previously set read
- *  value has been read.
+ * @brief Get the frame buffer associated with the screen.
+ * @return The screen's frame buffer
  */
-bool fb_tryMakeRead(FBPostBox* postbox, uint32_t channel, uintptr_t message);
+FrameBuffer* fb_getScreenFrameBuffer();
 
-
-#endif
+/*!
+ *  @brief Set the screen frame buffer
+ *  @param frameBuffer The new fram buffer for the screen
+ */
+void fb_setScreenFrameBuffer(FrameBuffer* frameBuffer);
 
 /*!
  *  @brief Get a frame buffer
@@ -216,34 +141,22 @@ bool fb_tryMakeRead(FBPostBox* postbox, uint32_t channel, uintptr_t message);
  *  in the address and some other stuff.
  *  @return An error code.  0 means success.
  */
-FBError fb_getFrameBuffer(FBPostBox* postbox, FrameBufferDescriptor* fbDescriptor);
+
+FBError fb_initialiseFrameBuffer(FrameBuffer* frameBuffer,
+                                 FBRequestDimensions* fbDimensions);
 
 /*!
- *  @brief Low level send to mailbox.
- *
- *  This function works by spinning on a status flag until it can write the 
- *  message.
- *  @param postbox the address of the mailbox
- *  @param message the message to write.  The low four bits must be zero.
- *  @param channel the mail box channel - 0 to 7 at the moment
- *  @return true if the parameters validate OK
+ *  @brief Get the dimensions and description of the frame buffer.
+ *  @param frameBuffer The frame buffer
+ *  @param dimensions If not null will be filled in with the dimensions used to 
+ *  initialise the frame buffer.
+ *  @param bufferDescriptor If not null will be filled in with the location and
+ *  size of the frame buffer RAM.
+ *  @return FB_OK if it works or an error if the frame buffer has not been 
+ *  initialised.
  */
-bool fb_send(FBPostBox* postbox, uintptr_t message, uint32_t channel);
-
-/*!
- *  @brief Read the postbox for data from the specified channel.
- *
- *  This function works by spinning on a status flag until it can read some
- *  data.  This means that, if the GPU is not expecting to need to send 
- *  something, this method will hang.  Also, any messages prior to the first
- *  one for the specified channel will be discarded.
- *  @param postbox Address of the GPU postbox.
- *  @param channel Channel to read from, must be in the range 0-7.
- *  @return The data on the channel or ((uintptr_t)-1) if the parameters are 
- *  incorrect.
- *  Valid channel data will always have the low four bits clear.
- */
-uintptr_t fb_read(FBPostBox* postbox, uint32_t channel);
-
+FBError fb_getDimensions(FrameBuffer* frameBuffer,
+                         FBRequestDimensions* dimensions,
+                         FBBuffer* bufferDescriptor);
 
 #endif
