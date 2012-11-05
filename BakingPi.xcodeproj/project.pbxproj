@@ -29,6 +29,7 @@
 		FC5CBA31162D515B00005AF3 /* JPPiScreenView.m in Sources */ = {isa = PBXBuildFile; fileRef = FC5CBA30162D515B00005AF3 /* JPPiScreenView.m */; };
 		FC6EE94F161B579200D14766 /* JPPSimThread.m in Sources */ = {isa = PBXBuildFile; fileRef = FC6EE94E161B579200D14766 /* JPPSimThread.m */; };
 		FC719F57162406A200223470 /* FrameBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCC39E961614CBF2001D2576 /* FrameBuffer.c */; };
+		FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */ = {isa = PBXBuildFile; fileRef = FC8CA1911643AFAB009CD92A /* VideoCore.c */; };
 		FC9BBF051637BD850001A9EE /* font0.bin in Resources */ = {isa = PBXBuildFile; fileRef = FC9BBF041637BD850001A9EE /* font0.bin */; };
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
@@ -84,8 +85,11 @@
 		FC4AA138161A05C10060DD5E /* PhysicalMemoryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhysicalMemoryMap.h; sourceTree = "<group>"; };
 		FC5CBA2F162D515B00005AF3 /* JPPiScreenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPiScreenView.h; sourceTree = "<group>"; };
 		FC5CBA30162D515B00005AF3 /* JPPiScreenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPiScreenView.m; sourceTree = "<group>"; };
+		FC5D0EB21647A29B006B3C72 /* FrameBuffer+Driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FrameBuffer+Driver.h"; sourceTree = "<group>"; };
 		FC6EE94D161B579200D14766 /* JPPSimThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPSimThread.h; sourceTree = "<group>"; };
 		FC6EE94E161B579200D14766 /* JPPSimThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPSimThread.m; sourceTree = "<group>"; };
+		FC8CA1911643AFAB009CD92A /* VideoCore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = VideoCore.c; sourceTree = "<group>"; };
+		FC8CA1921643AFAB009CD92A /* VideoCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCore.h; sourceTree = "<group>"; };
 		FC9BBF011637BBFA0001A9EE /* font.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = font.s; sourceTree = "<group>"; };
 		FC9BBF041637BD850001A9EE /* font0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = font0.bin; path = ../source/font0.bin; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
@@ -261,12 +265,15 @@
 		FCC39E931614CB95001D2576 /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				FC8CA1911643AFAB009CD92A /* VideoCore.c */,
+				FC8CA1921643AFAB009CD92A /* VideoCore.h */,
 				FCC39E951614CBD1001D2576 /* FrameBuffer.h */,
 				FCC39E961614CBF2001D2576 /* FrameBuffer.c */,
 				FCB817F51631337B0043450F /* gdi.c */,
 				FCB817F71631338C0043450F /* gdi.h */,
 				FC4077EE1638629A009C2B3D /* console.h */,
 				FC4077F0163862B5009C2B3D /* console.c */,
+				FC5D0EB21647A29B006B3C72 /* FrameBuffer+Driver.h */,
 			);
 			name = graphics;
 			path = source;
@@ -415,6 +422,7 @@
 				FC147FF516351E8300915560 /* Tag.c in Sources */,
 				FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */,
 				FC4077F1163862B5009C2B3D /* console.c in Sources */,
+				FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

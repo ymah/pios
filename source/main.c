@@ -19,6 +19,7 @@
 #include "klib.h"
 #include "gdi.h"
 #include "console.h"
+#include "VideoCore.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -46,22 +47,14 @@ static bool SOSSequence[] =
 #endif
 
 
-static FrameBufferDescriptor fbDescriptor =
+static FBRequestDimensions fbDescriptor =
 {
     .width           = 1024,
     .height          =  768,
-    .vWidth          = 1024,
-    .vHeight         =  768,
-    .pitch           =    0,	// To be filled in by GPU
     .bitDepth        =   32,
     .x               =    0,
     .y               =    0,
-    .frameBufferPtr  = NULL,	// To be filled in by GPU
-    .frameBufferSize =    0		// To be filled in by GPU
 };
-
-static FrameBufferDescriptor* alignedDescriptor = NULL;
-
 
 /*!
  *  @brief Run a sequence of LED flashes.
@@ -131,7 +124,7 @@ int MAIN(int argc, char** argv)
     if (fbError == FB_OK)
     {
 #if !defined QEMU
-        GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+        GDIContext* context = gdi_initialiseGDI(fb_getScreenFrameBuffer());
         gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
         gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
         gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
@@ -173,11 +166,12 @@ int MAIN(int argc, char** argv)
 
 FBError initFrameBuffer()
 {
-    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
-    FBPostBox* postbox = pmm_getFBPostBox(memoryMap);
-    alignedDescriptor = pmm_allocatePage(memoryMap);
-    klib_memcpy(alignedDescriptor, &fbDescriptor, sizeof fbDescriptor);
-    FBError ret = fb_getFrameBuffer(postbox, alignedDescriptor);
+    FrameBuffer* frameBuffer = fb_getFrameBuffer(vc_driver());
+    FBError ret = fb_initialiseFrameBuffer(frameBuffer, &fbDescriptor);
+    if (ret == FB_OK)
+    {
+        fb_setScreenFrameBuffer(frameBuffer);
+    }
     return ret;
 }
 
@@ -197,23 +191,31 @@ void runRainbow()
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     uint16_t colour = 0;
-	while (!pmm_getStopFlag(memoryMap))
+    FBBuffer fbBuffer;
+    FBRequestDimensions dimensions;
+    FBError error = fb_getDimensions(fb_getScreenFrameBuffer(),
+                                     &dimensions,
+                                     &fbBuffer);
+    if (error == FB_OK)
     {
-        uint16_t* pixelPtr = alignedDescriptor->frameBufferPtr;
-        for (size_t y = 0; y < alignedDescriptor->height; ++y)
+        while (!pmm_getStopFlag(memoryMap))
         {
-            for (size_t x = 0 ; x < alignedDescriptor->width ; ++x)
+            uint16_t* pixelPtr = fbBuffer.frameBufferPtr;
+            for (size_t y = 0; y < dimensions.height; ++y)
             {
-                *pixelPtr++ = colour;
+                for (size_t x = 0 ; x < dimensions.width ; ++x)
+                {
+                    *pixelPtr++ = colour;
+                }
+                colour++;
             }
-            colour++;
         }
     }
 }
 
 void runDrawTest(void)
 {
-    GDIContext* context = gdi_initialiseGDI(alignedDescriptor);
+    GDIContext* context = gdi_initialiseGDI(fb_getScreenFrameBuffer());
     gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
     gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
     gdi_fillFrame(context, GDI_BACKGROUND);
