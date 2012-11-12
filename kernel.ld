@@ -37,4 +37,9 @@ SECTIONS {
 	/DISCARD/ : {
 		*(*)
 	}
+	
+	. = ALIGN(4096);
+	. = . + 0x10000;
+	stackTop = .;
+
 }

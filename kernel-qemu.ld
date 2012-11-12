@@ -26,8 +26,21 @@ SECTIONS {
 	.data : {
 		*(.data)
 	}
+	.symtab : {
+		*(.symtab)
+	}
 	.bss : {
 		*(.bss)
+	}
+	.debug : {
+		*(.debug_info)
+	}
+	.line : {
+		*(.debug_line)
+	}
+	
+	.symtab : {
+		*(.symtab)
 	}
 
 	/*

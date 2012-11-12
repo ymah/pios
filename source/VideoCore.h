@@ -149,11 +149,6 @@ typedef struct VCFrameBufferDescriptor VCFrameBufferDescriptor;
 
 #if defined PIOS_SIMULATOR
 
-/*!
- *  @brief Get the video core driver
- *  @return The videocore driver
- */
-FBDriver* vc_driver();
 
 /*!
  *  @brief Allocate a post box structure
@@ -187,6 +182,12 @@ bool vc_tryMakeRead(VCPostBox* postbox, uint32_t channel, uintptr_t message);
 
 
 #endif
+
+/*!
+ *  @brief Get the video core driver
+ *  @return The videocore driver
+ */
+FBDriver* vc_driver();
 
 /*!
  *  @brief Low level send to mailbox.
