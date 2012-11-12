@@ -31,6 +31,7 @@
 		FC719F57162406A200223470 /* FrameBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCC39E961614CBF2001D2576 /* FrameBuffer.c */; };
 		FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */ = {isa = PBXBuildFile; fileRef = FC8CA1911643AFAB009CD92A /* VideoCore.c */; };
 		FC9BBF051637BD850001A9EE /* font0.bin in Resources */ = {isa = PBXBuildFile; fileRef = FC9BBF041637BD850001A9EE /* font0.bin */; };
+		FCA0A789164836980025FCED /* pl110.c in Sources */ = {isa = PBXBuildFile; fileRef = FCA0A788164836920025FCED /* pl110.c */; };
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,8 @@
 		FC8CA1921643AFAB009CD92A /* VideoCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCore.h; sourceTree = "<group>"; };
 		FC9BBF011637BBFA0001A9EE /* font.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = font.s; sourceTree = "<group>"; };
 		FC9BBF041637BD850001A9EE /* font0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = font0.bin; path = ../source/font0.bin; sourceTree = "<group>"; };
+		FCA0A7861648367F0025FCED /* pl110.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pl110.h; sourceTree = "<group>"; };
+		FCA0A788164836920025FCED /* pl110.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pl110.c; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
 		FCB817F51631337B0043450F /* gdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gdi.c; sourceTree = "<group>"; };
 		FCB817F71631338C0043450F /* gdi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdi.h; sourceTree = "<group>"; };
@@ -274,6 +277,8 @@
 				FC4077EE1638629A009C2B3D /* console.h */,
 				FC4077F0163862B5009C2B3D /* console.c */,
 				FC5D0EB21647A29B006B3C72 /* FrameBuffer+Driver.h */,
+				FCA0A7861648367F0025FCED /* pl110.h */,
+				FCA0A788164836920025FCED /* pl110.c */,
 			);
 			name = graphics;
 			path = source;
@@ -423,6 +428,7 @@
 				FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */,
 				FC4077F1163862B5009C2B3D /* console.c in Sources */,
 				FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */,
+				FCA0A789164836980025FCED /* pl110.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

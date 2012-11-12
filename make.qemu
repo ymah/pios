@@ -53,7 +53,7 @@ $(TARGET) : $(BUILD)output.elf
 
 # Rule to make the elf file.
 $(BUILD)output.elf : $(OBJECTS) $(LINKER) klib-lib
-	$(ARMGNU)-ld --no-undefined $(OBJECTS) -Map $(MAP) -L$(BUILD) -Lbuild -o $(BUILD)output.elf -T $(LINKER) -lklib
+	$(ARMGNU)-ld -g --no-undefined $(OBJECTS) -Map $(MAP) -L$(BUILD) -Lbuild -o $(BUILD)output.elf -T $(LINKER) -lklib
 
 klib-lib: 
 	(cd klib ; make)
@@ -65,7 +65,7 @@ $(BUILD)%.o: $(SOURCE)%.s
 	
 $(BUILD)%.o : $(SOURCE)%.c
 	mkdir -p $(BUILD)
-	$(ARMGNU)-gcc -std=c99 -DQEMU=1 -Iklib -c -o $@ $?
+	$(ARMGNU)-gcc -g -std=c99 -DQEMU=1 -Wall -Wno-unknown-pragmas -Iklib -c -o $@ $?
 
 
 # Rule to clean files.

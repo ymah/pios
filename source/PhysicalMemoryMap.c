@@ -20,33 +20,34 @@ extern uint8_t fontMap;
 #endif
 
 
+#define PIOS_PAGE_MASK	(~((uintptr_t) 0) << PIOS_PAGE_BITS)
 
-enum
+struct PageListEntry
 {
-    PIOS_PAGE_BITS = 12,
-    PIOS_PAGE_SIZE = 1 << PIOS_PAGE_BITS,
-    ALLOCATABLE_PAGES = 16,
+    union Page* next;
+    size_t count;
 };
 
-#define PIOS_PAGE_MASK	(~((uintptr_t) 0) << PIOS_PAGE_BITS)
+typedef struct PageListEntry PageListEntry;
 
 union Page
 {
     uint8_t bytes[PIOS_PAGE_SIZE];
-    union Page* next;
+    PageListEntry listEntry;
 };
 
 typedef union Page Page;
 
 struct PhysicalMemoryMap
 {
-    SystemTimer* systemTimerAddress;
-    GPIO* gpioAddress;
-    VCPostBox* frameBufferPostBox;
-    uint32_t* tagSpace;
-    Page* freePages;
-    uint8_t* systemFont;
-    volatile bool stopFlag;
+    SystemTimer* 	systemTimerAddress;
+    GPIO* 			gpioAddress;
+    VCPostBox* 		frameBufferPostBox;
+    PL110*			pl110;
+    uint32_t* 		tagSpace;
+    Page* 			freePages;
+    uint8_t* 		systemFont;
+    volatile bool 	stopFlag;
 };
 
 struct PhysicalMemoryMap defaultMap =
@@ -54,6 +55,7 @@ struct PhysicalMemoryMap defaultMap =
     (SystemTimer*) 0x20003000,
            (GPIO*) 0x20200000,
       (VCPostBox*) 0x2000B880,
+          (PL110*) 0x10120000,
        (uint32_t*) 0x00000100,
     NULL,	// free pages
     NULL,	// system font
@@ -104,6 +106,12 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map)
 VCPostBox* pmm_getVCPostBox(PhysicalMemoryMap* map)
 {
     return map->frameBufferPostBox;
+}
+
+
+PL110* pmm_getPL110(PhysicalMemoryMap* map)
+{
+    return map->pl110;
 }
 
 
@@ -163,18 +171,9 @@ void pmm_initialiseFreePages(PhysicalMemoryMap* map)
         Page* pagePtr = (Page*) pageAsInt;
         size_t size = topOfRAM - pageAsInt;
         size_t allocatablePages = size / PIOS_PAGE_SIZE;
-        /*
-         *  Now chain all the pages together in a linked list. All but the last page
-         *  get a pointer to the next page.  The last usable page gets a NULL pointer
-         */
-        Page* lastPage = NULL;
-        for (int i = 0 ; i < allocatablePages ; ++i)
-        {
-            Page* currentPage = &pagePtr[allocatablePages - 1 - i];
-            currentPage->next = lastPage;
-            lastPage = currentPage;
-        }
-        map->freePages = lastPage;
+        pagePtr->listEntry.next = NULL;
+        pagePtr->listEntry.count = allocatablePages;
+        map->freePages = pagePtr;
     }
     else
     {
@@ -184,24 +183,59 @@ void pmm_initialiseFreePages(PhysicalMemoryMap* map)
 
 void* pmm_allocatePage(PhysicalMemoryMap* map)
 {
-    Page* ret = NULL;
-    // TODO: Need a lock
-    if (map->freePages != NULL)
-    {
-        ret = map->freePages;
-        map->freePages = ret->next;
-        ret->next = NULL;
-        // TODO: Should zero the page
-    }
-    return ret;
+    return pmm_allocateContiguousPages(map, 1);
 }
+
+void* pmm_allocateContiguousPages(PhysicalMemoryMap* map, size_t numberOfPages)
+{
+    Page* ret = map->freePages;
+    // TODO: Need a lock
+    
+    Page* prevEntry = NULL;
+    
+    while (ret != NULL && ret->listEntry.count < numberOfPages)
+    {
+        prevEntry = ret;
+        ret = ret->listEntry.next;
+    }
+    
+    if (ret != NULL)
+    {
+        Page* remaining = NULL;
+        if (ret->listEntry.count > numberOfPages)
+        {
+            Page* remaining = ret + numberOfPages;
+            remaining->listEntry.count = ret->listEntry.count - numberOfPages;
+            remaining->listEntry.next = ret->listEntry.next;
+        }
+        else
+        {
+            remaining = ret->listEntry.next;
+        }
+        if (prevEntry == NULL)
+        {
+            map->freePages = remaining;
+        }
+        else
+        {
+            prevEntry->listEntry.next = remaining;
+        }
+        ret->listEntry.next = NULL;
+        ret->listEntry.count = 0;
+    }
+    // TODO: Should zero the whole page
+    return ret;
+    
+}
+
 
 void pmm_freePage(PhysicalMemoryMap* map, void* pagePtr)
 {
     // TODO: Need a lock
     if (((uintptr_t)pagePtr & ~PIOS_PAGE_MASK) == 0)
     {
-        ((Page*) pagePtr)->next = map->freePages;
+        ((Page*) pagePtr)->listEntry.next = map->freePages;
+        ((Page*) pagePtr)->listEntry.count =1;
         map->freePages = (Page*) pagePtr;
     }
 }

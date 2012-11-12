@@ -14,6 +14,22 @@
 #include "FrameBuffer.h"
 #include "Tag.h"
 #include "VideoCore.h"
+#include "pl110.h"
+
+
+enum
+{
+    /*!
+     *  @brief Number of bits of an address that represent the index within a
+     *  page.
+     */
+    PIOS_PAGE_BITS = 12,
+    /*!
+     *  @brief The size of a page of memory.
+     */
+    PIOS_PAGE_SIZE = 1 << PIOS_PAGE_BITS,
+};
+
 
 struct PhysicalMemoryMap;
 typedef struct PhysicalMemoryMap PhysicalMemoryMap;
@@ -80,6 +96,12 @@ SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
 VCPostBox* pmm_getVCPostBox(PhysicalMemoryMap* map);
 
 /*!
+ *  @brief Get the address of the PL110 controller if there is one.
+ *  @return The PL110 address.
+ */
+PL110* pmm_getPL110(PhysicalMemoryMap* map);
+
+/*!
  *  @brief Get the list of ARM tags
  *  @param map Memory map
  *  @return the tag list
@@ -110,6 +132,13 @@ void pmm_initialiseFreePages(PhysicalMemoryMap* map);
  *  @return A single aligned page of memory or NULL if we don't have any left.
  */
 void* pmm_allocatePage(PhysicalMemoryMap* map);
+/*!
+ *  @brief Allocate a set of contiguous pages.
+ *  @param map Memory map to allocate pages from.
+ *  @param numberOfPages Number of pages to allocate.
+ *  @return A pointer to a contiguous set of pages.
+ */
+void* pmm_allocateContiguousPages(PhysicalMemoryMap* map, size_t numberOfPages);
 /*!
  *  @brief free a page of memory.
  *  @param map Memory pmap containing the free page list

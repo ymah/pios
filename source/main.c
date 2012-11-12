@@ -20,6 +20,7 @@
 #include "gdi.h"
 #include "console.h"
 #include "VideoCore.h"
+#include "pl110.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -51,7 +52,11 @@ static FBRequestDimensions fbDescriptor =
 {
     .width           = 1024,
     .height          =  768,
+#if defined QEMU
+    .bitDepth 		 =   16,
+#else
     .bitDepth        =   32,
+#endif
     .x               =    0,
     .y               =    0,
 };
@@ -118,8 +123,8 @@ int MAIN(int argc, char** argv)
 
 
     setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
-    fbError = initFrameBuffer();
 #endif
+    fbError = initFrameBuffer();
 
     if (fbError == FB_OK)
     {
@@ -166,7 +171,11 @@ int MAIN(int argc, char** argv)
 
 FBError initFrameBuffer()
 {
+#if defined QEMU
+    FrameBuffer* frameBuffer = fb_getFrameBuffer(pl110_driver());
+#else
     FrameBuffer* frameBuffer = fb_getFrameBuffer(vc_driver());
+#endif
     FBError ret = fb_initialiseFrameBuffer(frameBuffer, &fbDescriptor);
     if (ret == FB_OK)
     {
