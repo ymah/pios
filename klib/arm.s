@@ -86,7 +86,7 @@ uidivmod_standardCase:
 @  shifted out of the low word and orring them with the shifted top word
 @
 uidivmod_LZDiff:
-	subs	r6, r6, r7			@ Calculate the required shift
+	subs	r6, r7, r6			@ Calculate the required shift
 	beq		uidivmod_calcIterations
 
 	mov		r1, r1, LSL r6		@ bottom word shifted
@@ -120,7 +120,7 @@ uidivmod_setOneEnd:
 @
 @ 	shift divisor right 1 bit
 @
-	mov		r2, r2, LSR #1
+	mov		r1, r1, LSR #1
 	
 	subs	r6, r6, #1			@   subtract 1 from iterations
 uidivmod_loopTest:
@@ -330,3 +330,5 @@ uldivmod_loopExit:
 __CLEAN_UP_aeabi_uldivmod:
 	pop 	{r4, r5, r6, r7, r8, fp, lr }
 	bx		lr	
+	bx		lr
+@ The last line seemed to be missing

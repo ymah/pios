@@ -64,3 +64,11 @@ void fb_setScreenFrameBuffer(FrameBuffer* frameBuffer)
 {
     screenFrameBuffer = frameBuffer;
 }
+
+void fb_forceUpdate(FrameBuffer* frameBuffer)
+{
+    if (frameBuffer->driver->forceUpdate != NULL)
+    {
+        frameBuffer->driver->forceUpdate(frameBuffer);
+    }
+}

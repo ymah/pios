@@ -128,23 +128,23 @@ int MAIN(int argc, char** argv)
 
     if (fbError == FB_OK)
     {
-#if !defined QEMU
         GDIContext* context = gdi_initialiseGDI(fb_getScreenFrameBuffer());
         gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
         gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
         gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
         gdi_fillFrame(context, GDI_BACKGROUND);
         Console* console = con_initialiseConsole(context);
+#if !defined QEMU
         setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
+#endif	// QEMU
 #if defined SCREEN_01
         runRainbow();
 #elif defined SCREEN_02
         runDrawTest();
 #endif
-#endif	// QEMU
         divisionTest();
-#if !defined QEMU
         displayTags();
+#if !defined QEMU
         while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
@@ -224,7 +224,8 @@ void runRainbow()
 
 void runDrawTest(void)
 {
-    GDIContext* context = gdi_initialiseGDI(fb_getScreenFrameBuffer());
+    FrameBuffer* theFrameBuffer = fb_getScreenFrameBuffer();
+    GDIContext* context = gdi_initialiseGDI(theFrameBuffer);
     gdi_setColour(context, GDI_BACKGROUND, GDI_BLACK_COLOUR);
     gdi_setColour(context, GDI_PEN, GDI_WHITE_COLOUR);
     gdi_fillFrame(context, GDI_BACKGROUND);
@@ -281,6 +282,7 @@ void runDrawTest(void)
     GDIPoint p0 = { .x = 10, .y = 12 };
     GDIPoint p1 = { .x = 200, .y = 40 };
     gdi_line(context, p0, p1);
+    fb_forceUpdate(theFrameBuffer);
 }
 
 void runLEDSequence(int iterations,
@@ -320,6 +322,7 @@ void displayTags()
         printTag(tag);
         tag = tag_getNextTag(tagList, tag);
     }
+    fb_forceUpdate(fb_getScreenFrameBuffer());
 }
 
 static void printTag(Tag* tagToPrint)
@@ -412,32 +415,26 @@ static void printTag(Tag* tagToPrint)
 
 void divisionTest(void)
 {
-#if !defined QEMU
     Console* console = con_getTheConsole();
-#endif
     
     uint64_t number64 = 12345 * 56789 + 3;
     uint64_t divisor64 = 56789;
     
     uint64_t quotient64 = number64 / divisor64;
     uint64_t remainder64 = number64 % divisor64;
-#if !defined QEMU
     con_putHex64(console, quotient64);
     con_putCString(console, " ");
     con_putHex64(console, remainder64);
     con_newLine(console);
-#endif
     uint32_t number32 = 1234 * 567 + 3;
     uint32_t divisor32 = 567;
     
     uint32_t quotient32 = number32 / divisor32;
     uint32_t remainder32 = number32 % divisor32;
-#if !defined QEMU
     con_putHex32(console, quotient32);
     con_putCString(console, " ");
     con_putHex32(console, remainder32);
     con_newLine(console);
-#endif
 }
 
 

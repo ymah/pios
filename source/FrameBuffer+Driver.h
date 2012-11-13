@@ -44,6 +44,14 @@ struct FBDriver
      *  @return FB_OK or an error.
      */
     FBError (*initialiseTheBuffer)(FrameBuffer* frameBuffer);
+    /*!
+     *  @brief Function that forces a screen update.
+     *  This is probably only necessary for emulated hardware with no 
+     *  interrupt to drive it yet.  This function can be set to NULL if there
+     *  is no requirment for a manual update.
+     *  @param frameBuffer The frame buffer to update manually.
+     */
+    void 	(*forceUpdate)(FrameBuffer* frameBuffer);
 };
 
 /*!

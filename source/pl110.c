@@ -14,12 +14,14 @@
 static FrameBuffer* allocate(void);
 static void dealloc(FrameBuffer* fb);
 static FBError initialiseTheBuffer(FrameBuffer* frameBuffer);
+static void forceUpdate(FrameBuffer* fb);
 
 FBDriver thePL110Driver =
 {
     .allocate = allocate,
     .dealloc = dealloc,
-    .initialiseTheBuffer = initialiseTheBuffer
+    .initialiseTheBuffer = initialiseTheBuffer,
+    .forceUpdate = forceUpdate,
 };
 
 enum PL110Consts
@@ -152,7 +154,7 @@ static FBError initialiseTheBuffer(FrameBuffer* frameBuffer)
          */
         controlRegister &=    ~LCD_POWER_MASK
 //        					| ~LCD_ENDIAN_MASK
-//        					| ~LCD_BGR_MASK
+        					| ~LCD_BGR_MASK
 //        					| ~LCD_DUAL_MASK
 //        					| ~LCD_TFT_MASK
 //        					| ~LCD_BW_MASK
@@ -162,7 +164,7 @@ static FBError initialiseTheBuffer(FrameBuffer* frameBuffer)
 //        											// endian 0 = little endian
 //        											// BGR 0 = RGB
 //        											// Dual 0 = one panel
-//        					| LCD_TFT_MASK			// TFT panel
+        					| LCD_TFT_MASK			// TFT panel
 //        											// BW 0 - in colour
         					| (LCD_16_BPP << LCD_BPP_POS)	// 16 bits per pixel
         					| LCD_EN_MASK;			// Enable the PL110
@@ -178,5 +180,14 @@ static FBError initialiseTheBuffer(FrameBuffer* frameBuffer)
         error = FB_OK;
     }
     return error;
+}
+
+static void forceUpdate(FrameBuffer* fb)
+{
+    /*
+     *  In QEMU we can force an update simply by reading and writing a register 
+     */
+    volatile uint32_t control = ((PL110FrameBuffer*)fb)->registers->control;
+    ((PL110FrameBuffer*)fb)->registers->control = control;
 }
 

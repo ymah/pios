@@ -57,7 +57,8 @@ FBDriver theVCDriver =
 {
     .allocate = allocate,
     .dealloc = dealloc,
-    .initialiseTheBuffer = initialiseTheBuffer
+    .initialiseTheBuffer = initialiseTheBuffer,
+    .forceUpdate = NULL,
 };
 
 struct VCFrameBuffer
