@@ -159,4 +159,12 @@ FBError fb_getDimensions(FrameBuffer* frameBuffer,
                          FBRequestDimensions* dimensions,
                          FBBuffer* bufferDescriptor);
 
+/*!
+ *  @brief Manually force frame buffer to write its contents to the screen.
+ *  This shouldn't really be necessary but emulated hardware might need it if
+ *  interrupts etc are not enabled.
+ *	@param frameBuffer The framr buffer to write manually.
+ */
+void fb_forceUpdate(FrameBuffer* frameBuffer);
+
 #endif
