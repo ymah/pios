@@ -12,6 +12,9 @@
 
 const GDIColour GDI_BLACK_COLOUR = { .components = { 255, 0, 0, 0 }};
 const GDIColour GDI_WHITE_COLOUR = { .components = { 255, 255, 255, 255 }};
+const GDIColour GDI_RED_COLOUR   = { .components = { 255, 0, 0, 255 }};
+const GDIColour GDI_GREEN_COLOUR = { .components = { 255, 0, 255, 0 }};
+const GDIColour GDI_BLUE_COLOUR  = { .components = { 255, 255, 0, 0 }};
 
 /*
  *  typedef for a function that can copy pixels in a device format
@@ -43,37 +46,96 @@ static void pixelCopy32(uint8_t* start, uint32_t newValue, size_t pixelCount);
 static GDIContext theContexts[MAX_CONTEXTS] = { { 0 } };
 static GDIContext* currentContext = NULL;
 
+static void release(GDIContext* context);
+
+
 GDIContext* gdi_initialiseGDI(FrameBuffer* fbDescriptor)
 {
-    klib_memset(theContexts, 0, sizeof theContexts);
-    GDIContext* ret = &theContexts[0];
-    ret->fbDescriptor = fbDescriptor;
-    ret->font = pmm_getSystemFont(pmm_getPhysicalMemoryMap());
-    ret->fontMinChar = 32;
-    ret->fontMaxChar = 0x7E;
-    FBRequestDimensions dimensions;
-    if (fb_getDimensions(fbDescriptor, &dimensions, NULL) == FB_OK)
+    if (currentContext == NULL)
     {
-        switch(dimensions.bitDepth)
+        klib_memset(theContexts, 0, sizeof theContexts);
+        GDIContext* ret = &theContexts[0];
+        
+        ret->referenceCount = 1;
+        ret->fbDescriptor = fbDescriptor;
+        ret->font = pmm_getSystemFont(pmm_getPhysicalMemoryMap());
+        ret->fontMinChar = 32;
+        ret->fontMaxChar = 0x7E;
+        FBRequestDimensions dimensions;
+        if (fb_getDimensions(fbDescriptor, &dimensions, NULL) == FB_OK)
         {
-            case 16:
-                ret->pixelCopy = pixelCopy16;
-                ret->bytesPerPixel = 2;
-                break;
-            case 32:
-                ret->pixelCopy = pixelCopy32;
-                ret->bytesPerPixel = 4;
-                break;
-            default:
-                ret = NULL;
+            switch(dimensions.bitDepth)
+            {
+                case 16:
+                    ret->pixelCopy = pixelCopy16;
+                    ret->bytesPerPixel = 2;
+                    break;
+                case 32:
+                    ret->pixelCopy = pixelCopy32;
+                    ret->bytesPerPixel = 4;
+                    break;
+                default:
+                    ret = NULL;
+            }
+        }
+        else
+        {
+            ret = NULL;
+        }
+        currentContext = ret;
+    }
+    return currentContext;
+}
+
+GDIContext* gdi_pushContext(GDIContext* contextToSave)
+{
+    GDIContext* emptyContext = NULL;
+    /*
+     *  Find an empty slot by checking the reference counts
+     */
+    for (int i = 0 ; i < MAX_CONTEXTS && emptyContext == NULL ; ++i)
+    {
+        if (theContexts[i].referenceCount == 0)
+        {
+            emptyContext = &theContexts[i];
         }
     }
-    else
+    if (emptyContext != NULL)
     {
-        ret = NULL;
+        contextToSave->referenceCount++;
+        *emptyContext = *contextToSave;
+        emptyContext->referenceCount = 1;
+        emptyContext->previousContext = contextToSave;
     }
-    currentContext = ret;
-    return currentContext;
+    return emptyContext;
+}
+
+GDIContext* gdi_popContext(GDIContext* aContext)
+{
+    GDIContext* retContext = aContext;
+    
+    if (aContext->previousContext != NULL)
+    {
+        retContext = aContext->previousContext;
+        release(aContext);
+    }
+    return retContext;
+}
+
+void release(GDIContext* context)
+{
+    if (context != NULL)
+    {
+        if (context->referenceCount == 1)
+        {
+            context->referenceCount = 0 ;
+            release(context->previousContext);
+        }
+        else if (context->referenceCount > 0)
+        {
+            context->referenceCount--;
+        }
+    }
 }
 
 GDIContext* gdi_currentContext()
