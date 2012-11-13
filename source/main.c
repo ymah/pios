@@ -84,7 +84,7 @@ void runRainbow(void);
 void runDrawTest(void);
 void displayTags(void);
 void divisionTest(void);
-
+void colourTest();
 
 static void printTag(Tag* tagToPrint);
 
@@ -142,6 +142,7 @@ int MAIN(int argc, char** argv)
 #elif defined SCREEN_02
         runDrawTest();
 #endif
+        colourTest();
         divisionTest();
         displayTags();
 #if !defined QEMU
@@ -284,6 +285,30 @@ void runDrawTest(void)
     gdi_line(context, p0, p1);
     fb_forceUpdate(theFrameBuffer);
 }
+
+void colourTest()
+{
+    GDIContext* context = gdi_currentContext();
+    context = gdi_pushContext(context);
+    if (context != NULL)
+    {
+        GDIRect theRect =
+        {
+            .origin = { .x = 0, .y = 500 },
+            .size = { .width = 10, .height = 10 }
+        };
+        gdi_setColour(context, GDI_FILL, GDI_RED_COLOUR);
+        gdi_fillRect(context, theRect, GDI_FILL);
+        gdi_setColour(context, GDI_FILL, GDI_GREEN_COLOUR);
+        theRect.origin.x += 10;
+        gdi_fillRect(context, theRect, GDI_FILL);
+        gdi_setColour(context, GDI_FILL, GDI_BLUE_COLOUR);
+        theRect.origin.x += 10;
+        gdi_fillRect(context, theRect, GDI_FILL);
+    }
+    gdi_popContext(context);
+}
+
 
 void runLEDSequence(int iterations,
                     unsigned int flashLength,

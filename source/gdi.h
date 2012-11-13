@@ -70,6 +70,9 @@ typedef union GDIColour GDIColour;
 
 extern const GDIColour GDI_BLACK_COLOUR;
 extern const GDIColour GDI_WHITE_COLOUR;
+extern const GDIColour GDI_RED_COLOUR;
+extern const GDIColour GDI_GREEN_COLOUR;
+extern const GDIColour GDI_BLUE_COLOUR;
 
 /*!
  *  @brief Coordinates of a pixel in a GDI context

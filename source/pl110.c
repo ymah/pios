@@ -162,7 +162,7 @@ static FBError initialiseTheBuffer(FrameBuffer* frameBuffer)
         					| ~LCD_EN_MASK;
         controlRegister |=	  LCD_POWER_MASK		// Switch it on
 //        											// endian 0 = little endian
-//        											// BGR 0 = RGB
+        					| LCD_BGR_MASK			// BGR 0 = RGB
 //        											// Dual 0 = one panel
         					| LCD_TFT_MASK			// TFT panel
 //        											// BW 0 - in colour
@@ -174,7 +174,7 @@ static FBError initialiseTheBuffer(FrameBuffer* frameBuffer)
         frameBuffer->buffer.frameBufferSize = frameBufferSize;
         frameBuffer->buffer.rasterWidth = rasterWidth;
         frameBuffer->buffer.colourDepths[0] = 5;
-        frameBuffer->buffer.colourDepths[1] = 5;
+        frameBuffer->buffer.colourDepths[1] = 6;
         frameBuffer->buffer.colourDepths[2] = 5;
         frameBuffer->buffer.colourDepths[3] = 0;
         error = FB_OK;
