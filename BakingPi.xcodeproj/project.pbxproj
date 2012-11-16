@@ -21,6 +21,7 @@
 		FC18EEF51619693B00679AAA /* PiosSimulatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEF41619693B00679AAA /* PiosSimulatorTests.m */; };
 		FC18EEFF16196D8100679AAA /* JPPPiController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC18EEFE16196D8100679AAA /* JPPPiController.m */; };
 		FC3C588E1625493C00FE6594 /* klib.c in Sources */ = {isa = PBXBuildFile; fileRef = FC3C588D162547AE00FE6594 /* klib.c */; };
+		FC3D627B16538B4600A001C2 /* bcm2835gpio.c in Sources */ = {isa = PBXBuildFile; fileRef = FC3D627916538B4600A001C2 /* bcm2835gpio.c */; };
 		FC4077F1163862B5009C2B3D /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = FC4077F0163862B5009C2B3D /* console.c */; };
 		FC4AA134161A02BF0060DD5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FC2C81731610CDFA003B6ECB /* main.c */; };
 		FC4AA137161A058C0060DD5E /* PhysicalMemoryMap.c in Sources */ = {isa = PBXBuildFile; fileRef = FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */; };
@@ -80,6 +81,9 @@
 		FC34195B1612DDFE00207E3C /* SystemTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTimer.h; sourceTree = "<group>"; };
 		FC3C588C1625479E00FE6594 /* klib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = klib.h; sourceTree = "<group>"; };
 		FC3C588D162547AE00FE6594 /* klib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = klib.c; sourceTree = "<group>"; };
+		FC3D627916538B4600A001C2 /* bcm2835gpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bcm2835gpio.c; path = source/bcm2835gpio.c; sourceTree = "<group>"; };
+		FC3D627A16538B4600A001C2 /* bcm2835gpio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bcm2835gpio.h; path = source/bcm2835gpio.h; sourceTree = "<group>"; };
+		FC3D627C16538BC700A001C2 /* gpio+driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "gpio+driver.h"; path = "source/gpio+driver.h"; sourceTree = "<group>"; };
 		FC4077EE1638629A009C2B3D /* console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = console.h; sourceTree = "<group>"; };
 		FC4077F0163862B5009C2B3D /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = console.c; sourceTree = "<group>"; };
 		FC4AA136161A058C0060DD5E /* PhysicalMemoryMap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PhysicalMemoryMap.c; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 		FCB817F71631338C0043450F /* gdi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdi.h; sourceTree = "<group>"; };
 		FCC39E951614CBD1001D2576 /* FrameBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameBuffer.h; sourceTree = "<group>"; };
 		FCC39E961614CBF2001D2576 /* FrameBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FrameBuffer.c; sourceTree = "<group>"; };
+		FCC703E0165626D100ED68EA /* dgpio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dgpio.h; path = source/dgpio.h; sourceTree = "<group>"; };
+		FCC703E1165626E500ED68EA /* dgpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dgpio.c; path = source/dgpio.c; sourceTree = "<group>"; };
 		FCE12CD6163682D7001DDC3D /* JPPiArmTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPiArmTags.h; sourceTree = "<group>"; };
 		FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPiArmTags.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -210,8 +216,13 @@
 		FC2C81711610CB1E003B6ECB /* gpio */ = {
 			isa = PBXGroup;
 			children = (
+				FC3D627916538B4600A001C2 /* bcm2835gpio.c */,
+				FC3D627A16538B4600A001C2 /* bcm2835gpio.h */,
 				FC17CA1B1607050F0092C197 /* gpio.c */,
 				FC17CA1C1607055F0092C197 /* gpio.h */,
+				FC3D627C16538BC700A001C2 /* gpio+driver.h */,
+				FCC703E0165626D100ED68EA /* dgpio.h */,
+				FCC703E1165626E500ED68EA /* dgpio.c */,
 			);
 			name = gpio;
 			sourceTree = "<group>";
@@ -429,6 +440,7 @@
 				FC4077F1163862B5009C2B3D /* console.c in Sources */,
 				FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */,
 				FCA0A789164836980025FCED /* pl110.c in Sources */,
+				FC3D627B16538B4600A001C2 /* bcm2835gpio.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

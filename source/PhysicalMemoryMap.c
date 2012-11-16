@@ -40,23 +40,23 @@ typedef union Page Page;
 
 struct PhysicalMemoryMap
 {
-    SystemTimer* 	systemTimerAddress;
-    GPIO* 			gpioAddress;
-    VCPostBox* 		frameBufferPostBox;
-    PL110*			pl110;
-    uint32_t* 		tagSpace;
-    Page* 			freePages;
+    SystemTimer* 			systemTimerAddress;
+    BCM2835GpioRegisters*	gpioAddress;
+    VCPostBox* 				frameBufferPostBox;
+    PL110*					pl110;
+    uint32_t* 				tagSpace;
+    Page* 					freePages;
     uint8_t* 		systemFont;
     volatile bool 	stopFlag;
 };
 
 struct PhysicalMemoryMap defaultMap =
 {
-    (SystemTimer*) 0x20003000,
-           (GPIO*) 0x20200000,
-      (VCPostBox*) 0x2000B880,
-          (PL110*) 0x10120000,
-       (uint32_t*) 0x00000100,
+             (SystemTimer*) 0x20003000,
+	(BCM2835GpioRegisters*) 0x20200000,
+               (VCPostBox*) 0x2000B880,
+                   (PL110*) 0x10120000,
+                (uint32_t*) 0x00000100,
     NULL,	// free pages
     NULL,	// system font
     false
@@ -69,7 +69,7 @@ void pmm_init(uint32_t* tagSpace, uint8_t* systemFont)
     dispatch_once(&pred,
     ^{
         defaultMap.systemTimerAddress = st_alloc();
-        defaultMap.gpioAddress        = gpio_alloc();
+        defaultMap.gpioAddress        = bcgpio_alloc();
         defaultMap.frameBufferPostBox = vc_postBoxAlloc();
         defaultMap.tagSpace			  = tagSpace;
         defaultMap.systemFont		  = systemFont;
@@ -92,7 +92,7 @@ PhysicalMemoryMap* pmm_getPhysicalMemoryMap()
 }
 
 
-GPIO* pmm_getGPIOAddress(PhysicalMemoryMap* aMap)
+BCM2835GpioRegisters* pmm_getGPIOAddress(PhysicalMemoryMap* aMap)
 {
     return aMap->gpioAddress;
 }
