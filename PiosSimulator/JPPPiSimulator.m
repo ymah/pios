@@ -66,8 +66,8 @@ uint8_t heap[4096 * 32];	// Allocate 31 or 32 pages depending on alignment.
 
 -(bool) gpioPin: (uint32_t) pinNumber
 {
-    return gpio_outputPinValue(pmm_getGPIOAddress(pmm_getPhysicalMemoryMap()),
-                               pinNumber);
+    return bcgpio_outputPinValue(pmm_getGPIOAddress(pmm_getPhysicalMemoryMap()),
+                                 pinNumber);
 }
 
 -(bool) scanLinesUpdated: (NSRange*) linesToUpdateRef

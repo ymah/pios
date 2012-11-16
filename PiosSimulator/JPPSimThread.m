@@ -164,7 +164,7 @@ enum ColourBits
         if (now > lastClock)
         {
             st_microsecondTick(pmm_getSystemTimerAddress(memoryMap));
-            if (gpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
+            if (bcgpio_outputPinsHaveChanged(pmm_getGPIOAddress(memoryMap)))
             {
                 [self notifyUpdate];
             }

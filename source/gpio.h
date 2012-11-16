@@ -17,14 +17,6 @@
 
 #include "bptypes.h"
 
-enum
-{
-    /*!
-     *  @brief number of pins on the GPIO controller
-     */
-    GPIO_NUM_PINS = 54
-};
-
 /*!
  *  @brief GPIO pin functions
  */
@@ -42,12 +34,6 @@ enum GPIOFunction
      *  @brief Sets the pin as an output pin
      */
     GPIO_FN_OUTPUT = 1,
-    GPIO_FN_ALT_0  = 2,
-    GPIO_FN_ALT_1  = 3,
-    GPIO_FN_ALT_2  = 4,
-    GPIO_FN_ALT_3  = 5,
-    GPIO_FN_ALT_4  = 6,
-    GPIO_FN_ALT_5  = 7,
 };
 
 typedef enum GPIOFunction GPIOFunction;
@@ -55,16 +41,32 @@ typedef enum GPIOFunction GPIOFunction;
 struct GPIO;
 typedef struct GPIO GPIO;
 
-#if defined PIOS_SIMULATOR
+struct GPIODriver;
+typedef struct GPIODriver GPIODriver;
 
-GPIO* gpio_alloc();
 
-bool gpio_outputPinsHaveChanged(GPIO* gpio);
+/*!
+ *  @brief allocate a GPIO
+ *  @param driver the particular GPIO hardware driver
+ *  @return An allocated but not initialised GPIO or NULL if it couldn't
+ *  be allocated.
+ */
+GPIO* gpio_alloc(GPIODriver* driver);
 
-bool gpio_outputPinValue(GPIO* gpio, uint32_t pinNumber);
+/*!
+ *  @brief Initialise the GPIO.
+ *
+ *  The first GPIO initialised is made the default GPIO.
+ *  @param gpio GPIO to initialise
+ *  @return the GPIO driver
+ */
+GPIO* gpio_init(GPIO* gpio);
 
-#endif
-
+/*!
+ *  @brief Get the default GPIO
+ *  @return the default GPIO
+ */
+GPIO* gpio_defaultGPIO(void);
 /*!
  *  @brief set the GPIO pin function
  *  @param GPIO address of the GPIO registers
@@ -95,6 +97,6 @@ GPIOFunction gpio_getFunction(GPIO* gpio, uint32_t pinNumber);
  *  @param pinOn true if the pin should be set on, false to set it off
  *  @return true if the pin number is valid. 
  */
-bool setGPIOPin(GPIO* gpio, uint32_t pinNumber, bool pinOn);
+bool gpio_setPin(GPIO* gpio, uint32_t pinNumber, bool pinOn);
 
 #endif

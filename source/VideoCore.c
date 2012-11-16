@@ -177,8 +177,6 @@ FBError
 vc_getFrameBuffer(VCPostBox* postbox, VCFrameBufferDescriptor* fbDescriptor)
 {
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
-    GPIO* gpio = pmm_getGPIOAddress(memoryMap);
-    
     uintptr_t messageToSend = (uintptr_t)fbDescriptor;
 
     FBError ret = FB_OK;
@@ -210,7 +208,6 @@ vc_getFrameBuffer(VCPostBox* postbox, VCFrameBufferDescriptor* fbDescriptor)
         else
         {
             uintptr_t readResult = vc_read(postbox, VC_FRAME_BUFFER_CHANNEL);
-            setGPIOPin(gpio, 16, false);
             if (readResult == 0)
             {
                 while (fbDescriptor->frameBufferPtr == NULL

@@ -113,17 +113,21 @@ int MAIN(int argc, char** argv)
     FBError fbError = FB_OK;
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     pmm_initialiseFreePages(memoryMap);
-#if !defined QEMU
+    GPIO* gpio;
+#if defined QEMU
+    gpio = gpio_init(gpio_alloc(dgpio_driver()));
+#else
+    gpio = gpio_init(gpio_alloc(bcgpio_driver()));
     SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
     st_microsecondSpin(timer, 200000); // and wait 1 second
-    GPIO* gpio = pmm_getGPIOAddress(memoryMap);
-    gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
-    setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
-    st_microsecondSpin(timer, 1000000); // and wait 1 second
-
-
-    setGPIOPin(gpio, 16, true); // Turn off OK while getting frame buffer
 #endif
+    gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
+    gpio_setPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
+#if !defined QEMU
+    st_microsecondSpin(timer, 1000000); // and wait 1 second
+#endif
+
+    gpio_setPin(gpio, 16, true); // Turn off OK while getting frame buffer
     fbError = initFrameBuffer();
 
     if (fbError == FB_OK)
@@ -134,9 +138,7 @@ int MAIN(int argc, char** argv)
         gdi_setColour(context, GDI_FILL, GDI_WHITE_COLOUR);
         gdi_fillFrame(context, GDI_BACKGROUND);
         Console* console = con_initialiseConsole(context);
-#if !defined QEMU
-        setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
-#endif	// QEMU
+        gpio_setPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
 #if defined SCREEN_01
         runRainbow();
 #elif defined SCREEN_02
@@ -160,9 +162,7 @@ int MAIN(int argc, char** argv)
     }
     else
     {
-#if !defined QEMU
         runLEDFlash(10, (int) fbError);
-#endif
     }
     
     return 0;
@@ -315,7 +315,7 @@ void runLEDSequence(int iterations,
                     bool* sequence,
                     size_t sequenceLength)
 {
-    GPIO* gpio = pmm_getGPIOAddress(pmm_getPhysicalMemoryMap());
+    GPIO* gpio = gpio_defaultGPIO();
     SystemTimer* timer = pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap());
     gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
 
@@ -324,7 +324,7 @@ void runLEDSequence(int iterations,
     {
         for (unsigned int i = 0 ; i < sequenceLength ; ++i)
         {
-            setGPIOPin(gpio, 16, !sequence[i]);
+            gpio_setPin(gpio, 16, !sequence[i]);
             st_microsecondSpin(timer, flashLength);
         }
         if (iterations >= 0)

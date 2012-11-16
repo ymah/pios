@@ -9,7 +9,7 @@
 #ifndef BakingPi_PhysicalMemoryMap_h
 #define BakingPi_PhysicalMemoryMap_h
 
-#include "gpio.h"
+#include "bcm2835gpio.h"
 #include "SystemTimer.h"
 #include "FrameBuffer.h"
 #include "Tag.h"
@@ -76,11 +76,11 @@ void pmm_setStopFlag(PhysicalMemoryMap* map, bool shouldStop);
 PhysicalMemoryMap* pmm_getPhysicalMemoryMap();
 
 /*!
- *  @brief get the address of the GPIO controller
+ *  @brief get the address of the Broadcom GPIO controller
  *  @param map The physical memory map
  *  @return the address of the GPIO controller.
  */
-GPIO* pmm_getGPIOAddress(PhysicalMemoryMap* map);
+BCM2835GpioRegisters* pmm_getGPIOAddress(PhysicalMemoryMap* map);
 
 /*!
  *  @brief Get the address of the system timer
