@@ -21,13 +21,14 @@
 struct SystemTimer;
 typedef struct SystemTimer SystemTimer;
 
+/*!
+ *  @brief driver functions for a system timer driver.
+ */
+struct STDriver;
+typedef struct STDriver STDriver;
+
 #if defined PIOS_SIMULATOR
 
-/*!
- *  @brief Allocate a system timer
- *  @return an empty system timer 
- */
-SystemTimer* st_alloc();
 
 /*!
  *  @brief advance the microsecond counter by one tick
@@ -36,6 +37,33 @@ void st_microsecondTick(SystemTimer* timer);
 
 #endif
 
+/*!
+ *  @brief Allocate a system timer
+ *  @param driver The system timer driver functions.
+ *  @return an empty system timer
+ */
+SystemTimer* st_alloc(STDriver* driver);
+
+/*!
+ *  @brief Initialise the system timer.
+ *  @param uninitialisedTimer An uninitialised system timer.
+ *  @return The initialised system timer.
+ */
+SystemTimer* st_init(SystemTimer* uninitialisedTimer);
+
+/*!
+ *  @brief Deallocate the system timer.
+ *  @param timer Timer to deallocate.
+ */
+void st_dealloc(SystemTimer* timer);
+
+/*!
+ *  @brief Get the default system timer.
+ *  
+ *  This will be the first system timer initialised.
+ *  @return the default system timer.
+ */
+SystemTimer* st_defaultTimer(void);
 
 /*!
  *  @brief wait or the given number of microseconds

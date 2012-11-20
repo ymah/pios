@@ -33,8 +33,10 @@
 		FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */ = {isa = PBXBuildFile; fileRef = FC8CA1911643AFAB009CD92A /* VideoCore.c */; };
 		FC9BBF051637BD850001A9EE /* font0.bin in Resources */ = {isa = PBXBuildFile; fileRef = FC9BBF041637BD850001A9EE /* font0.bin */; };
 		FCA0A789164836980025FCED /* pl110.c in Sources */ = {isa = PBXBuildFile; fileRef = FCA0A788164836920025FCED /* pl110.c */; };
+		FCA1886A165B63FB006A9F6A /* bcm2835SystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCA18868165B63FB006A9F6A /* bcm2835SystemTimer.c */; };
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
+		FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,9 @@
 		FC9BBF041637BD850001A9EE /* font0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; name = font0.bin; path = ../source/font0.bin; sourceTree = "<group>"; };
 		FCA0A7861648367F0025FCED /* pl110.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pl110.h; sourceTree = "<group>"; };
 		FCA0A788164836920025FCED /* pl110.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pl110.c; sourceTree = "<group>"; };
+		FCA18868165B63FB006A9F6A /* bcm2835SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bcm2835SystemTimer.c; sourceTree = "<group>"; };
+		FCA18869165B63FB006A9F6A /* bcm2835SystemTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bcm2835SystemTimer.h; sourceTree = "<group>"; };
+		FCA1886C165B66F3006A9F6A /* SystemTimer+Driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SystemTimer+Driver.h"; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
 		FCB817F51631337B0043450F /* gdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gdi.c; sourceTree = "<group>"; };
 		FCB817F71631338C0043450F /* gdi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdi.h; sourceTree = "<group>"; };
@@ -108,6 +113,8 @@
 		FCC703E1165626E500ED68EA /* dgpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dgpio.c; path = source/dgpio.c; sourceTree = "<group>"; };
 		FCE12CD6163682D7001DDC3D /* JPPiArmTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPiArmTags.h; sourceTree = "<group>"; };
 		FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPiArmTags.m; sourceTree = "<group>"; };
+		FCE3EDF7165BFF73007EACA2 /* DSystemTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSystemTimer.h; sourceTree = "<group>"; };
+		FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DSystemTimer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,8 +237,13 @@
 		FC3419571612DDAC00207E3C /* SystemTimer */ = {
 			isa = PBXGroup;
 			children = (
+				FCE3EDF7165BFF73007EACA2 /* DSystemTimer.h */,
+				FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */,
+				FCA18868165B63FB006A9F6A /* bcm2835SystemTimer.c */,
+				FCA18869165B63FB006A9F6A /* bcm2835SystemTimer.h */,
 				FC3419591612DDDE00207E3C /* SystemTimer.c */,
 				FC34195B1612DDFE00207E3C /* SystemTimer.h */,
+				FCA1886C165B66F3006A9F6A /* SystemTimer+Driver.h */,
 			);
 			name = SystemTimer;
 			path = source;
@@ -441,6 +453,8 @@
 				FC8CA1931643AFAB009CD92A /* VideoCore.c in Sources */,
 				FCA0A789164836980025FCED /* pl110.c in Sources */,
 				FC3D627B16538B4600A001C2 /* bcm2835gpio.c in Sources */,
+				FCA1886A165B63FB006A9F6A /* bcm2835SystemTimer.c in Sources */,
+				FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
