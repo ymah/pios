@@ -14,57 +14,43 @@
 
 #endif
 
-#include "SystemTimer.h"
+#include "SystemTimer+Driver.h"
 #include "PhysicalMemoryMap.h"
 
-enum
-{
-    SYSTEM_TIMER_ADDRESS = 0x20003000,
-    NUM_COMPARES = 4,
-};
+SystemTimer* defaultTimer = NULL;
 
-struct SystemTimer
+SystemTimer* st_defaultTimer()
 {
-    volatile uint32_t controlStatus;
-    volatile uint32_t counterLow;
-    volatile uint32_t counterHigh;
-    volatile uint32_t compare[NUM_COMPARES];
-};
-
-#if defined PIOS_SIMULATOR
-
-SystemTimer* st_alloc()
-{
-    return calloc(1, sizeof(SystemTimer));
+    return defaultTimer;
 }
-
-void st_microsecondTick(SystemTimer* timer)
-{
-    if ((uint32_t)OSAtomicIncrement32((int32_t*)(&timer->counterLow)) == 0)
-    {
-        OSAtomicIncrement32Barrier((int32_t*)&timer->counterHigh);
-    }
-}
-
-#endif
-
 
 void st_microsecondSpin(SystemTimer* timer, uint32_t microseconds)
 {
-    uint32_t startTime = timer->counterLow;
-    volatile int foo = 0;
-    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
-    
-    while (timer->counterLow - startTime < microseconds
-           && !pmm_getStopFlag(memoryMap))
-    {
-        foo++;	// Need to make sure the compiler does not optimise out the loop
-    }
+    timer->driver->microsecondSpin(timer, microseconds);
 }
 
 uint64_t st_microSeconds(SystemTimer* timer)
 {
-    uint64_t ret = ((uint64_t)(timer->counterHigh) << 32) | timer->counterLow;
+    return timer->driver->microseconds(timer);
+}
+
+SystemTimer* st_alloc(STDriver* driver)
+{
+    SystemTimer* ret = driver->allocate();
+    if (ret != NULL)
+    {
+        ret->driver = driver;
+    }
+    return ret;
+}
+
+SystemTimer* st_init(SystemTimer* uninitialisedTimer)
+{
+    SystemTimer* ret = uninitialisedTimer->driver->init(uninitialisedTimer);
+    if (defaultTimer != NULL)
+    {
+        defaultTimer = ret;
+    }
     return ret;
 }
 

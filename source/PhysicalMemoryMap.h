@@ -10,6 +10,7 @@
 #define BakingPi_PhysicalMemoryMap_h
 
 #include "bcm2835gpio.h"
+#include "bcm2835SystemTimer.h"
 #include "SystemTimer.h"
 #include "FrameBuffer.h"
 #include "Tag.h"
@@ -83,11 +84,11 @@ PhysicalMemoryMap* pmm_getPhysicalMemoryMap();
 BCM2835GpioRegisters* pmm_getGPIOAddress(PhysicalMemoryMap* map);
 
 /*!
- *  @brief Get the address of the system timer
+ *  @brief Get the address of the BCM2835 system timer registers
  *  @param map Physical memory map.
  *  @return the address of the system timer
  */
-SystemTimer* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
+BCM2835SystemTimerRegisters* pmm_getSystemTimerAddress(PhysicalMemoryMap* map);
 
 /*!
  *  @brief get the address of the VideoCore postbox

@@ -14,6 +14,7 @@
 
 #include "bptypes.h"
 #include "gpio.h"
+#include "dgpio.h"
 #include "SystemTimer.h"
 #include "PhysicalMemoryMap.h"
 #include "klib.h"
@@ -21,6 +22,8 @@
 #include "console.h"
 #include "VideoCore.h"
 #include "pl110.h"
+#include "bcm2835SystemTimer.h"
+#include "DSystemTimer.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -88,24 +91,6 @@ void colourTest();
 
 static void printTag(Tag* tagToPrint);
 
-#if defined OK_EXERCISE
-
-int MAIN(int argc, char** argv)
-{
-    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
-    GPIO* gpio = pmm_getGPIOAddress(memoryMap);
-    SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
-    gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
-    setGPIOPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
-    st_microsecondSpin(timer, 1000000); // and wait 1 second
-    
-    runLEDSequence(10, 250000, SOSSequence, sizeof(SOSSequence) / sizeof(bool));
-    
-    return 0;
-}
-
-#else
-
 extern uint8_t stackTop;
 
 int MAIN(int argc, char** argv)
@@ -114,18 +99,18 @@ int MAIN(int argc, char** argv)
     PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
     pmm_initialiseFreePages(memoryMap);
     GPIO* gpio;
+    SystemTimer* timer;
 #if defined QEMU
     gpio = gpio_init(gpio_alloc(dgpio_driver()));
+    timer = st_init(st_alloc(dst_driver()));
 #else
     gpio = gpio_init(gpio_alloc(bcgpio_driver()));
-    SystemTimer* timer = pmm_getSystemTimerAddress(memoryMap);
-    st_microsecondSpin(timer, 200000); // and wait 1 second
+    timer = st_init(st_alloc(bcst_driver()));
 #endif
+    st_microsecondSpin(timer, 200000); // and wait 1 second
     gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
     gpio_setPin(gpio, 16, false); // Turn on OK to start with as a diagnostic
-#if !defined QEMU
     st_microsecondSpin(timer, 1000000); // and wait 1 second
-#endif
 
     gpio_setPin(gpio, 16, true); // Turn off OK while getting frame buffer
     fbError = initFrameBuffer();
@@ -147,7 +132,6 @@ int MAIN(int argc, char** argv)
         colourTest();
         divisionTest();
         displayTags();
-#if !defined QEMU
         while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
@@ -158,7 +142,6 @@ int MAIN(int argc, char** argv)
             con_putDecimal64(console, theTime % 1000000, 6);
             st_microsecondSpin(timer, 80000);
         }
-#endif
     }
     else
     {
@@ -167,8 +150,6 @@ int MAIN(int argc, char** argv)
     
     return 0;
 }
-
-#endif
 
 FBError initFrameBuffer()
 {
@@ -316,7 +297,7 @@ void runLEDSequence(int iterations,
                     size_t sequenceLength)
 {
     GPIO* gpio = gpio_defaultGPIO();
-    SystemTimer* timer = pmm_getSystemTimerAddress(pmm_getPhysicalMemoryMap());
+    SystemTimer* timer = st_defaultTimer();
     gpio_setFunction(gpio, 16, GPIO_FN_OUTPUT);
 
     int iterationsToGo = iterations > 0 ? iterations : 1;
