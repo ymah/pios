@@ -332,8 +332,12 @@ __CLEAN_UP_aeabi_uldivmod:
 	pop 	{r4, r5, r6, r7, r8, fp, lr }
 	bx		lr	
 	bx		lr
-	
+
+@
+@   Saves all the registers except those associated with the stack and program
+@   counter.
+@	
 saveRegs:
-	stm		r0,{r0-r15}
+	stm		r0,{r0-r12}
 	bx 		lr
 @ The last line seemed to be missing
