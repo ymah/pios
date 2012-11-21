@@ -24,6 +24,7 @@
 #include "pl110.h"
 #include "bcm2835SystemTimer.h"
 #include "DSystemTimer.h"
+#include "Thread.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -77,6 +78,8 @@ static void runLEDSequence(int iterations,
                            bool* sequence,
                            size_t sequenceLength);
 static void runLEDFlash(int repeat, int numberOfFlashes);
+static void testSaveRegs(void);
+
 
 static FBError initFrameBuffer(void);
 /*
@@ -100,6 +103,7 @@ int MAIN(int argc, char** argv)
     pmm_initialiseFreePages(memoryMap);
     GPIO* gpio;
     SystemTimer* timer;
+    thread_initialise();
 #if defined QEMU
     gpio = gpio_init(gpio_alloc(dgpio_driver()));
     timer = st_init(st_alloc(dst_driver()));
@@ -132,6 +136,7 @@ int MAIN(int argc, char** argv)
         colourTest();
         divisionTest();
         displayTags();
+        testSaveRegs();
         while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
@@ -443,4 +448,17 @@ void divisionTest(void)
     con_newLine(console);
 }
 
+void testSaveRegs(void)
+{
+    Console* console = con_getTheConsole();
+    Thread* thisThread = thread_currentThread();
+	thread_saveRegs(thisThread);
+    for (int i = 0 ; i < thread_numRegs() ; ++i)
+    {
+        con_putCString(console, thread_registerNameAsCString(i));
+        con_putCString(console, ":");
+        con_putHex32(console, thread_savedRegister32(thisThread, i));
+        con_newLine(console);
+    }
+}
 
