@@ -37,6 +37,7 @@
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
 		FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */; };
+		FCE3EDFE165CBF01007EACA2 /* Thread.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDFD165CBF01007EACA2 /* Thread.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +116,8 @@
 		FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPiArmTags.m; sourceTree = "<group>"; };
 		FCE3EDF7165BFF73007EACA2 /* DSystemTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSystemTimer.h; sourceTree = "<group>"; };
 		FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DSystemTimer.c; sourceTree = "<group>"; };
+		FCE3EDFC165CBEED007EACA2 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
+		FCE3EDFD165CBF01007EACA2 /* Thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Thread.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +278,7 @@
 		FCB0F968160061BE00745F21 = {
 			isa = PBXGroup;
 			children = (
+				FCE3EDFB165CBEBB007EACA2 /* Thread */,
 				FC3C588B1625478300FE6594 /* klib */,
 				FC3C58891625473300FE6594 /* source */,
 				FCC39E931614CB95001D2576 /* graphics */,
@@ -304,6 +308,16 @@
 				FCA0A788164836920025FCED /* pl110.c */,
 			);
 			name = graphics;
+			path = source;
+			sourceTree = "<group>";
+		};
+		FCE3EDFB165CBEBB007EACA2 /* Thread */ = {
+			isa = PBXGroup;
+			children = (
+				FCE3EDFC165CBEED007EACA2 /* Thread.h */,
+				FCE3EDFD165CBF01007EACA2 /* Thread.c */,
+			);
+			name = Thread;
 			path = source;
 			sourceTree = "<group>";
 		};
@@ -455,6 +469,7 @@
 				FC3D627B16538B4600A001C2 /* bcm2835gpio.c in Sources */,
 				FCA1886A165B63FB006A9F6A /* bcm2835SystemTimer.c in Sources */,
 				FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */,
+				FCE3EDFE165CBF01007EACA2 /* Thread.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

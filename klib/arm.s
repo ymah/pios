@@ -1,5 +1,6 @@
 .section .text
 
+.globl	saveRegs
 .globl	__aeabi_uidivmod
 .globl	__aeabi_uidiv
 
@@ -331,4 +332,8 @@ __CLEAN_UP_aeabi_uldivmod:
 	pop 	{r4, r5, r6, r7, r8, fp, lr }
 	bx		lr	
 	bx		lr
+	
+saveRegs:
+	stm		r0,{r0-r15}
+	bx 		lr
 @ The last line seemed to be missing
