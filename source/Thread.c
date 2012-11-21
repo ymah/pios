@@ -11,14 +11,14 @@
 
 enum
 {
-    NUM_REGISTERS = 16,
+    NUM_REGISTERS = 13,	// We don't save the PC, sp or LR
     MAX_THREADS = 32,
 };
 
 static const char* registerNames[NUM_REGISTERS] =
 {
     " r0", " r1", " r2", " r3", " r4", " r5", " r6", " r7",
-    " r8", " r9", "r10", "r11", "r12", " sp", " lr", " pc"
+    " r8", " r9", "r10", "r11", "r12"
 };
 
 typedef uint32_t Register;
