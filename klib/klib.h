@@ -57,4 +57,11 @@ size_t klib_strnlen(const char* restrict charSequence, size_t maxLength);
  */
 #define KLIB_MAKE_MASK(POS,SIZE)	((~(~0 << (SIZE))) << (POS))
 
+/*!
+ *  @brief Assertion to document things like pre and post conditions
+ *  @param C Condition to assert
+ *  @param M Assertion message
+ */
+#define KLIB_ASSERT(C,M)
+
 #endif

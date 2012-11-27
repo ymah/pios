@@ -33,7 +33,7 @@ LINKER = kernel.ld
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
-ASM_OBJECTS := $(BUILD)start.o $(BUILD)font.o
+ASM_OBJECTS := $(BUILD)start.o $(BUILD)cpu.o $(BUILD)font.o
 C_OBJECTS   := $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 OBJECTS     := $(ASM_OBJECTS) $(C_OBJECTS)
 
