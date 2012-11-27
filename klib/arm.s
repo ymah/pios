@@ -1,6 +1,5 @@
 .section .text
 
-.globl	saveRegs
 .globl	__aeabi_uidivmod
 .globl	__aeabi_uidiv
 
@@ -333,11 +332,4 @@ __CLEAN_UP_aeabi_uldivmod:
 	bx		lr	
 	bx		lr
 
-@
-@   Saves all the registers except those associated with the stack and program
-@   counter.
-@	
-saveRegs:
-	stm		r0,{r0-r12}
-	bx 		lr
 @ The last line seemed to be missing

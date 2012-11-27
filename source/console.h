@@ -83,6 +83,13 @@ void con_putHex8(Console* console, uint8_t aNumber);
  *  @param minWidth Minimum width of the number.  Will be padded with zeros.
  */
 void con_putDecimal64(Console* console, uint64_t number, size_t minWidth);
+/*!
+ *  @brief Put a decimal number out
+ *  @param console Console to write to
+ *  @param number 32 bit number to write.
+ *  @param minWidth Minimum width of the number.  Will be padded with zeros.
+ */
+void con_putDecimal32(Console* console, uint32_t number, size_t minWidth);
 
 
 void con_gotoLineStart(Console* console);

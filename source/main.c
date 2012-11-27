@@ -91,6 +91,7 @@ void runDrawTest(void);
 void displayTags(void);
 void divisionTest(void);
 void colourTest();
+void threadTest();
 
 static void printTag(Tag* tagToPrint);
 
@@ -137,6 +138,7 @@ int MAIN(int argc, char** argv)
         divisionTest();
         displayTags();
         testSaveRegs();
+        threadTest();
         while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
@@ -459,6 +461,49 @@ void testSaveRegs(void)
         con_putCString(console, ":");
         con_putHex32(console, thread_savedRegister32(thisThread, i));
         con_newLine(console);
+    }
+}
+
+static void threadFunction(void* context)
+{
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+
+    uint32_t* theCounter = (uint32_t*) context;
+    while (*theCounter > 0 && !pmm_getStopFlag(memoryMap))
+    {
+        (*theCounter)--;
+        thread_reschedule();
+    }
+}
+
+void threadTest(void)
+{
+    PhysicalMemoryMap* memoryMap = pmm_getPhysicalMemoryMap();
+    Console* console = con_getTheConsole();
+    con_newLine(console);
+    Thread* thread = thread_create(threadFunction);
+    if (thread == NULL)
+    {
+        con_putCString(console, "Failed to create thread");
+        con_newLine(console);
+    }
+    else
+    {
+        uint32_t counter = 0x800;
+        thread_start(thread, &counter);
+        while(!pmm_getStopFlag(memoryMap) && thread_state(thread) != THREAD_FINISHED)
+        {
+            con_gotoLineStart(console);
+            con_clearCurrentLine(console);
+            con_putDecimal32(console, counter, 8);
+            thread_reschedule();
+        }
+        thread_reschedule();
+        if (thread_state(thread) != THREAD_FINISHED)
+        {
+            thread_cancel(thread);
+        }
+        thread_release(thread);
     }
 }
 

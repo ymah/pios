@@ -201,6 +201,11 @@ void con_putDecimal64(Console* console, uint64_t number, size_t minWidth)
     
 }
 
+void con_putDecimal32(Console* console, uint32_t number, size_t minWidth)
+{
+	con_putDecimal64(console, number, minWidth);
+}
+
 void con_gotoLineStart(Console* console)
 {
     console->cursorPos.x = 0;

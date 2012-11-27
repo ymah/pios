@@ -204,7 +204,7 @@ void* pmm_allocateContiguousPages(PhysicalMemoryMap* map, size_t numberOfPages)
         Page* remaining = NULL;
         if (ret->listEntry.count > numberOfPages)
         {
-            Page* remaining = ret + numberOfPages;
+            remaining = ret + numberOfPages;
             remaining->listEntry.count = ret->listEntry.count - numberOfPages;
             remaining->listEntry.next = ret->listEntry.next;
         }
@@ -231,12 +231,20 @@ void* pmm_allocateContiguousPages(PhysicalMemoryMap* map, size_t numberOfPages)
 
 void pmm_freePage(PhysicalMemoryMap* map, void* pagePtr)
 {
+    pmm_freeContiguousPages(map, pagePtr, 1);
+}
+
+void pmm_freeContiguousPages(PhysicalMemoryMap* map,
+                             void* pagePtr,
+                             size_t pageCount)
+{
     // TODO: Need a lock
     if (((uintptr_t)pagePtr & ~PIOS_PAGE_MASK) == 0)
     {
         ((Page*) pagePtr)->listEntry.next = map->freePages;
-        ((Page*) pagePtr)->listEntry.count =1;
+        ((Page*) pagePtr)->listEntry.count = pageCount;
         map->freePages = (Page*) pagePtr;
     }
+    
 }
 

@@ -148,4 +148,15 @@ void* pmm_allocateContiguousPages(PhysicalMemoryMap* map, size_t numberOfPages);
  */
 void pmm_freePage(PhysicalMemoryMap* map, void* pagePtr);
 
+/*!
+ *  @brief free a set of contiguous pages of memory.
+ *  @param map Memory pmap containing the free page list
+ *  @param pagePtr a pointer to the beginning of the page.  If it does not
+ *  point to the beginning of a page, it is ignored and nothing happens.
+ *  @param pageCount The number of pages to free.
+ */
+void pmm_freeContiguousPages(PhysicalMemoryMap* map,
+                             void* pagePtr,
+                             size_t pageCount);
+
 #endif
