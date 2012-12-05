@@ -5,3 +5,4 @@ kernel\..*
 kernel-qemu\..*
 BakingPi.xcodeproj/xcuserdata/
 BakingPi.xcodeproj/project.xcworkspace/xcuserdata
+qemu\.log

@@ -1,4 +1,7 @@
+.globl resetFunc
+
 .section .init
+resetFunc:
 		bl _start
 .section .text
 .globl	_start

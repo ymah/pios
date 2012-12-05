@@ -16,6 +16,7 @@
 #include "Tag.h"
 #include "VideoCore.h"
 #include "pl110.h"
+#include "InterruptVector.h"
 
 
 enum
@@ -84,6 +85,11 @@ PhysicalMemoryMap* pmm_getPhysicalMemoryMap();
 BCM2835GpioRegisters* pmm_getGPIOAddress(PhysicalMemoryMap* map);
 
 /*!
+ *  @brief Get the address in which the ARM interrupt vectors live.
+ */
+uint32_t* pmm_getIVCodeLocation(PhysicalMemoryMap* map);
+
+/*!
  *  @brief Get the address of the BCM2835 system timer registers
  *  @param map Physical memory map.
  *  @return the address of the system timer
@@ -101,6 +107,8 @@ VCPostBox* pmm_getVCPostBox(PhysicalMemoryMap* map);
  *  @return The PL110 address.
  */
 PL110* pmm_getPL110(PhysicalMemoryMap* map);
+
+InterruptVectorTable* pmm_getInterruptVectors(PhysicalMemoryMap* map);
 
 /*!
  *  @brief Get the list of ARM tags

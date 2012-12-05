@@ -34,6 +34,7 @@
 		FC9BBF051637BD850001A9EE /* font0.bin in Resources */ = {isa = PBXBuildFile; fileRef = FC9BBF041637BD850001A9EE /* font0.bin */; };
 		FCA0A789164836980025FCED /* pl110.c in Sources */ = {isa = PBXBuildFile; fileRef = FCA0A788164836920025FCED /* pl110.c */; };
 		FCA1886A165B63FB006A9F6A /* bcm2835SystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCA18868165B63FB006A9F6A /* bcm2835SystemTimer.c */; };
+		FCAAEB9A16674BC300011C6E /* InterruptVector.c in Sources */ = {isa = PBXBuildFile; fileRef = FCAAEB9916674BC300011C6E /* InterruptVector.c */; };
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
 		FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */; };
@@ -105,6 +106,8 @@
 		FCA18868165B63FB006A9F6A /* bcm2835SystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bcm2835SystemTimer.c; sourceTree = "<group>"; };
 		FCA18869165B63FB006A9F6A /* bcm2835SystemTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bcm2835SystemTimer.h; sourceTree = "<group>"; };
 		FCA1886C165B66F3006A9F6A /* SystemTimer+Driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SystemTimer+Driver.h"; sourceTree = "<group>"; };
+		FCAAEB9716674BAC00011C6E /* InterruptVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterruptVector.h; sourceTree = "<group>"; };
+		FCAAEB9916674BC300011C6E /* InterruptVector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = InterruptVector.c; sourceTree = "<group>"; };
 		FCB0F975160063D700745F21 /* start.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; name = start.s; path = source/start.s; sourceTree = "<group>"; };
 		FCB817F51631337B0043450F /* gdi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gdi.c; sourceTree = "<group>"; };
 		FCB817F71631338C0043450F /* gdi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdi.h; sourceTree = "<group>"; };
@@ -261,6 +264,8 @@
 				FC147FF216351E6E00915560 /* Tag.h */,
 				FC147FF416351E8300915560 /* Tag.c */,
 				FC9BBF011637BBFA0001A9EE /* font.s */,
+				FCAAEB9716674BAC00011C6E /* InterruptVector.h */,
+				FCAAEB9916674BC300011C6E /* InterruptVector.c */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -470,6 +475,7 @@
 				FCA1886A165B63FB006A9F6A /* bcm2835SystemTimer.c in Sources */,
 				FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */,
 				FCE3EDFE165CBF01007EACA2 /* Thread.c in Sources */,
+				FCAAEB9A16674BC300011C6E /* InterruptVector.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

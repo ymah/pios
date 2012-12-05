@@ -25,6 +25,7 @@
 #include "bcm2835SystemTimer.h"
 #include "DSystemTimer.h"
 #include "Thread.h"
+#include "InterruptVector.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -90,8 +91,9 @@ void runRainbow(void);
 void runDrawTest(void);
 void displayTags(void);
 void divisionTest(void);
-void colourTest();
-void threadTest();
+void colourTest(void);
+void threadTest(void);
+void swiTest(void);
 
 static void printTag(Tag* tagToPrint);
 
@@ -104,6 +106,7 @@ int MAIN(int argc, char** argv)
     pmm_initialiseFreePages(memoryMap);
     GPIO* gpio;
     SystemTimer* timer;
+    iv_initialise();
     thread_initialise();
 #if defined QEMU
     gpio = gpio_init(gpio_alloc(dgpio_driver()));
@@ -139,6 +142,7 @@ int MAIN(int argc, char** argv)
         displayTags();
         testSaveRegs();
         threadTest();
+        swiTest();
         while(!pmm_getStopFlag(memoryMap))
         {
             uint64_t theTime = st_microSeconds(timer);
@@ -505,5 +509,12 @@ void threadTest(void)
         }
         thread_release(thread);
     }
+}
+
+extern void syscall(void);
+
+void swiTest(void)
+{
+    syscall();
 }
 
