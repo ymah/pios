@@ -91,6 +91,12 @@ PhysicalMemoryMap* pmm_getPhysicalMemoryMap()
     return &defaultMap;
 }
 
+uint32_t* pmm_getIVCodeLocation(PhysicalMemoryMap* map)
+{
+    return (uint32_t*) 0;
+}
+
+
 
 BCM2835GpioRegisters* pmm_getGPIOAddress(PhysicalMemoryMap* aMap)
 {
