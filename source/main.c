@@ -515,6 +515,7 @@ void threadTest(void)
     }
 }
 
+
 void swiTest(void)
 {
     syscall_ping();
