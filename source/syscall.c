@@ -16,7 +16,21 @@
  */
 struct DispatchTableEntry
 {
-    uintptr_t	dispatchFunction;
+    uint32_t ordinal;
+    SyscallFunction	dispatchFunction;
+};
+
+typedef struct DispatchTableEntry DispatchTableEntry;
+
+static int32_t ping(void* inBlock, void* outBlock);
+static int32_t reschedule(void* inBlock, void* outBlock);
+
+DispatchTableEntry dispatchTable[] =
+{
+    { SYSCALL_RESCHEDULE, reschedule },
+    { SYSCALL_PING, ping },
+    
+    { SYSCALL_COUNT, NULL }
 };
 
 int32_t syscallDispatch(uint32_t trapNumber,
@@ -29,17 +43,26 @@ int32_t syscallDispatch(uint32_t trapNumber,
         // TODO: Set some sort of error code for the thread
         thread_cancel(thread_currentThread());
     }
+    return dispatchTable[syscallNumber].dispatchFunction(inBlock, outBlock);
+}
+
+int32_t ping(void* inBlock, void* outBlock)
+{
     Console* console = con_getTheConsole();
     con_newLine(console);
-    con_putCString(console, "Syscall: trap number = ");
-    con_putHex32(console, trapNumber);
-    con_putCString(console, ", syscall number = ");
-    con_putHex32(console, syscallNumber);
-    con_putCString(console, ", in block = ");
+    con_putCString(console, "Ping: ");
+    con_putCString(console, "in block = ");
     con_putHex32(console, (uint32_t) inBlock);
     con_putCString(console, ", out block = ");
     con_putHex32(console, (uint32_t) outBlock);
     con_newLine(console);
     return 0;
 }
+
+int32_t reschedule(void* inBlock, void* outBlock)
+{
+    thread_reschedule();
+    return 0;
+}
+
 
