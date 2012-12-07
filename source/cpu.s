@@ -72,8 +72,26 @@ fastIrqVector:			.word	0
 @
 undefinedFunc:
 	b 	undefinedFunc
+
+@
+@   Software interrupt
+@
 swiFunc:
-	b 	swiFunc
+	push	{r10, lr}		@ lr points at the correct return address
+	mrs		r10,spsr		@ Save the saved PSR
+	push	{r10}			@ on the stack
+	ldr		r10,[lr,#-4]	@ Isolate the trap number from the instruction
+	and		r10,r10,#0xFFFFFF
+	mov		r3,r2			@ Insert the swi number as the first parameter
+	mov		r2,r1
+	mov		r1,r0
+	mov		r0,r10
+	bl		syscallDispatch
+	pop		{r10}			@ Get the saved SPSR from the stack
+	msr		spsr_cxsf,r10	@ and restore it
+	pop		{r10, lr}		@ restore the link reg and original r10
+	movs	pc,lr			@ this restores the cpsr as well as returning
+	
 prefetchAbortFunc: 
 	b 	prefetchAbortFunc
 dataAbortFunc:

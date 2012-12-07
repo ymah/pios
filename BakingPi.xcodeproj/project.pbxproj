@@ -37,6 +37,7 @@
 		FCAAEB9A16674BC300011C6E /* InterruptVector.c in Sources */ = {isa = PBXBuildFile; fileRef = FCAAEB9916674BC300011C6E /* InterruptVector.c */; };
 		FCB817F8163144370043450F /* gdi.c in Sources */ = {isa = PBXBuildFile; fileRef = FCB817F51631337B0043450F /* gdi.c */; };
 		FCE12CD8163682D7001DDC3D /* JPPiArmTags.m in Sources */ = {isa = PBXBuildFile; fileRef = FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */; };
+		FCE33C1E16707CBE002849FA /* syscall.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE33C1D16707CBE002849FA /* syscall.c */; };
 		FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */; };
 		FCE3EDFE165CBF01007EACA2 /* Thread.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE3EDFD165CBF01007EACA2 /* Thread.c */; };
 /* End PBXBuildFile section */
@@ -117,6 +118,8 @@
 		FCC703E1165626E500ED68EA /* dgpio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dgpio.c; path = source/dgpio.c; sourceTree = "<group>"; };
 		FCE12CD6163682D7001DDC3D /* JPPiArmTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPPiArmTags.h; sourceTree = "<group>"; };
 		FCE12CD7163682D7001DDC3D /* JPPiArmTags.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPPiArmTags.m; sourceTree = "<group>"; };
+		FCE33C1C16707CA9002849FA /* syscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = syscall.h; sourceTree = "<group>"; };
+		FCE33C1D16707CBE002849FA /* syscall.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = syscall.c; sourceTree = "<group>"; };
 		FCE3EDF7165BFF73007EACA2 /* DSystemTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSystemTimer.h; sourceTree = "<group>"; };
 		FCE3EDF8165BFF73007EACA2 /* DSystemTimer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = DSystemTimer.c; sourceTree = "<group>"; };
 		FCE3EDFC165CBEED007EACA2 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
@@ -283,6 +286,7 @@
 		FCB0F968160061BE00745F21 = {
 			isa = PBXGroup;
 			children = (
+				FCE33C1A16707C71002849FA /* syscall */,
 				FCE3EDFB165CBEBB007EACA2 /* Thread */,
 				FC3C588B1625478300FE6594 /* klib */,
 				FC3C58891625473300FE6594 /* source */,
@@ -313,6 +317,16 @@
 				FCA0A788164836920025FCED /* pl110.c */,
 			);
 			name = graphics;
+			path = source;
+			sourceTree = "<group>";
+		};
+		FCE33C1A16707C71002849FA /* syscall */ = {
+			isa = PBXGroup;
+			children = (
+				FCE33C1C16707CA9002849FA /* syscall.h */,
+				FCE33C1D16707CBE002849FA /* syscall.c */,
+			);
+			name = syscall;
 			path = source;
 			sourceTree = "<group>";
 		};
@@ -476,6 +490,7 @@
 				FCE3EDF9165BFF73007EACA2 /* DSystemTimer.c in Sources */,
 				FCE3EDFE165CBF01007EACA2 /* Thread.c in Sources */,
 				FCAAEB9A16674BC300011C6E /* InterruptVector.c in Sources */,
+				FCE33C1E16707CBE002849FA /* syscall.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
