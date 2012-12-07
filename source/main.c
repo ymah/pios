@@ -26,6 +26,7 @@
 #include "DSystemTimer.h"
 #include "Thread.h"
 #include "InterruptVector.h"
+#include "syscall.h"
 
 /*
  *  The simulator is a Mac OS X application and, as such, already has a main
@@ -476,7 +477,10 @@ static void threadFunction(void* context)
     while (*theCounter > 0 && !pmm_getStopFlag(memoryMap))
     {
         (*theCounter)--;
-        thread_reschedule();
+        if (*theCounter % 8 == 0)
+        {
+            thread_reschedule();
+        }
     }
 }
 
@@ -511,10 +515,8 @@ void threadTest(void)
     }
 }
 
-extern void syscall(void);
-
 void swiTest(void)
 {
-    syscall();
+    syscall_ping();
 }
 

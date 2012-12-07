@@ -36,6 +36,10 @@ typedef unsigned char uint8_t;
  *  @brief uint32_t as per C99
  */
 typedef unsigned int uint32_t;
+/*!
+ *  @brief 32 bit signed integer as per C99
+ */
+typedef int int32_t;
 typedef unsigned short uint16_t;
 
 /*!
